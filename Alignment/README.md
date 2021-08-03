@@ -46,3 +46,44 @@ This script creates the following folders:
 * jpg_to_czi_transformation: .pickel files containing the transformation matrix to transform coordinates from the .jpg coordinate system to the .czi coordinate system  
 * mcd_files: stores .mcd files containing the panoramas  
 * Slidescanner: this folder should contain the whole slide bright field images in .czi format  
+
+## Generating the "post-transformation" matrix
+
+The transformation of the selected coordinates to panorama files for IMC acquisition takes place in two steps:
+
+1. transformation from the IF cooridnate system to the Slidescanner coordinate system  
+2. transformation from the Slidescanner coordinate system to the .mcd/panorama coordinate system
+
+In theory, the second transformation is constant since both images contain the same tissue. We therefore generate only a single transformation
+matrix to perform the second transformation for all samples. This second transformation matrix is termed "post-transformation" matrix.
+
+To generate this transformation matrix, we open napping via:
+
+```
+napping
+```
+
+We select "Single file pair" and chose the matching files for sample `10060928-SPECT-VAR-TIS-UNST-03`:
+
+* *Source image(s)*: whole slide brightfield image of sample `10060928-SPECT-VAR-TIS-UNST-03` in .czi format in the `Slidescanner` folder
+* *Target images*: panorama acquisitions for sample `10060928-SPECT-VAR-TIS-UNST-03` in .mcd format in the `mcd_files` folder
+* *Control points dest.*: a new file for samples `10060928-SPECT-VAR-TIS-UNST-03` in the `control_points_posttransformation` folder
+* *Joint transform dest.*: a new file for sample `10060928-SPECT-VAR-TIS-UNST-03` in the `czi_to_mcd_transformation` folder
+* *Transform type*: Affine
+
+Here, we select 4 control points on both images and observe a residual error of 2.13.
+
+## Transforming the coordinates
+
+Directories
+
+Regex: [0-9]+-[A-Z]+-
+
+
+
+## Post-process the transformed coordinates
+
+
+```
+Rscript process/post_process.R ath/to/alignment_folder/csv_coordinates_transformed
+```
