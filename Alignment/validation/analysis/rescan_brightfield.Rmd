@@ -41,7 +41,7 @@ names(points_2) <- list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch202
 
 First, I will visualize the offset on the X and Y axis.
 
-```{r x-y-offset}
+```{r x-y-offset, fig.width=10}
 cur_df <- mapply(function(x, y, n){
   data.frame(dX = x$x_source - y$x_source,
              dY = x$y_source - y$y_source,
@@ -61,7 +61,7 @@ ggplot(cur_df) + geom_point(aes(dX, dY, color = sample)) +
 Now, we will visualize the euclidean distance between control points for each 
 sample.
 
-```{r euclidean-offset}
+```{r euclidean-offset, fig.width=10}
 cur_df <- mapply(function(x, y, n){
   data.frame(euclidean = sqrt((x$x_source - y$x_source)^2 + (x$y_source - y$y_source)^2),
              sample = n)
