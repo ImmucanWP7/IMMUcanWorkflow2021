@@ -97,5 +97,8 @@ ggplot(cur_df) + geom_point(aes(sample, euclidean, color = position)) +
 
 ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.character(point))) +
   theme(axis.text.x = element_blank())
+
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = rep)) +
+  theme(axis.text.x = element_blank())
 ```
 
