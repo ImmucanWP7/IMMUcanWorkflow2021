@@ -1,0 +1,101 @@
+---
+title: "Analyses to profile the wiggle room in the slidescanner"
+author: "Nils Eling"
+date: "2021-10-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+Here, we have rescanned one slide in different positions in the slide scanner.
+We now want to figure out if there are position-specific effects when
+rescanning slides.
+
+
+## Distance between control points
+
+In the first instance, I will compute the distance between the two control point
+sets of each scan.
+
+### Read in the data
+
+First, I will read in the control points of each set.
+
+```{r, message=FALSE}
+library(ggplot2)
+points_1 <- read.csv("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation/IMMUcan_WFLOW_Batch20210304_10069606-SPECT-VAR-TIS-01-IMC-01.csv")
+points_2 <- list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_offset_test/",
+                       full.names = TRUE)
+
+points_2 <- lapply(points_2, read.csv)
+names(points_2) <- list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_offset_test/",
+                       full.names = FALSE)
+```
+
+### Visualize X and Y offset
+
+First, I will visualize the offset on the X and Y axis.
+
+```{r x-y-offset, fig.width=10}
+library(ggplot2)
+cur_df <- mapply(function(x, n){
+  data.frame(dX = x$x_source - points_1$x_source,
+             dY = x$y_source - points_1$y_source,
+             sample = n,
+             point = seq_len(length(x$x_source)))
+}, points_2, names(points_2), SIMPLIFY = FALSE)
+
+cur_df <- do.call(rbind, cur_df)
+cur_df$slide <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[2]}))
+cur_df$position <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[3]}))
+cur_df$rep <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[4]}))
+
+ggplot(cur_df) + geom_point(aes(dX, dY, color = slide)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red")
+
+ggplot(cur_df) + geom_point(aes(dX, dY, color = position)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red")
+
+ggplot(cur_df) + geom_point(aes(dX, dY, color = rep)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red")
+
+ggplot(cur_df) + geom_point(aes(dX, dY, color = as.factor(point))) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red")
+```
+
+### Visualize the euclidean offset
+
+Now, we will visualize the euclidean distance between control points for each 
+sample.
+
+```{r euclidean-offset, fig.width=10}
+cur_df <- mapply(function(x, n){
+  data.frame(euclidean = sqrt((x$x_source - points_1$x_source)^2 + (x$y_source - points_1$y_source)^2),
+             sample = n,
+             point = seq_len(length(x$x_source)))
+}, points_2, names(points_2), SIMPLIFY = FALSE)
+
+cur_df <- do.call(rbind, cur_df)
+cur_df$slide <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[2]}))
+cur_df$position <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[3]}))
+cur_df$rep <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[4]}))
+
+
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = slide)) +
+  theme(axis.text.x = element_blank())
+
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = position)) +
+  theme(axis.text.x = element_blank())
+
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.character(point))) +
+  theme(axis.text.x = element_blank())
+```
+
