@@ -106,7 +106,7 @@ X_Y_df %>% filter(sample == post_transformation) %>%
   xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
   geom_hline(yintercept = 0, color = "dark red") + 
-  scale_fill_manual(values = col_vec) + theme_minimal()
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 15)
 
 X_Y_df %>% filter(sample == post_transformation) %>%
   ggplot() + geom_point(aes(dX, dY, fill = sample), 
@@ -114,12 +114,13 @@ X_Y_df %>% filter(sample == post_transformation) %>%
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
   geom_hline(yintercept = 0, color = "dark red") + 
-  scale_fill_manual(values = col_vec) + theme_minimal()
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 15)
 ```
 
-```{r euclidean-matched}
+```{r euclidean-matched, fig.height=5}
 euclidean_df %>% filter(sample == post_transformation) %>%
   ggplot() + geom_point(aes(sample, euclidean, color = as.factor(points))) +
+  theme_minimal(base_size = 15) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_blank()) + 
   geom_abline(slope = 0, intercept = 100, color = "dark red") 
@@ -130,14 +131,14 @@ euclidean_df %>% filter(sample == post_transformation) %>%
 Now, we iterate through different pos-transformation matrices and check how that 
 influences the offset.
 
-```{r x-y-different}
+```{r x-y-different, fig.height=15, fig.width=15}
 X_Y_df <- X_Y_df %>% mutate(matched = sample == post_transformation)
 ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = matched), 
                             shape = 21) + 
   xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
   geom_hline(yintercept = 0, color = "dark red") + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample)
 
 ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = matched), 
@@ -145,15 +146,15 @@ ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = match
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
   geom_hline(yintercept = 0, color = "dark red") + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample)
 ```
 
-```{r euclidean-different}
+```{r euclidean-different, fig.height=15, fig.width=15}
 euclidean_df <- euclidean_df %>% mutate(matched = sample == post_transformation)
 ggplot(euclidean_df) + geom_point(aes(post_transformation, euclidean, fill = post_transformation, size = matched), 
                             shape = 21) + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample) + theme(axis.text.x = element_blank()) +
   geom_abline(slope = 0, intercept = 100)
 ```

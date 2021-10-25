@@ -63,13 +63,14 @@ ggplot(cur_df) + geom_point(aes(dX, dY, fill = sample),
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
   geom_hline(yintercept = 0, color = "dark red") + 
-  scale_fill_manual(values = col_vec) + theme_minimal()
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 15)
 
 ggplot(cur_df) + geom_point(aes(dX, dY, fill = as.factor(point)),
                             shape = 21, size = 3) + 
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
-  geom_hline(yintercept = 0, color = "dark red")
+  geom_hline(yintercept = 0, color = "dark red") + 
+  theme_minimal(base_size = 15)
 ```
 
 ### Visualize the euclidean offset
@@ -77,7 +78,7 @@ ggplot(cur_df) + geom_point(aes(dX, dY, fill = as.factor(point)),
 Now, we will visualize the euclidean distance between control points for each 
 sample.
 
-```{r euclidean-offset, fig.width=10}
+```{r euclidean-offset, fig.height=7}
 cur_df <- mapply(function(x, y, n){
   data.frame(euclidean = sqrt((x$X - y$X)^2 + (x$Y - y$Y)^2),
              sample = n,
@@ -87,7 +88,9 @@ cur_df <- mapply(function(x, y, n){
 cur_df <- do.call(rbind, cur_df)
 
 ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.factor(point))) +
+  geom_abline(slope = 0, intercept = 100, color = "dark red") +
+  theme_minimal(base_size = 15) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
-        axis.title = element_blank())
+        axis.title = element_blank()) 
 ```
 

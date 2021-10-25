@@ -53,22 +53,22 @@ cur_df$rep <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[4]}))
 ggplot(cur_df) + geom_point(aes(dX, dY, color = slide)) + 
   xlim(c(-500, 500)) + ylim(c(-500,500)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
-  geom_hline(yintercept = 0, color = "dark red")
+  geom_hline(yintercept = 0, color = "dark red") + theme_minimal(base_size = 15)
 
 ggplot(cur_df) + geom_point(aes(dX, dY, color = position)) + 
   xlim(c(-500, 500)) + ylim(c(-500,500)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
-  geom_hline(yintercept = 0, color = "dark red")
+  geom_hline(yintercept = 0, color = "dark red") + theme_minimal(base_size = 15)
 
 ggplot(cur_df) + geom_point(aes(dX, dY, color = rep)) + 
   xlim(c(-500, 500)) + ylim(c(-500,500)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
-  geom_hline(yintercept = 0, color = "dark red")
+  geom_hline(yintercept = 0, color = "dark red") + theme_minimal(base_size = 15)
 
 ggplot(cur_df) + geom_point(aes(dX, dY, color = as.factor(point))) + 
   xlim(c(-500, 500)) + ylim(c(-500,500)) + 
   geom_vline(xintercept = 0, color = "dark red") + 
-  geom_hline(yintercept = 0, color = "dark red")
+  geom_hline(yintercept = 0, color = "dark red") + theme_minimal(base_size = 15)
 ```
 
 ### Visualize the euclidean offset
@@ -89,16 +89,16 @@ cur_df$position <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[3]}
 cur_df$rep <- unlist(lapply(strsplit(cur_df$sample, "_"), function(x){x[4]}))
 
 
-ggplot(cur_df) + geom_point(aes(sample, euclidean, color = slide)) +
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = slide)) + theme_minimal(base_size = 15) + 
   theme(axis.text.x = element_blank())
 
-ggplot(cur_df) + geom_point(aes(sample, euclidean, color = position)) +
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = position)) + theme_minimal(base_size = 15) +
   theme(axis.text.x = element_blank())
 
-ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.character(point))) +
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.character(point))) + theme_minimal(base_size = 15) +
   theme(axis.text.x = element_blank())
 
-ggplot(cur_df) + geom_point(aes(sample, euclidean, color = rep)) +
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = rep)) + theme_minimal(base_size = 15) +
   theme(axis.text.x = element_blank())
 ```
 

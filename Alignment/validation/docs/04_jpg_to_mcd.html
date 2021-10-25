@@ -401,7 +401,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -468,16 +468,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree48d1be8bb6dada4d11686ac9d322f0e9aa047f06targetblank48d1be8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/48d1be8bb6dada4d11686ac9d322f0e9aa047f06" target="_blank">48d1be8</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree33e2952c64211a12b8c3bc49aadf2f444c124317targetblank33e2952a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/33e2952c64211a12b8c3bc49aadf2f444c124317" target="_blank">33e2952</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree48d1be8bb6dada4d11686ac9d322f0e9aa047f06targetblank48d1be8a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree33e2952c64211a12b8c3bc49aadf2f444c124317targetblank33e2952a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/48d1be8bb6dada4d11686ac9d322f0e9aa047f06" target="_blank">48d1be8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/33e2952c64211a12b8c3bc49aadf2f444c124317" target="_blank">33e2952</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -489,19 +489,11 @@ Ignored files:
     Ignored:    Alignment/validation/.Rproj.user/
     Ignored:    Alignment/validation/analysis/.DS_Store
 
-Untracked files:
-    Untracked:  Alignment/validation/analysis/01_direct_alignment.Rmd
-    Untracked:  Alignment/validation/analysis/02_jpg_to_czi.Rmd
-    Untracked:  Alignment/validation/analysis/03_czi_to_mcd.Rmd
-    Untracked:  Alignment/validation/analysis/04_jpg_to_mcd.Rmd
-    Untracked:  Alignment/validation/analysis/05_offset_test.Rmd
-    Untracked:  Alignment/validation/analysis/06_rescan_brightfield.Rmd
-
 Unstaged changes:
-    Deleted:    Alignment/validation/analysis/about.Rmd
-    Deleted:    Alignment/validation/analysis/license.Rmd
-    Deleted:    Alignment/validation/analysis/offset_test.Rmd
-    Deleted:    Alignment/validation/analysis/rescan_brightfield.Rmd
+    Modified:   Alignment/validation/analysis/01_direct_alignment.Rmd
+    Modified:   Alignment/validation/analysis/02_jpg_to_czi.Rmd
+    Modified:   Alignment/validation/analysis/03_czi_to_mcd.Rmd
+    Modified:   Alignment/validation/analysis/04_jpg_to_mcd.Rmd
 
 </code></pre>
 <p>
@@ -514,9 +506,69 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>Alignment/validation/analysis/04_jpg_to_mcd.Rmd</code>) and HTML (<code>Alignment/validation/docs/04_jpg_to_mcd.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/analysis/04_jpg_to_mcd.Rmd" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+<td>
+Full scripts for alignment validation
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcan_workflow2021/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/04_jpg_to_mcd.html" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+<td>
+Full scripts for alignment validation
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -603,23 +655,135 @@ X_Y_df %&gt;% filter(sample == post_transformation) %&gt;%
   xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
   geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
   geom_hline(yintercept = 0, color = &quot;dark red&quot;) + 
-  scale_fill_manual(values = col_vec) + theme_minimal()</code></pre>
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 15)</code></pre>
 <p><img src="figure/04_jpg_to_mcd.Rmd/x-y-matched-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-x-y-matched-1">
+Past versions of x-y-matched-1.png
+</button>
+</p>
+<div id="fig-x-y-matched-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/x-y-matched-1.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>X_Y_df %&gt;% filter(sample == post_transformation) %&gt;%
   ggplot() + geom_point(aes(dX, dY, fill = sample), 
                             shape = 21, size = 3) + 
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
   geom_hline(yintercept = 0, color = &quot;dark red&quot;) + 
-  scale_fill_manual(values = col_vec) + theme_minimal()</code></pre>
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 15)</code></pre>
 <pre><code>Warning: Removed 2 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/04_jpg_to_mcd.Rmd/x-y-matched-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-x-y-matched-2">
+Past versions of x-y-matched-2.png
+</button>
+</p>
+<div id="fig-x-y-matched-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/x-y-matched-2.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>euclidean_df %&gt;% filter(sample == post_transformation) %&gt;%
   ggplot() + geom_point(aes(sample, euclidean, color = as.factor(points))) +
+  theme_minimal(base_size = 15) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         axis.title = element_blank()) + 
   geom_abline(slope = 0, intercept = 100, color = &quot;dark red&quot;) </code></pre>
 <p><img src="figure/04_jpg_to_mcd.Rmd/euclidean-matched-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-euclidean-matched-1">
+Past versions of euclidean-matched-1.png
+</button>
+</p>
+<div id="fig-euclidean-matched-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/euclidean-matched-1.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="different-post-transformation-matrix" class="section level2">
 <h2>Different post-transformation matrix</h2>
@@ -630,28 +794,139 @@ ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = match
   xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
   geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
   geom_hline(yintercept = 0, color = &quot;dark red&quot;) + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample)</code></pre>
 <pre><code>Warning: Using size for a discrete variable is not advised.</code></pre>
-<p><img src="figure/04_jpg_to_mcd.Rmd/x-y-different-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_jpg_to_mcd.Rmd/x-y-different-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-x-y-different-1">
+Past versions of x-y-different-1.png
+</button>
+</p>
+<div id="fig-x-y-different-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/x-y-different-1.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = matched), 
                             shape = 21) + 
   xlim(c(-400, 400)) + ylim(c(-400,400)) + 
   geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
   geom_hline(yintercept = 0, color = &quot;dark red&quot;) + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample)</code></pre>
 <pre><code>Warning: Using size for a discrete variable is not advised.</code></pre>
 <pre><code>Warning: Removed 43 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/04_jpg_to_mcd.Rmd/x-y-different-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_jpg_to_mcd.Rmd/x-y-different-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-x-y-different-2">
+Past versions of x-y-different-2.png
+</button>
+</p>
+<div id="fig-x-y-different-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/x-y-different-2.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>euclidean_df &lt;- euclidean_df %&gt;% mutate(matched = sample == post_transformation)
 ggplot(euclidean_df) + geom_point(aes(post_transformation, euclidean, fill = post_transformation, size = matched), 
                             shape = 21) + 
-  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  scale_fill_manual(values = col_vec) + theme_minimal(base_size = 20) + 
   facet_wrap(. ~ sample) + theme(axis.text.x = element_blank()) +
   geom_abline(slope = 0, intercept = 100)</code></pre>
 <pre><code>Warning: Using size for a discrete variable is not advised.</code></pre>
-<p><img src="figure/04_jpg_to_mcd.Rmd/euclidean-different-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/04_jpg_to_mcd.Rmd/euclidean-different-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-euclidean-different-1">
+Past versions of euclidean-different-1.png
+</button>
+</p>
+<div id="fig-euclidean-different-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/33e2952c64211a12b8c3bc49aadf2f444c124317/Alignment/validation/docs/figure/04_jpg_to_mcd.Rmd/euclidean-different-1.png" target="_blank">33e2952</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2021-10-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -684,18 +959,18 @@ loaded via a namespace (and not attached):
  [5] digest_0.6.28    utf8_1.2.2       R6_2.5.1         cellranger_1.1.0
  [9] backports_1.2.1  reprex_2.0.1     evaluate_0.14    highr_0.9       
 [13] httr_1.4.2       pillar_1.6.3     rlang_0.4.11     readxl_1.3.1    
-[17] rstudioapi_0.13  jquerylib_0.1.4  rmarkdown_2.11   labeling_0.4.2  
-[21] munsell_0.5.0    broom_0.7.9      compiler_4.1.0   httpuv_1.6.3    
-[25] modelr_0.1.8     xfun_0.26        pkgconfig_2.0.3  htmltools_0.5.2 
-[29] tidyselect_1.1.1 fansi_0.5.0      crayon_1.4.1     tzdb_0.1.2      
-[33] dbplyr_2.1.1     withr_2.4.2      later_1.3.0      grid_4.1.0      
-[37] jsonlite_1.7.2   gtable_0.3.0     lifecycle_1.0.1  DBI_1.1.1       
-[41] git2r_0.28.0     magrittr_2.0.1   scales_1.1.1     cli_3.0.1       
-[45] stringi_1.7.5    farver_2.1.0     fs_1.5.0         promises_1.2.0.1
-[49] xml2_1.3.2       bslib_0.3.1      ellipsis_0.3.2   generics_0.1.0  
-[53] vctrs_0.3.8      tools_4.1.0      glue_1.4.2       hms_1.1.1       
-[57] fastmap_1.1.0    yaml_2.2.1       colorspace_2.0-2 rvest_1.0.1     
-[61] knitr_1.36       haven_2.4.3      sass_0.4.0      </code></pre>
+[17] rstudioapi_0.13  whisker_0.4      jquerylib_0.1.4  rmarkdown_2.11  
+[21] labeling_0.4.2   munsell_0.5.0    broom_0.7.9      compiler_4.1.0  
+[25] httpuv_1.6.3     modelr_0.1.8     xfun_0.26        pkgconfig_2.0.3 
+[29] htmltools_0.5.2  tidyselect_1.1.1 fansi_0.5.0      crayon_1.4.1    
+[33] tzdb_0.1.2       dbplyr_2.1.1     withr_2.4.2      later_1.3.0     
+[37] grid_4.1.0       jsonlite_1.7.2   gtable_0.3.0     lifecycle_1.0.1 
+[41] DBI_1.1.1        git2r_0.28.0     magrittr_2.0.1   scales_1.1.1    
+[45] cli_3.0.1        stringi_1.7.5    farver_2.1.0     fs_1.5.0        
+[49] promises_1.2.0.1 xml2_1.3.2       bslib_0.3.1      ellipsis_0.3.2  
+[53] generics_0.1.0   vctrs_0.3.8      tools_4.1.0      glue_1.4.2      
+[57] hms_1.1.1        fastmap_1.1.0    yaml_2.2.1       colorspace_2.0-2
+[61] rvest_1.0.1      knitr_1.36       haven_2.4.3      sass_0.4.0      </code></pre>
 </div>
 </div>
 
