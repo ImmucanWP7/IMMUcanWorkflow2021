@@ -1,0 +1,162 @@
+---
+title: "Alignment from slidescanner to IMC"
+author: "Nils Eling"
+date: "2021-10-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+We will test the offset when aligning the IF images to slidescanner images
+plus using a post-transformation step into IMC coordinates.
+
+## Distance between control points
+
+We will assess the alignment efficiency based on the distance between validation
+points and the transformed points.
+
+### Read in the data
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+points_1 <- list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/validation_points_mcd/",
+                       full.names = TRUE)
+
+points_1 <- lapply(points_1, read.csv)
+names(points_1) <- sub("-.*$", "", list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/validation_points_mcd/",
+                       full.names = FALSE))
+
+transformed_points_list <- lapply(list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/",
+                                             pattern = "_100", full.names = TRUE),
+                                  list.files, full.names = TRUE)
+names(transformed_points_list) <- sub("transformed_points_jpg_to_mcd_", "",
+                                      list.files("/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/",
+                                             pattern = "_100"))
+transformed_points_list <- lapply(transformed_points_list, function(x){
+  cur_out <- lapply(x, read.csv)
+  names(cur_out) <- sub("-.*$", "", basename(x))
+  return(cur_out)
+})
+```
+
+### Define color vector
+
+Here, we will define a color vector for each sample and each point.
+
+```{r color-vector}
+library(RColorBrewer)
+col_vec <- brewer.pal(length(points_1), name = "Set3")
+names(col_vec) <- names(points_1)
+```
+
+### Calculate distances
+
+We will now calculate the X and Y offset as well as the euclidean distance between
+data points.
+
+```{r x-y-offset}
+X_Y_list <- list()
+
+for (i in names(transformed_points_list)) {
+  cur_list <- list()
+  for (j in names(transformed_points_list[[i]])) {
+    x <- points_1[[j]]
+    y <- transformed_points_list[[i]][[j]]
+    cur_list[[j]] <- data.frame(dX = x$X - y$X,
+                          dY = x$Y - y$Y,
+                          sample = j,
+                          post_transformation = i,
+                          points = seq_len(length(x$X)))
+  }
+  X_Y_list[[i]] <- cur_list
+}
+
+X_Y_df <- do.call("rbind", do.call("rbind", X_Y_list))
+```
+
+```{r euclidean-offset}
+euclidean_list <- list()
+
+for (i in names(transformed_points_list)) {
+  cur_list <- list()
+  for (j in names(transformed_points_list[[i]])) {
+    x <- points_1[[j]]
+    y <- transformed_points_list[[i]][[j]]
+    cur_list[[j]] <- data.frame(euclidean = sqrt((x$X - y$X)^2 + (x$Y - y$Y)^2),
+                          sample = j,
+                          post_transformation = i,
+                          points = seq_len(length(x$X)))
+  }
+  euclidean_list[[i]] <- cur_list
+}
+
+euclidean_df <- do.call("rbind", do.call("rbind", euclidean_list))
+```
+
+## Matched visualization
+
+We will first visualize the offset when using matched post-transformation matrices.
+
+```{r x-y-matched, message=FALSE}
+library(tidyverse)
+
+X_Y_df %>% filter(sample == post_transformation) %>%
+  ggplot() + geom_point(aes(dX, dY, fill = sample), 
+                            shape = 21, size = 3) + 
+  xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red") + 
+  scale_fill_manual(values = col_vec) + theme_minimal()
+
+X_Y_df %>% filter(sample == post_transformation) %>%
+  ggplot() + geom_point(aes(dX, dY, fill = sample), 
+                            shape = 21, size = 3) + 
+  xlim(c(-400, 400)) + ylim(c(-400,400)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red") + 
+  scale_fill_manual(values = col_vec) + theme_minimal()
+```
+
+```{r euclidean-matched}
+euclidean_df %>% filter(sample == post_transformation) %>%
+  ggplot() + geom_point(aes(sample, euclidean, color = as.factor(points))) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        axis.title = element_blank()) + 
+  geom_abline(slope = 0, intercept = 100, color = "dark red") 
+```
+
+## Different post-transformation matrix
+
+Now, we iterate through different pos-transformation matrices and check how that 
+influences the offset.
+
+```{r x-y-different}
+X_Y_df <- X_Y_df %>% mutate(matched = sample == post_transformation)
+ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = matched), 
+                            shape = 21) + 
+  xlim(c(-2000, 2000)) + ylim(c(-2000,2000)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red") + 
+  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  facet_wrap(. ~ sample)
+
+ggplot(X_Y_df) + geom_point(aes(dX, dY, fill = post_transformation, size = matched), 
+                            shape = 21) + 
+  xlim(c(-400, 400)) + ylim(c(-400,400)) + 
+  geom_vline(xintercept = 0, color = "dark red") + 
+  geom_hline(yintercept = 0, color = "dark red") + 
+  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  facet_wrap(. ~ sample)
+```
+
+```{r euclidean-different}
+euclidean_df <- euclidean_df %>% mutate(matched = sample == post_transformation)
+ggplot(euclidean_df) + geom_point(aes(post_transformation, euclidean, fill = post_transformation, size = matched), 
+                            shape = 21) + 
+  scale_fill_manual(values = col_vec) + theme_minimal() + 
+  facet_wrap(. ~ sample) + theme(axis.text.x = element_blank()) +
+  geom_abline(slope = 0, intercept = 100)
+```
+
+
+

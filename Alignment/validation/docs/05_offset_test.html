@@ -377,7 +377,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-10-18
+<strong>Last updated:</strong> 2021-10-25
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -401,7 +401,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -468,16 +468,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree21e26fecbb41ad55c1c7e6410f5ec809f37fd227targetblank21e26fea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/21e26fecbb41ad55c1c7e6410f5ec809f37fd227" target="_blank">21e26fe</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree48d1be8bb6dada4d11686ac9d322f0e9aa047f06targetblank48d1be8a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/48d1be8bb6dada4d11686ac9d322f0e9aa047f06" target="_blank">48d1be8</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree21e26fecbb41ad55c1c7e6410f5ec809f37fd227targetblank21e26fea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanworkflow2021tree48d1be8bb6dada4d11686ac9d322f0e9aa047f06targetblank48d1be8a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/21e26fecbb41ad55c1c7e6410f5ec809f37fd227" target="_blank">21e26fe</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/tree/48d1be8bb6dada4d11686ac9d322f0e9aa047f06" target="_blank">48d1be8</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -487,10 +487,21 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    Alignment/.DS_Store
     Ignored:    Alignment/validation/.Rproj.user/
+    Ignored:    Alignment/validation/analysis/.DS_Store
+
+Untracked files:
+    Untracked:  Alignment/validation/analysis/01_direct_alignment.Rmd
+    Untracked:  Alignment/validation/analysis/02_jpg_to_czi.Rmd
+    Untracked:  Alignment/validation/analysis/03_czi_to_mcd.Rmd
+    Untracked:  Alignment/validation/analysis/04_jpg_to_mcd.Rmd
+    Untracked:  Alignment/validation/analysis/05_offset_test.Rmd
+    Untracked:  Alignment/validation/analysis/06_rescan_brightfield.Rmd
 
 Unstaged changes:
-    Modified:   .gitignore
-    Modified:   Alignment/validation/analysis/rescan_brightfield.Rmd
+    Deleted:    Alignment/validation/analysis/about.Rmd
+    Deleted:    Alignment/validation/analysis/license.Rmd
+    Deleted:    Alignment/validation/analysis/offset_test.Rmd
+    Deleted:    Alignment/validation/analysis/rescan_brightfield.Rmd
 
 </code></pre>
 <p>
@@ -503,74 +514,14 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>Alignment/validation/analysis/rescan_brightfield.Rmd</code>) and HTML (<code>Alignment/validation/docs/rescan_brightfield.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/21e26fecbb41ad55c1c7e6410f5ec809f37fd227/Alignment/validation/analysis/rescan_brightfield.Rmd" target="_blank">21e26fe</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2021-10-18
-</td>
-<td>
-Start of validation repo
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcan_workflow2021/21e26fecbb41ad55c1c7e6410f5ec809f37fd227/Alignment/validation/docs/rescan_brightfield.html" target="_blank">21e26fe</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2021-10-18
-</td>
-<td>
-Start of validation repo
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<p>Here, we want to figure out how “constant” the transformation between brightfield images and the .mcds really is. For this, we have rescanned the slides for IMC using the slide scanner and re-computed the post-transformation.</p>
+<p>Here, we have rescanned one slide in different positions in the slide scanner. We now want to figure out if there are position-specific effects when rescanning slides.</p>
 <div id="distance-between-control-points" class="section level2">
 <h2>Distance between control points</h2>
 <p>In the first instance, I will compute the distance between the two control point sets of each scan.</p>
@@ -578,123 +529,78 @@ Start of validation repo
 <h3>Read in the data</h3>
 <p>First, I will read in the control points of each set.</p>
 <pre class="r"><code>library(ggplot2)
-points_1 &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation/&quot;,
+points_1 &lt;- read.csv(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation/IMMUcan_WFLOW_Batch20210304_10069606-SPECT-VAR-TIS-01-IMC-01.csv&quot;)
+points_2 &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_offset_test/&quot;,
                        full.names = TRUE)
-points_2 &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_2/&quot;,
-                       full.names = TRUE)
-
-points_1 &lt;- lapply(points_1, read.csv)
-names(points_1) &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation/&quot;,
-                       full.names = FALSE)
 
 points_2 &lt;- lapply(points_2, read.csv)
-names(points_2) &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_2/&quot;,
+names(points_2) &lt;- list.files(&quot;/Volumes/immucan_volume/raw_data/Panel_1/Batch20210304_workflow_paper/IF_regions_validations/control_points_posttransformation_offset_test/&quot;,
                        full.names = FALSE)</code></pre>
 </div>
 <div id="visualize-x-and-y-offset" class="section level3">
 <h3>Visualize X and Y offset</h3>
 <p>First, I will visualize the offset on the X and Y axis.</p>
-<pre class="r"><code>cur_df &lt;- mapply(function(x, y, n){
-  data.frame(dX = x$x_source - y$x_source,
-             dY = x$y_source - y$y_source,
-             sample = n)
-}, points_1, points_2, names(points_1), SIMPLIFY = FALSE)
+<pre class="r"><code>library(ggplot2)
+cur_df &lt;- mapply(function(x, n){
+  data.frame(dX = x$x_source - points_1$x_source,
+             dY = x$y_source - points_1$y_source,
+             sample = n,
+             point = seq_len(length(x$x_source)))
+}, points_2, names(points_2), SIMPLIFY = FALSE)
 
 cur_df &lt;- do.call(rbind, cur_df)
+cur_df$slide &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[2]}))
+cur_df$position &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[3]}))
+cur_df$rep &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[4]}))
 
-ggplot(cur_df) + geom_point(aes(dX, dY, color = sample)) + 
-  xlim(c(-400, 400)) + ylim(c(-400,400)) + 
+ggplot(cur_df) + geom_point(aes(dX, dY, color = slide)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
   geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
   geom_hline(yintercept = 0, color = &quot;dark red&quot;)</code></pre>
-<p><img src="figure/rescan_brightfield.Rmd/x-y-offset-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-x-y-offset-1">
-Past versions of x-y-offset-1.png
-</button>
-</p>
-<div id="fig-x-y-offset-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/21e26fecbb41ad55c1c7e6410f5ec809f37fd227/Alignment/validation/docs/figure/rescan_brightfield.Rmd/x-y-offset-1.png" target="_blank">21e26fe</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2021-10-18
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/05_offset_test.Rmd/x-y-offset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(dX, dY, color = position)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
+  geom_hline(yintercept = 0, color = &quot;dark red&quot;)</code></pre>
+<p><img src="figure/05_offset_test.Rmd/x-y-offset-2.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(dX, dY, color = rep)) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
+  geom_hline(yintercept = 0, color = &quot;dark red&quot;)</code></pre>
+<p><img src="figure/05_offset_test.Rmd/x-y-offset-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(dX, dY, color = as.factor(point))) + 
+  xlim(c(-500, 500)) + ylim(c(-500,500)) + 
+  geom_vline(xintercept = 0, color = &quot;dark red&quot;) + 
+  geom_hline(yintercept = 0, color = &quot;dark red&quot;)</code></pre>
+<p><img src="figure/05_offset_test.Rmd/x-y-offset-4.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="visualize-the-euclidean-offset" class="section level3">
 <h3>Visualize the euclidean offset</h3>
 <p>Now, we will visualize the euclidean distance between control points for each sample.</p>
-<pre class="r"><code>cur_df &lt;- mapply(function(x, y, n){
-  data.frame(euclidean = sqrt((x$x_source - y$x_source)^2 + (x$y_source - y$y_source)^2),
-             sample = n)
-}, points_1, points_2, names(points_1), SIMPLIFY = FALSE)
+<pre class="r"><code>cur_df &lt;- mapply(function(x, n){
+  data.frame(euclidean = sqrt((x$x_source - points_1$x_source)^2 + (x$y_source - points_1$y_source)^2),
+             sample = n,
+             point = seq_len(length(x$x_source)))
+}, points_2, names(points_2), SIMPLIFY = FALSE)
 
 cur_df &lt;- do.call(rbind, cur_df)
+cur_df$slide &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[2]}))
+cur_df$position &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[3]}))
+cur_df$rep &lt;- unlist(lapply(strsplit(cur_df$sample, &quot;_&quot;), function(x){x[4]}))
 
-ggplot(cur_df) + geom_point(aes(sample, euclidean, color = sample)) +
+
+ggplot(cur_df) + geom_point(aes(sample, euclidean, color = slide)) +
   theme(axis.text.x = element_blank())</code></pre>
-<p><img src="figure/rescan_brightfield.Rmd/euclidean-offset-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-euclidean-offset-1">
-Past versions of euclidean-offset-1.png
-</button>
-</p>
-<div id="fig-euclidean-offset-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcan_workflow2021/blob/21e26fecbb41ad55c1c7e6410f5ec809f37fd227/Alignment/validation/docs/figure/rescan_brightfield.Rmd/euclidean-offset-1.png" target="_blank">21e26fe</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2021-10-18
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/05_offset_test.Rmd/euclidean-offset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(sample, euclidean, color = position)) +
+  theme(axis.text.x = element_blank())</code></pre>
+<p><img src="figure/05_offset_test.Rmd/euclidean-offset-2.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(sample, euclidean, color = as.character(point))) +
+  theme(axis.text.x = element_blank())</code></pre>
+<p><img src="figure/05_offset_test.Rmd/euclidean-offset-3.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(cur_df) + geom_point(aes(sample, euclidean, color = rep)) +
+  theme(axis.text.x = element_blank())</code></pre>
+<p><img src="figure/05_offset_test.Rmd/euclidean-offset-4.png" width="960" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -730,10 +636,10 @@ loaded via a namespace (and not attached):
 [25] knitr_1.36       generics_0.1.0   fs_1.5.0         vctrs_0.3.8     
 [29] sass_0.4.0       tidyselect_1.1.1 rprojroot_2.0.2  grid_4.1.0      
 [33] glue_1.4.2       R6_2.5.1         fansi_0.5.0      rmarkdown_2.11  
-[37] farver_2.1.0     purrr_0.3.4      magrittr_2.0.1   whisker_0.4     
-[41] scales_1.1.1     promises_1.2.0.1 ellipsis_0.3.2   htmltools_0.5.2 
-[45] assertthat_0.2.1 colorspace_2.0-2 httpuv_1.6.3     labeling_0.4.2  
-[49] utf8_1.2.2       stringi_1.7.5    munsell_0.5.0    crayon_1.4.1    </code></pre>
+[37] farver_2.1.0     purrr_0.3.4      magrittr_2.0.1   scales_1.1.1    
+[41] promises_1.2.0.1 ellipsis_0.3.2   htmltools_0.5.2  assertthat_0.2.1
+[45] colorspace_2.0-2 httpuv_1.6.3     labeling_0.4.2   utf8_1.2.2      
+[49] stringi_1.7.5    munsell_0.5.0    crayon_1.4.1    </code></pre>
 </div>
 </div>
 </div>
