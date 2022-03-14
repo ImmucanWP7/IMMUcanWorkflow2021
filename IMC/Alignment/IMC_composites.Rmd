@@ -1,0 +1,50 @@
+---
+title: "IMC composites"
+author: "Nils Eling"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Here, we prepare IMC composites to find excatly these regions on the mIF images.
+
+## Read data and libraries
+
+We will first load the needed libraries and data.
+
+```{r read-data, message=FALSE}
+library(cytomapper)
+
+all_images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/")
+panel <- read.csv("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/panel.csv")
+channelNames(all_images) <- panel$name
+```
+
+## Create composite images
+
+```{r create-composites}
+all_images <- normalize(all_images, inputRange = list(Ecad = c(0,50), CD163 = c(0,5), CD45RA = c(0,10), CD45RO = c(0,50), DNA1 = c(0,100)))
+
+out <- plotPixels(all_images,
+           colour_by = c("CD163", "Ecad", "CD45RA", "CD45RO", "DNA1"),
+           colour = list(CD163 = c("black", "red"),
+                         Ecad = c("black", "green"),
+                         CD45RA = c("black", "yellow"),
+                         CD45RO = c("black", "yellow"),
+                         DNA1 = c("black", "blue")),
+           scale_bar = NULL,
+           image_title = NULL,
+           return_images = TRUE)
+
+lapply(names(out$images), function(x){
+    cur_image <- out$images[[x]]
+    writeImage(rotate(cur_image, angle = 180), paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/IMC_composites/", x, ".tiff"))
+})
+```
+
+```{r sessionInfo}
+sessionInfo()
+```
