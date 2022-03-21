@@ -39,6 +39,12 @@ sce <- read_steinbock("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKF
 sce$image <- paste0(sce$sample_id, ".tiff")
 sce$patient_id <- str_extract(sce$image, "[0-9]{8}")
 assay(sce, "exprs") <- asinh(counts(sce))
+
+# Add column names
+colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
+
+# Specify interesting channels
+rowData(sce)$use_channel <- !grepl("DNA|HistoneH3", rownames(sce))
 ```
 
 ## Image-level metadata
@@ -56,6 +62,8 @@ all.equal(paste(cell_meta$image, cell_meta$ObjectNumber),
           paste(sce$image, sce$ObjectNumber))
 
 colData(sce) <- cell_meta
+
+sce$ROI <- file_path_sans_ext(str_split(sce$image, "_", simplify = TRUE)[,5])
 ```
 
 ## Generate colour vectors
@@ -74,8 +82,8 @@ names(col_vec_patientIds) <- unique(sce$patient_id)
 col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
 names(col_vec_ROIs) <- unique(sce$ROI)
 
-col_vec_indication <- c(GU = "#5B1C55", HN = "#39BEB4", THOR = "#F79C1D", 
-                        BREAS = "#3F85A7", GI = "#C81F43")
+col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
+                        BCC = "#3F85A7", RCC = "#C81F43")
 
 colour_vectors$PatientIds <- col_vec_patientIds
 colour_vectors$ROIs <- col_vec_ROIs
