@@ -52,10 +52,10 @@ We can now highlight samples that were more difficult to integrate than others.
 
 ```{r integration-QC}
 merge_info <- metadata(out)$merge.info 
-data.table(left = merge_info$left,
+datatable(data.frame(DataFrame(left = merge_info$left,
           right = merge_info$right,
           batch.size = merge_info$batch.size,
-          max_lost_var = rowMax(merge_info$lost.var))
+          max_lost_var = rowMax(merge_info$lost.var))))
 ```
 
 ## Visualize corrected cells
