@@ -1,0 +1,42 @@
+---
+title: "Sample effect corrections"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Here, we will manually label cells based on their cell type. This is done
+based on the labelling scheme in ...
+
+## Load data
+
+First, we will load the previously generated `SingleCellExperiment` and 
+`CytoImageList` objects.
+
+```{r laod-data, message=FALSE}
+library(cytomapper)
+
+sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+masks <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
+```
+
+## Label images
+
+We will now label cells on images and save them. 
+
+```{r label-images, message=FALSE}
+if (interactive()) {
+  cytomapperShiny(object = sce, mask = masks, image = images,
+                  cell_id = "ObjectNumber", img_id = "sample_id")
+}
+```
+

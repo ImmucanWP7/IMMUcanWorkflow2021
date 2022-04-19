@@ -25,6 +25,7 @@ library(S4Vectors)
 library(SingleCellExperiment)
 library(tidyverse)
 library(imcRtools)
+library(tools)
 ```
 
 # Read in the single-cell data
@@ -39,9 +40,6 @@ sce <- read_steinbock("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKF
 sce$image <- paste0(sce$sample_id, ".tiff")
 sce$patient_id <- str_extract(sce$image, "[0-9]{8}")
 assay(sce, "exprs") <- asinh(counts(sce))
-
-# Add column names
-colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
 
 # Specify interesting channels
 rowData(sce)$use_channel <- !grepl("DNA|HistoneH3", rownames(sce))
@@ -98,7 +96,7 @@ metadata(sce)$colour_vectors <- colour_vectors
 Finally, for easy accessability, we will write the SCE object out.
 The object will be stored on the server so that everyone can work with it.
 
-```{r save-RDS}
+```{r save-RDS, warning=FALSE}
 dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/")
 saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```
@@ -107,7 +105,7 @@ saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/R
 
 Here, we read in the images and masks and save them on disk.
 
-```{r read-images, message = FALSE}
+```{r read-images, message = FALSE, warning=FALSE}
 dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/")
 dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/images")
 dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks")
@@ -118,6 +116,8 @@ images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFL
 masks <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/masks/", on_disk = TRUE, 
                      h5FilesPath = "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks",
                     as.is = TRUE)
+
+channelNames(images) <- rownames(sce)
 
 mcols(images) <- mcols(masks) <- DataFrame(image = names(images))
 

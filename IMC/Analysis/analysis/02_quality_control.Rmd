@@ -58,7 +58,10 @@ colData(sce) %>%
 We will now observe the distribution of cell sizes across all images.
 
 ```{r cell-size, message=FALSE, fig.height=10, fig.width=10}
-dittoPlot(sce, var = "area", group.by = "ROI", split.by = "patient_id", 
+# Add column names
+colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
+
+dittoPlot(sce, var = "area", group.by = "image",  
           plots = "ridgeplot", color.panel = metadata(sce)$colour_vectors$ROIs) 
 
 summary(sce$area)
