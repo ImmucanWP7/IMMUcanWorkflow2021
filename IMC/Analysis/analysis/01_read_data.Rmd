@@ -119,7 +119,8 @@ masks <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLO
 
 channelNames(images) <- rownames(sce)
 
-mcols(images) <- mcols(masks) <- DataFrame(image = names(images))
+mcols(images) <- mcols(masks) <- DataFrame(image = names(images),
+                                           sample_id = sub(".tiff", "", names(images)))
 
 saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
 saveRDS(masks, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
