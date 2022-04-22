@@ -1,0 +1,348 @@
+---
+title: "Train random forrest classifier"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script, we will train a random forest classifier.
+
+# Read in data 
+
+First, we will read in the SingleCellExperiment object and load all libraries.
+
+```{r read-sce, message = FALSE}
+library(caret)
+library(scater)
+library(tidyverse)
+library(dittoSeq)
+library(viridis)
+library(doParallel)
+
+sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+```
+
+# Random Forrest Training
+
+After quality control, we will now use a random forest classifier to classify the remaining cells in the dataset. 
+First, we will split the dataset into labelled and unlabelled data.
+
+```{r split-labelled}
+lab_sce <- sce[,sce$cell_labels != "unlabelled"]
+unlab_sce <- sce[,sce$cell_labels == "unlabelled"]
+```
+
+## Splitting across all samples
+
+We will split the labelled data based on their cell-types.
+
+### Train and validate the classifier
+
+We will first split the labelled data into training and test (validation) data at a ratio of 75/25 train/test.
+
+```{r split-data}
+set.seed(1234)
+trainIndex <- createDataPartition(factor(lab_sce$cell_labels), p = 0.75)
+train_sce <- lab_sce[,trainIndex$Resample1]
+test_sce <- lab_sce[,-trainIndex$Resample1]
+```
+
+Here, we will first use a 5-fold cross-validation by partitioning the data randomly across the full dataset.
+We will also use parallel processing for time reasons.
+For the `randomForrest` classifier, we need to tune the `mtry` parameter - the number of variables sampled for each split.
+We will also add the indication as dummy variable.
+
+```{r train-model, message = FALSE}
+# Define seeds for parallel processing
+# Per iteration, we evaluate 10 models while tuning mtry
+set.seed(222)
+seeds <- vector(mode = "list", length = 6)
+for (i in 1:5) {
+  seeds[[i]] <- sample(5000, 5)
+}
+seeds[[6]] <- sample(5000, 1)
+
+fitControl <- trainControl(method = "cv",
+                           number = 5,
+                           seeds = seeds)
+
+cl <- makePSOCKcluster(6, setup_strategy = "sequential")
+registerDoParallel(cl)
+
+# Add dummy variables
+cur_mat <- t(assay(train_sce, "exprs")[!grepl("DNA|Histone", rownames(train_sce)),])
+
+dummies <- dummyVars(sample_id ~ indication, data = colData(train_sce))
+all_dummies <- predict(dummies, newdata = colData(train_sce))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+set.seed(1234)
+rffit <- train(x = cur_mat, 
+               y = factor(train_sce$cell_labels),
+               method = "rf", ntree = 1000,
+               tuneLength = 5,
+               trControl = fitControl)
+stopCluster(cl)
+
+rffit
+
+saveRDS(rffit,file = "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/rf_classifier.rds")
+```
+
+We will now have a look at the accuracy measures over iterations.
+The only parameter that has been tuned is `mtry`.
+
+```{r accuracy}
+ggplot(rffit) + 
+  geom_errorbar(data = rffit$results,
+                aes(ymin = Accuracy - AccuracySD,
+                    ymax = Accuracy + AccuracySD),
+                width = 0.4)
+```
+
+We can also compute the confusion matrix:
+
+```{r confusion-matrix}
+confusionMatrix(rffit)
+```
+
+We will also look at the variable importance.
+
+```{r variable-importance, fig.height = 15}
+cur_varImp <- varImp(rffit)
+plot(cur_varImp)
+```
+
+Finally, we will validate the model using the test data.
+
+```{r model-testing}
+# Add dummy variables
+cur_mat <- t(assay(test_sce, "exprs")[!grepl("DNA|Histone", rownames(test_sce)),])
+
+dummies <- dummyVars(sample_id ~ indication, data = colData(test_sce))
+all_dummies <- predict(dummies, newdata = colData(test_sce))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat)
+
+cm <- confusionMatrix(data = cur_pred, 
+                      reference = factor(test_sce$layer_1_gated), 
+                      mode = "everything")
+cm
+
+data.frame(cm$byClass) %>%
+  mutate(class = sub("Class: ", "", rownames(cm$byClass))) %>%
+  ggplot() + 
+  geom_point(aes(1 - Specificity, Sensitivity, 
+                 size = Detection.Rate,
+                 fill = class),
+             shape = 21) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$layer_1) + 
+  theme_bw() + 
+  ylab("Sensitivity (TPR)") +
+  xlab("1 - Specificity (FPR)")
+```
+
+We will also observe the distribution of classification probabilities per image and class:
+
+```{r prediciton-probability, fig.width = 15}
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat, 
+                    type = "prob")
+cur_pred$truth <- factor(test_sce$layer_1_gated)
+
+cur_pred %>%
+  pivot_longer(cols = B_cell:Tumor) %>%
+  ggplot() +
+  geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
+  facet_wrap(. ~ truth) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$layer_1) +
+  theme(panel.background = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# Predicting new data
+
+Finally, we will predict the labels of all other cells.
+For cell-type classification, we will use the method that was trained across all images. 
+
+```{r predict-cells}
+# Add dummy variables
+cur_mat <- t(assay(unlab_sce, "exprs")[!grepl("DNA|Histone", rownames(unlab_sce)),])
+
+dummies <- dummyVars(SampleId ~ Indication, data = colData(unlab_sce))
+all_dummies <- predict(dummies, newdata = colData(unlab_sce))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cell_labels.class <- as.character(predict.train(rffit, 
+              newdata = cur_mat, 
+              type = "raw"))
+names(cell_labels.class) <- rownames(cur_mat)
+cell_labels.prob <- predict.train(rffit, 
+              newdata = cur_mat, 
+              type = "prob")
+```
+
+Store predictions in SCE object.
+We will not overwrite the labels of the already labelled cells.
+
+```{r store-predictions}
+cell_labels <- sce$layer_1_gated
+cell_labels[colnames(unlab_sce)] <- cell_labels.class
+
+sce$celltypes_layer1 <- cell_labels 
+```
+
+# Visualization
+
+Here, we will visualize the predicted cell-types and their associated classification probabilities per indication.
+
+## Using reduced dimensions
+
+First, we will plot the class labels on the batch corrected tSNEs.
+
+```{r red-dim-visualization-classlabels, message = FALSE, warning = FALSE}
+sce_files <- list.files(paste0(mount_path, 
+                      "processed_data/Panel_1/Batch20201113/IMMUcan_Batch20201113_panel_1_1_1.09/Rout/data"),
+                      pattern = "_sce.rds",
+                      full.names = TRUE)
+
+for(i in seq_along(sce_files)){
+    cur_sce <- readRDS(sce_files[i])
+    
+        if("TSNE_mnnCorrected" %in% reducedDimNames(cur_sce)) {
+          
+    cur_sce$celltypes_layer1 <- sce$celltypes_layer1[colnames(cur_sce)]
+  
+    print(dittoDimPlot(cur_sce, 
+             var = "celltypes_layer1", reduction.use = "TSNE_mnnCorrected", size = 0.5, 
+              color.panel = metadata(sce)$colour_vectors$layer_1, 
+             main = paste("Cell types classified,", unique(cur_sce$Indication)))) 
+    
+    cur_probs <- cell_labels.prob[colnames(cur_sce),]
+    cur_class <- cell_labels.class[colnames(cur_sce)]
+    
+    for(j in colnames(cur_probs)){
+        cur_df <- data.frame(tSNE1 = reducedDim(cur_sce, "TSNE_mnnCorrected")[,1],
+                    tSNE2 = reducedDim(cur_sce, "TSNE_mnnCorrected")[,2],
+                    prob = cur_probs[,j])
+
+        p <- ggplot() + geom_point(aes(tSNE1, tSNE2, color = prob), data = cur_df[cur_df$prob <= 0.5,],
+                        size = 1) +
+                    geom_point(aes(tSNE1, tSNE2, color = prob), data = cur_df[cur_df$prob > 0.5,],
+                        size = 0.5) + 
+                  scale_colour_viridis(name = paste(j, "probability")) +
+          theme(panel.background = element_blank()) +
+          ggtitle(unique(cur_sce$Indication))
+        
+        print(p)
+    }
+    
+    # Save object
+    cur_name <- unlist(str_split(sce_files[i], "/"))
+    cur_name <- cur_name[length(cur_name)]
+    saveRDS(cur_sce, paste0(mount_path, 
+                      "processed_data/Panel_1/Batch20201113/IMMUcan_Batch20201113_panel_1_1_1.09/Rout/data/", 
+                      cur_name))
+        }
+
+    else {
+      cur_sce$celltypes_layer1 <- sce$celltypes_layer1[colnames(cur_sce)]
+  
+    print(dittoDimPlot(cur_sce, 
+             var = "celltypes_layer1", reduction.use = "TSNE", size = 0.5, 
+              color.panel = metadata(sce)$colour_vectors$layer_1, 
+             main = paste("Cell types classified,", unique(cur_sce$Indication)))) 
+    
+    cur_probs <- cell_labels.prob[colnames(cur_sce),]
+    cur_class <- cell_labels.class[colnames(cur_sce)]
+    
+    for(j in colnames(cur_probs)){
+        cur_df <- data.frame(tSNE1 = reducedDim(cur_sce, "TSNE")[,1],
+                    tSNE2 = reducedDim(cur_sce, "TSNE")[,2],
+                    prob = cur_probs[,j])
+
+        p <- ggplot() + geom_point(aes(tSNE1, tSNE2, color = prob), data = cur_df[cur_df$prob <= 0.5,],
+                        size = 1) +
+                    geom_point(aes(tSNE1, tSNE2, color = prob), data = cur_df[cur_df$prob > 0.5,],
+                        size = 0.5) + 
+                  scale_colour_viridis(name = paste(j, "probability")) +
+          theme(panel.background = element_blank()) +
+          ggtitle(unique(cur_sce$Indication))
+        
+        print(p)
+    }
+    
+    # Save object
+    cur_name <- unlist(str_split(sce_files[i], "/"))
+    cur_name <- cur_name[length(cur_name)]
+    saveRDS(cur_sce, paste0(mount_path, 
+                      "processed_data/Panel_1/Batch20201113/IMMUcan_Batch20201113_panel_1_1_1.09/Rout/data/", 
+                      cur_name))
+    }
+}
+```
+
+## Visualization of marker expression
+
+Finally, we will visualize the marker expression per cell type using the classified cells.
+
+```{r heatmap-visualization}
+unlab_sce <- sce[,sce$layer_1_gated == "unlabelled"]
+agr_sce <- aggregateAcrossCells(unlab_sce, 
+                                ids = colData(unlab_sce)[,c("SampleId", "celltypes_layer1")], 
+                                statistics = "mean")
+assay(agr_sce, "exprs") <- asinh(counts(agr_sce))
+colnames(agr_sce) <- paste0(agr_sce$SampleId, "_", agr_sce$celltypes_layer1)
+
+# Define markers that were used for gating
+cur_markers <- c("Ecad", "CarbonicAnhydrase", "Ki67", "CD14", "HLADR", 
+                 "CD11c", "CD163", "CD303", "CD68", "CD15", "MPO", "CD38",
+                 "SMA", "PDGFRb", "CD20", "CD7", "CD3", "CD8a", "CD4", "GrzB", "FOXP3", "PD1", "LAG3")
+
+# Non-scaled
+dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
+            annot.by = c("SampleId", "celltypes_layer1", "Indication"), 
+            order.by = "celltypes_layer1", cluster_rows = FALSE,
+            scale = "none", heatmap.colors = viridis(100), 
+            annotation_colors = list(SampleId = metadata(sce)$colour_vectors$SampleId,
+                                     celltypes_layer1 = metadata(sce)$colour_vectors$layer_1,
+                                     Indication = metadata(sce)$colour_vectors$Indication))
+
+# Centered and scaled
+dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
+            annot.by = c("SampleId", "celltypes_layer1", "Indication"), 
+            order.by = "celltypes_layer1", cluster_rows = FALSE,
+            annotation_colors = list(SampleId = metadata(sce)$colour_vectors$SampleId,
+                                     celltypes_layer1 = metadata(sce)$colour_vectors$layer_1,
+                                     Indication = metadata(sce)$colour_vectors$Indication),
+            heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+            breaks = seq(-3, 3, length.out = 101))
+```
+
+# Save RDS
+
+```{r saveRDS}
+saveRDS(sce, paste0(mount_path,
+                    "processed_data/Panel_1/Batch20201113/IMMUcan_Batch20201113_panel_1_1_1.09/Rout/data/sce.rds"))
+
+# create data frame with class and probabilities and save as csv.
+layer_1_dat <- as.data.frame(cell_labels.prob)
+
+layer_1_dat$class <- cell_labels.class
+
+write.csv(layer_1_dat, 
+          file = paste0(mount_path,"processed_data/Panel_1/Batch20201113/IMMUcan_Batch20201113_panel_1_1_1.09/Rout/data/layer_1_classification.csv"))
+```
