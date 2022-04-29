@@ -163,6 +163,13 @@ markers[["Tumor"]] <- c("Ecad", "CarbonicAnhydrase")
 Normalize the images.
 
 ```{r normalize}
+# Exclude images
+images <- images[!grepl("10072131|10074350", names(images))]
+masks <- masks[!grepl("10072131|10074350", names(masks))]
+
+images <- CytoImageList(images, on_disk = FALSE)
+masks <- CytoImageList(masks, on_disk = FALSE)
+
 images <- normalize(images, separateImages = TRUE)
 images <- normalize(images, separateImages = TRUE, 
                         inputRange = c(0, 0.2))
@@ -216,5 +223,5 @@ for(j in unique(sce$celltypes)){
 # Save RDS
 
 ```{r saveRDS}
-#saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```

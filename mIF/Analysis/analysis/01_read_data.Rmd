@@ -1,0 +1,39 @@
+---
+title: "Quality control"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script, we will read in the mIF data.
+
+## Load data
+
+We will read in the tsv files that contain cells from the same region as 
+the IMC acquisition and store them in `SingleCellExperiment` objects.
+
+```{r load-data, message=FALSE}
+library(SingleCellExperiment)
+
+cur_files <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration/",
+                        recursive = TRUE, pattern = ".tsv$", full.names = TRUE)
+
+cur_sces <- lapply(cur_files, function(x){
+  cur_data <- read.csv(x, sep = "\t")
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  rownames(cur_counts) <- rownames(cur_raw) 
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+})
+```
+
+
