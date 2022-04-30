@@ -14,3 +14,96 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 In this script, we will compare the celltypes observed in mIF with those in IMC.
+
+## Load data
+
+First, we will read in the `SingleCellExperiment` objects storing the IMC and 
+IF data.
+
+```{r read-data, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+## Number of cells
+
+First, we will observe the number of cells per image.
+
+```{r number-of cells}
+no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+
+combined_df <- merge(no_IMC, no_mIF, by="sample_id", sort=FALSE)
+combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+
+# With patient as covariate
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y, color = patient_id), method='lm', formula= y~x,
+              fullrange=FALSE, se= FALSE) + 
+  theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+```
+
+## Cell type fractions
+
+Next, we will compare the cell type fractions between the technologies.
+
+```{r celltype-fractions, fig.width=10, fig.height=10}
+# Match cell types
+cur_mIF <- colData(sce_mIF)
+mIF_celltypes <- cur_mIF$celltype
+mIF_celltypes[grepl("Tumor", mIF_celltypes)] <- "Tumor"
+mIF_celltypes[is.na(mIF_celltypes)] <- "Tcell"
+cur_mIF$celltype <- mIF_celltypes
+
+cur_IMC <- colData(sce_IMC)
+IMC_celltypes <- cur_IMC$celltypes
+IMC_celltypes[IMC_celltypes %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")] <- "other"
+IMC_celltypes[IMC_celltypes %in% c("Treg", "CD4", "CD8")] <- "Tcell"
+IMC_celltypes[IMC_celltypes %in% c("BnCD4", "BnCD8")] <- "BnTcell"
+IMC_celltypes[IMC_celltypes == "B_cell"] <- "Bcell"
+cur_IMC$celltype <- IMC_celltypes
+
+frac_IMC <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_mIF <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+combined_df <- merge(frac_IMC, frac_mIF, by=c("sample_id", "celltype"), sort=FALSE)
+combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+
+ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + facet_wrap(.~celltype, scales = "free")
+
+ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + facet_wrap(.~celltype, scales = "free")
+```
+
+## Marker expression
