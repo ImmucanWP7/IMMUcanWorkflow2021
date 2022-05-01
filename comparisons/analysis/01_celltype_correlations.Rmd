@@ -81,12 +81,12 @@ IMC_celltypes[IMC_celltypes == "B_cell"] <- "Bcell"
 cur_IMC$celltype <- IMC_celltypes
 
 frac_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, celltype) %>%
+  group_by(sample_id, celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
 frac_mIF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, celltype) %>%
+  group_by(sample_id, celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
@@ -106,4 +106,82 @@ ggplot(combined_df) +
   theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + facet_wrap(.~celltype, scales = "free")
 ```
 
+We will also now compute the correlation coefficients.
+
+```{r correlation}
+combined_df %>%
+  group_by(celltype) %>%
+  mutate(cor_all = cor(frac.x, frac.y)) %>%
+  ungroup() %>%
+  group_by(celltype, patient_id) %>%
+  summarize(cor = cor(frac.x, frac.y),
+            cor_all = mean(cor_all)) %>%
+  ggplot() +
+    geom_boxplot(aes(celltype, cor)) +
+    geom_point(aes(celltype, cor, color = patient_id)) +
+    geom_point(aes(celltype, cor_all), color = "dark red", size = 3)
+```
+
+
+And fit linear models
+
 ## Marker expression
+
+Here, we will min-max scale the marker expression per image and compare binned rank averages.
+
+```{r binned-ranks}
+cur_IMC <-  lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == k]
+  cur_sce_IMC <- cur_sce_IMC[c("CD15", "Ecad", "CD3", "CD11c", "CD20", "CD163"),]
+  rownames(cur_sce_IMC) <- c("CD15", "CK", "CD3", "CD11c", "CD20", "CD163")
+  assay(cur_sce_IMC, "scaled") <- (assay(cur_sce_IMC, "exprs") - 
+                                     rowMin(assay(cur_sce_IMC, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_IMC, "exprs")) - 
+                                     rowMin(assay(cur_sce_IMC, "exprs")))
+  
+  cur_aggr_IMC <- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IMC <- assay(cur_sce_IMC, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_IMC, by = list(ntile(cur_marker_IMC, 100)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_IMC <- do.call(rbind, cur_aggr_IMC)
+  cur_aggr_IMC$sample_id <- k 
+  
+  return(cur_aggr_IMC)
+})
+cur_IMC <- do.call(rbind, cur_IMC)
+
+cur_IF <- lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IF <- sce_mIF[,sce_mIF$sample_id == k]
+  assay(cur_sce_IF, "scaled") <- (assay(cur_sce_IF, "exprs") - 
+                                     rowMin(assay(cur_sce_IF, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_IF, "exprs")) - 
+                                     rowMin(assay(cur_sce_IF, "exprs")))
+  
+  cur_aggr_IF <- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IF <- assay(cur_sce_IF, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_IF, by = list(ntile(cur_marker_IF, 100)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_IF <- do.call(rbind, cur_aggr_IF)
+  cur_aggr_IF$sample_id <- k 
+  
+  return(cur_aggr_IF)
+})
+
+cur_IF <- do.call(rbind, cur_IF)
+
+combined_df <- merge(cur_IMC, cur_IF, by = c("Group.1", "marker", "sample_id"), sort = FALSE)
+```
+
+Visualize the results
+
+```{r marker-expression-viz}
+ggplot(combined_df) +
+  geom_line(aes(x.x, x.y, color = sample_id)) + 
+  facet_wrap(. ~ marker) + 
+  geom_abline(intercept = 0, slope = 1, color = "dark red") + 
+  theme(legend.position = "none")
+```

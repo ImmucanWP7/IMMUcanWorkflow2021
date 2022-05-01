@@ -49,6 +49,9 @@ cur_sces <- lapply(cur_sces, function(x){
 })
 
 sce <- do.call("cbind", cur_sces)
+
+# Transform counts
+assay(sce, "exprs") <- asinh(counts(sce))
 ```
 
 ## Cell type annotation
