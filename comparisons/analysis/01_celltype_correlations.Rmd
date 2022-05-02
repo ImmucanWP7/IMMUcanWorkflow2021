@@ -1,5 +1,5 @@
 ---
-title: "Quality control"
+title: "Comparison between IMC and IF"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -70,7 +70,7 @@ cur_mIF <- colData(sce_mIF)
 mIF_celltypes <- cur_mIF$celltype
 mIF_celltypes[grepl("Tumor", mIF_celltypes)] <- "Tumor"
 mIF_celltypes[is.na(mIF_celltypes)] <- "Tcell"
-cur_mIF$celltype <- mIF_celltypes
+cur_mIF$celltype <- factor(mIF_celltypes)
 
 cur_IMC <- colData(sce_IMC)
 IMC_celltypes <- cur_IMC$celltypes
@@ -78,7 +78,7 @@ IMC_celltypes[IMC_celltypes %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")]
 IMC_celltypes[IMC_celltypes %in% c("Treg", "CD4", "CD8")] <- "Tcell"
 IMC_celltypes[IMC_celltypes %in% c("BnCD4", "BnCD8")] <- "BnTcell"
 IMC_celltypes[IMC_celltypes == "B_cell"] <- "Bcell"
-cur_IMC$celltype <- IMC_celltypes
+cur_IMC$celltype <- factor(IMC_celltypes)
 
 frac_IMC <- cur_IMC %>% as_tibble() %>%
   group_by(sample_id, celltype, .drop = FALSE) %>%
@@ -97,13 +97,15 @@ ggplot(combined_df) +
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
-  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + facet_wrap(.~celltype, scales = "free")
+  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
+  facet_wrap(.~celltype, scales = "fixed") 
 
 ggplot(combined_df) + 
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
-  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
-  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + facet_wrap(.~celltype, scales = "free")
+  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
+  facet_wrap(.~celltype, scales = "free") 
 ```
 
 We will also now compute the correlation coefficients.
@@ -124,6 +126,81 @@ combined_df %>%
 
 
 And fit linear models
+
+## Perform differential abundance analysis
+
+We will next test for systematic biases in cell type abundances between the 
+two technologies.
+
+```{r test-DA}
+library(edgeR)
+library(ggrepel)
+
+abundances_IMC <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+rownames(abundances_IMC) <- abundances_IMC$celltype
+abundances_IMC$celltype <- NULL
+meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
+                       patient_id = str_extract(colnames(abundances_IMC), "[0-9]{8}"),
+                       modality = "IMC")
+
+abundances_IF <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+rownames(abundances_IF) <- abundances_IF$celltype
+abundances_IF$celltype <- NULL
+meta_IF <- data.frame(sample_id = colnames(abundances_IF),
+                       patient_id = str_extract(colnames(abundances_IF), "[0-9]{8}"),
+                       modality = "IF")
+
+combined_df <- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
+combined_meta <- rbind(meta_IMC, meta_IF)
+
+# DA testing
+y.ab <- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)
+
+# Define the design matrix for the model: Add Patient ID to the model to account for matched design, add Location to account for different tumor regions, add tissue type as an additive factor
+design <- model.matrix(~sample_id + modality, data = y.ab$samples)
+
+# Estimate NB and QL dispersion
+y.ab <- estimateDisp(y.ab, design, trend="none")
+summary(y.ab$common.dispersion)
+plotBCV(y.ab, cex=1)
+fit.ab <- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
+summary(fit.ab$var.prior)
+plotQLDisp(fit.ab, cex=1)
+
+# Test for differential abundance of cell types in PT vs met tissue and plot
+res <- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
+summary(decideTests(res))
+DA <- topTags(res)$table
+
+DA$celltype <- rownames(DA)
+DA$sign <- DA$FDR<0.05
+DA
+
+# Volcano plot
+ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
+  geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
+  theme_classic()
+
+# MA plot
+ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
+  geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
+  geom_abline(intercept = 0, slope = 0, color = "dark red") +
+  theme_classic()
+```
+
+## Compare expression of cell types
+
+As heatmaps
 
 ## Marker expression
 
@@ -183,5 +260,5 @@ ggplot(combined_df) +
   geom_line(aes(x.x, x.y, color = sample_id)) + 
   facet_wrap(. ~ marker) + 
   geom_abline(intercept = 0, slope = 1, color = "dark red") + 
-  theme(legend.position = "none")
+  theme(legend.position = "none") + xlab("Expression IMC") + ylab("Expression IF")
 ```
