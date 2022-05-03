@@ -97,14 +97,14 @@ ggplot(combined_df) +
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
-  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
   facet_wrap(.~celltype, scales = "fixed") 
 
 ggplot(combined_df) + 
   geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
-  theme_minimal() + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
   facet_wrap(.~celltype, scales = "free") 
 ```
 
@@ -121,7 +121,8 @@ combined_df %>%
   ggplot() +
     geom_boxplot(aes(celltype, cor)) +
     geom_point(aes(celltype, cor, color = patient_id)) +
-    geom_point(aes(celltype, cor_all), color = "dark red", size = 3)
+    geom_point(aes(celltype, cor_all), color = "dark red", size = 3) +
+    theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
 
@@ -195,7 +196,7 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
 ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
   geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
   geom_abline(intercept = 0, slope = 0, color = "dark red") +
-  theme_classic()
+  theme_classic(base_size = 20)
 ```
 
 ## Compare expression of cell types

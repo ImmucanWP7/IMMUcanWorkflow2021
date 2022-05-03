@@ -381,7 +381,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-02
+<strong>Last updated:</strong> 2022-05-03
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -515,15 +515,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021treeadd09ed9175efe0986f12d7748eac4ca4d3fca7ftargetblankadd09eda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/add09ed9175efe0986f12d7748eac4ca4d3fca7f" target="_blank">add09ed</a>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021treeadd09ed9175efe0986f12d7748eac4ca4d3fca7ftargetblankadd09eda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -533,7 +533,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/add09ed9175efe0986f12d7748eac4ca4d3fca7f" target="_blank">add09ed</a>.
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -609,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Added differential abundance testing
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/01_celltype_correlations.html" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Added differential abundance testing
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -855,7 +889,7 @@ ggplot(combined_df) +
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
   geom_smooth(aes(frac.x, frac.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
-  theme_minimal() + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) +
+  theme_classic(base_size = 20) + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) +
   facet_wrap(.~celltype, scales = &quot;fixed&quot;) </code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>
@@ -882,6 +916,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">2a21413</a>
 </td>
 <td>
@@ -899,7 +944,7 @@ nilseling
   geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
-  theme_minimal() + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) + 
+  theme_classic(base_size = 20) + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) + 
   facet_wrap(.~celltype, scales = &quot;free&quot;) </code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" width="960" style="display: block; margin: auto;" /></p>
 <p>
@@ -926,6 +971,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">2a21413</a>
 </td>
 <td>
@@ -950,7 +1006,8 @@ nilseling
   ggplot() +
     geom_boxplot(aes(celltype, cor)) +
     geom_point(aes(celltype, cor, color = patient_id)) +
-    geom_point(aes(celltype, cor_all), color = &quot;dark red&quot;, size = 3)</code></pre>
+    geom_point(aes(celltype, cor_all), color = &quot;dark red&quot;, size = 3) +
+    theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <pre><code>`summarise()` has grouped output by &#39;celltype&#39;. You can override using the
 `.groups` argument.</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/correlation-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -976,6 +1033,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">add09ed</a>
@@ -1056,12 +1124,86 @@ summary(y.ab$common.dispersion)</code></pre>
  0.3088  0.3088  0.3088  0.3088  0.3088  0.3088 </code></pre>
 <pre class="r"><code>plotBCV(y.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-1">
+Past versions of test-DA-1.png
+</button>
+</p>
+<div id="fig-test-DA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>fit.ab &lt;- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
 summary(fit.ab$var.prior)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.5219  0.5219  0.5219  0.5219  0.5219  0.5219 </code></pre>
 <pre class="r"><code>plotQLDisp(fit.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-2">
+Past versions of test-DA-2.png
+</button>
+</p>
+<div id="fig-test-DA-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Test for differential abundance of cell types in PT vs met tissue and plot
 res &lt;- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
 summary(decideTests(res))</code></pre>
@@ -1097,12 +1239,86 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
   theme_classic()</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-3">
+Past versions of test-DA-3.png
+</button>
+</p>
+<div id="fig-test-DA-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># MA plot
 ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
   geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
   geom_abline(intercept = 0, slope = 0, color = &quot;dark red&quot;) +
-  theme_classic()</code></pre>
+  theme_classic(base_size = 20)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-4">
+Past versions of test-DA-4.png
+</button>
+</p>
+<div id="fig-test-DA-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="compare-expression-of-cell-types" class="section level2">
 <h2>Compare expression of cell types</h2>
@@ -1185,6 +1401,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">add09ed</a>
