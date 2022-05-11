@@ -91,6 +91,35 @@ colour_vectors$Indication <- col_vec_indication
 metadata(sce)$colour_vectors <- colour_vectors
 ```
 
+## Define colors 
+
+Here, we define colors for matched cell types and samples.
+
+```{r define-colors}
+library(RColorBrewer)
+color_vectors <- list()
+matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "Tcell", "Neutrophil", "Macrophage",
+                               "other", "DC", "Bcell", "BnTcell"))
+patient_id <- setNames(brewer.pal(8, "Set1"),
+                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371"))
+color_vectors$matched_celltype <- matched_celltype
+color_vectors$patient_id <- patient_id
+
+metadata(sce)$color_vectors <- color_vectors
+```
+
+## Add interaction graph
+
+Finally, we will add a 20µm expansion interaction graph to compare to mIF.
+
+```{r buildSpatialGraph, message=FALSE}
+library(imcRtools)
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
+                         threshold = 20, name = "expansion_20")
+```
+
+
 ## Save SCE object
 
 Finally, for easy accessability, we will write the SCE object out.

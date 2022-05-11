@@ -24,6 +24,9 @@ library(cytomapper)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+
+# Add column names
+colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
 ```
 
 ## Spillover matrix

@@ -11,7 +11,7 @@
 
 
 
-<title>Reading in the data</title>
+<title>Quality control</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -352,7 +352,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Reading in the data</h1>
+<h1 class="title toc-ignore">Quality control</h1>
 
 </div>
 
@@ -562,6 +562,8 @@ Ignored files:
 
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
+    Modified:   IMC/Analysis/analysis/02_spillover_correction.Rmd
+    Modified:   IMC/Analysis/analysis/03_quality_control.Rmd
     Modified:   IMC/Analysis/analysis/07_predict_celltypes.Rmd
 
 </code></pre>
@@ -581,11 +583,11 @@ have uncommitted changes.
 <p>
 These are the previous versions of the repository in which changes were
 made to the R Markdown
-(<code>IMC/Analysis/analysis/01_read_data.Rmd</code>) and HTML
-(<code>IMC/Analysis/docs/01_read_data.html</code>) files. If you’ve
-configured a remote Git repository (see <code>?wflow_git_remote</code>),
-click on the hyperlinks in the table below to view the files as they
-were in that past version.
+(<code>IMC/Analysis/analysis/03_quality_control.Rmd</code>) and HTML
+(<code>IMC/Analysis/docs/03_quality_control.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -614,101 +616,16 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/6c50ede74c6d98836497c5a6a1086bf3a3c5eea7/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">6c50ede</a>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/IMC/Analysis/analysis/03_quality_control.Rmd" target="_blank">c22d4e1</a>
 </td>
 <td>
 nilseling
 </td>
 <td>
-2022-04-22
+2022-04-29
 </td>
 <td>
-Final labelling script
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/6c50ede74c6d98836497c5a6a1086bf3a3c5eea7/IMC/Analysis/docs/01_read_data.html" target="_blank">6c50ede</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-22
-</td>
-<td>
-Final labelling script
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/f2f26f0c537c08bd12d758a2ce9727dfb8fdf4e5/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">f2f26f0</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-19
-</td>
-<td>
-Compiled scripts
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/f2f26f0c537c08bd12d758a2ce9727dfb8fdf4e5/IMC/Analysis/docs/01_read_data.html" target="_blank">f2f26f0</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-19
-</td>
-<td>
-Compiled scripts
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/68d9d518e34a38bf4f97cec51900b71ff6daf9df/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">68d9d51</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-03-21
-</td>
-<td>
-Added reader and QC script
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/eb48a2a37d45ffbe080222fd4f88017d6faa9d79/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">eb48a2a</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-03-21
-</td>
-<td>
-Start of analysis workflow
+Added more projects
 </td>
 </tr>
 </tbody>
@@ -718,128 +635,140 @@ Start of analysis workflow
 </div>
 </div>
 </div>
-<p>In this script, we read in the single-cell and image data generated
-by the <a
-href="https://github.com/BodenmillerGroup/steinbock">steinbock</a>
-framework.</p>
-<div id="load-libraries" class="section level1">
-<h1>Load libraries</h1>
-<p>First, we will load the libraries needed for this part of the
-analysis.</p>
-<pre class="r"><code>library(S4Vectors)
-library(SingleCellExperiment)
-library(tidyverse)
-library(imcRtools)
-library(tools)</code></pre>
+<p>Here, we will perform quality control on all samples with focus on
+batch effects, cell number per images and cell size.</p>
+<div id="load-data-and-libraries" class="section level2">
+<h2>Load data and libraries</h2>
+<p>First, we will load all relevant data and libraries.</p>
+<pre class="r"><code>library(tidyverse)
+library(dittoSeq)
+library(scater)
+library(viridis)
+
+sce &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)</code></pre>
 </div>
-<div id="read-in-the-single-cell-data" class="section level1">
-<h1>Read in the single-cell data</h1>
-<p>We use <code>imcRtools</code> to read in the data:</p>
-<pre class="r"><code>sce &lt;- read_steinbock(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/&quot;, 
-                      return_as = &quot;sce&quot;, 
-                      extract_imagemetadata_from = c(&quot;width_px&quot;,    &quot;height_px&quot;,    
-                                                     &quot;acquisition_id&quot;))
-sce$image &lt;- paste0(sce$sample_id, &quot;.tiff&quot;)
-sce$patient_id &lt;- str_extract(sce$image, &quot;[0-9]{8}&quot;)
-assay(sce, &quot;exprs&quot;) &lt;- asinh(counts(sce))
-
-# Specify interesting channels
-rowData(sce)$use_channel &lt;- !grepl(&quot;DNA|HistoneH3&quot;, rownames(sce))</code></pre>
-<div id="image-level-metadata" class="section level2">
-<h2>Image-level metadata</h2>
-<p>Here, we will collect all relevant image-level metadata for these
-samples. These will be added to the cell-level metadata.</p>
-<pre class="r"><code>meta &lt;- read.csv(&quot;data/sample_metadata.csv&quot;)
-
-cell_meta &lt;- merge(colData(sce), meta, 
-                   by = &quot;patient_id&quot;, sort = FALSE)
-
-all.equal(paste(cell_meta$image, cell_meta$ObjectNumber), 
-          paste(sce$image, sce$ObjectNumber))</code></pre>
-<pre><code>[1] TRUE</code></pre>
-<pre class="r"><code>colData(sce) &lt;- cell_meta
-
-sce$ROI &lt;- file_path_sans_ext(str_split(sce$image, &quot;_&quot;, simplify = TRUE)[,5])</code></pre>
+<div id="cell-numbers" class="section level2">
+<h2>Cell numbers</h2>
+<p>We will now visualize how many cells we detected per image and
+patient.</p>
+<pre class="r"><code># Plot number of cells
+colData(sce) %&gt;%
+  as_tibble() %&gt;%
+  group_by(patient_id, ROI) %&gt;%
+  summarize(count = n()) %&gt;%
+  ggplot() +
+    geom_bar(aes(patient_id, count, fill = ROI), 
+             position = &quot;stack&quot;, stat = &quot;identity&quot;) +
+    scale_fill_manual(values = metadata(sce)$colour_vectors$ROIs) + 
+    theme_minimal(base_size = 15) + theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;patient_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<p><img src="figure/03_quality_control.Rmd/cell-numbers-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Numeric output
+colData(sce) %&gt;%
+  as_tibble() %&gt;%
+  group_by(patient_id, ROI) %&gt;%
+  summarize(count = n()) %&gt;%
+  summary()</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;patient_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre><code>  patient_id            ROI                count     
+ Length:39          Length:39          Min.   :1332  
+ Class :character   Class :character   1st Qu.:2175  
+ Mode  :character   Mode  :character   Median :2702  
+                                       Mean   :2665  
+                                       3rd Qu.:2971  
+                                       Max.   :4166  </code></pre>
 </div>
-<div id="generate-colour-vectors" class="section level2">
-<h2>Generate colour vectors</h2>
-<p>At this point we want to generate color vectors that we can
-reproducibly and consistently use throughout the analysis. Primarily, we
-will define colors for 1. the samples, 2. the ROI, 3. the
-indication.</p>
-<pre class="r"><code>library(dittoSeq)
-library(RColorBrewer)
-colour_vectors &lt;- list()
-
-col_vec_patientIds &lt;- dittoColors(reps = 3)[seq_len(length(unique(sce$patient_id)))]
-names(col_vec_patientIds) &lt;- unique(sce$patient_id)
-
-col_vec_ROIs &lt;- colorRampPalette(c(&quot;dark green&quot;, &quot;white&quot;, &quot;dark red&quot;))(length(unique(sce$ROI)))
-names(col_vec_ROIs) &lt;- unique(sce$ROI)
-
-col_vec_indication &lt;- c(CRC = &quot;#5B1C55&quot;, SCCHN = &quot;#39BEB4&quot;, NSCLC = &quot;#F79C1D&quot;, 
-                        BCC = &quot;#3F85A7&quot;, RCC = &quot;#C81F43&quot;)
-
-colour_vectors$PatientIds &lt;- col_vec_patientIds
-colour_vectors$ROIs &lt;- col_vec_ROIs
-colour_vectors$Indication &lt;- col_vec_indication
-
-# Save in metadata slot
-metadata(sce)$colour_vectors &lt;- colour_vectors</code></pre>
+<div id="cell-size" class="section level2">
+<h2>Cell size</h2>
+<p>We will now observe the distribution of cell sizes across all
+images.</p>
+<pre class="r"><code>dittoPlot(sce, var = &quot;area&quot;, group.by = &quot;image&quot;,  
+          plots = &quot;ridgeplot&quot;, color.panel = metadata(sce)$colour_vectors$ROIs) </code></pre>
+<p><img src="figure/03_quality_control.Rmd/cell-size-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>summary(sce$area)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.00   45.00   70.00   79.73  102.00  642.00 </code></pre>
+<p>We will now filter cells based on size.</p>
+<pre class="r"><code>sum(sce$area &lt; 5)</code></pre>
+<pre><code>[1] 196</code></pre>
+<pre class="r"><code>sum(sce$area &gt; 400)</code></pre>
+<pre><code>[1] 62</code></pre>
+<pre class="r"><code>sce &lt;- sce[,sce$area &gt;= 5 &amp; sce$area &lt;= 400]</code></pre>
 </div>
-<div id="define-colors" class="section level2">
-<h2>Define colors</h2>
-<p>Here, we define colors for matched cell types and samples.</p>
-<pre class="r"><code>library(RColorBrewer)
-color_vectors &lt;- list()
-matched_celltype &lt;- setNames(c(&quot;#3F1B03&quot;, &quot;#0A3A03&quot;, &quot;#066970&quot;, &quot;#894F36&quot;, &quot;#636160&quot;, &quot;#DC6FE2&quot;, &quot;#BF0A3D&quot;, &quot;#F4800C&quot;),
-                             c(&quot;Tumor&quot;, &quot;Tcell&quot;, &quot;Neutrophil&quot;, &quot;Macrophage&quot;,
-                               &quot;other&quot;, &quot;DC&quot;, &quot;Bcell&quot;, &quot;BnTcell&quot;))
-patient_id &lt;- setNames(brewer.pal(8, &quot;Set1&quot;),
-                       c(&quot;10061074&quot;, &quot;10067433&quot;, &quot;10068868&quot;, &quot;10071582&quot;, &quot;10073140&quot;, &quot;10074349&quot;, &quot;10074832&quot;, &quot;10075371&quot;))
-color_vectors$matched_celltype &lt;- matched_celltype
-color_vectors$patient_id &lt;- patient_id
-
-metadata(sce)$color_vectors &lt;- color_vectors</code></pre>
+<div id="expression-differences" class="section level2">
+<h2>Expression differences</h2>
+<p>We will now visualize the expression differences between
+patients.</p>
+<pre class="r"><code>multi_dittoPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel],
+               group.by = &quot;patient_id&quot;, plots = c(&quot;ridgeplot&quot;), 
+               assay = &quot;exprs&quot;, 
+               color.panel = metadata(sce)$colour_vectors$PatientId)</code></pre>
+<pre><code>Picking joint bandwidth of 0.00944</code></pre>
+<pre><code>Picking joint bandwidth of 0.0496</code></pre>
+<pre><code>Picking joint bandwidth of 0.0906</code></pre>
+<pre><code>Picking joint bandwidth of 0.0348</code></pre>
+<pre><code>Picking joint bandwidth of 0.187</code></pre>
+<pre><code>Picking joint bandwidth of 0.0647</code></pre>
+<pre><code>Picking joint bandwidth of 0.147</code></pre>
+<pre><code>Picking joint bandwidth of 0.0628</code></pre>
+<pre><code>Picking joint bandwidth of 0.0951</code></pre>
+<pre><code>Picking joint bandwidth of 0.077</code></pre>
+<pre><code>Picking joint bandwidth of 0.0697</code></pre>
+<pre><code>Picking joint bandwidth of 0.0842</code></pre>
+<pre><code>Picking joint bandwidth of 0.0487</code></pre>
+<pre><code>Picking joint bandwidth of 0.0868</code></pre>
+<pre><code>Picking joint bandwidth of 0.0204</code></pre>
+<pre><code>Picking joint bandwidth of 0.101</code></pre>
+<pre><code>Picking joint bandwidth of 0.0351</code></pre>
+<pre><code>Picking joint bandwidth of 0.0795</code></pre>
+<pre><code>Picking joint bandwidth of 0.0919</code></pre>
+<pre><code>Picking joint bandwidth of 0.056</code></pre>
+<pre><code>Picking joint bandwidth of 0.0543</code></pre>
+<pre><code>Picking joint bandwidth of 0.0639</code></pre>
+<pre><code>Picking joint bandwidth of 0.116</code></pre>
+<pre><code>Picking joint bandwidth of 0.0323</code></pre>
+<pre><code>Picking joint bandwidth of 0.0474</code></pre>
+<pre><code>Picking joint bandwidth of 0.0843</code></pre>
+<pre><code>Picking joint bandwidth of 0.0758</code></pre>
+<pre><code>Picking joint bandwidth of 0.0784</code></pre>
+<pre><code>Picking joint bandwidth of 0.116</code></pre>
+<pre><code>Picking joint bandwidth of 0.0741</code></pre>
+<pre><code>Picking joint bandwidth of 0.0914</code></pre>
+<pre><code>Picking joint bandwidth of 0.0777</code></pre>
+<pre><code>Picking joint bandwidth of 0.0939</code></pre>
+<pre><code>Picking joint bandwidth of 0.136</code></pre>
+<pre><code>Picking joint bandwidth of 0.0526</code></pre>
+<pre><code>Picking joint bandwidth of 0.0688</code></pre>
+<pre><code>Picking joint bandwidth of 0.0121</code></pre>
+<p><img src="figure/03_quality_control.Rmd/expression-differences-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We also compute a tSNE and UMAP of all cells to visualize potential
+sample effects.</p>
+<pre class="r"><code>set.seed(220321)
+sce &lt;- runTSNE(sce, subset_row = rowData(sce)$use_channel, exprs_values = &quot;exprs&quot;)
+sce &lt;- runUMAP(sce, subset_row = rowData(sce)$use_channel, exprs_values = &quot;exprs&quot;)</code></pre>
+<p>We can now visualize the patient IDs and expression on the UMAPs.</p>
+<pre class="r"><code>dittoDimPlot(sce, var = &quot;patient_id&quot;, reduction.use = &quot;UMAP&quot;, size = 0.2) + 
+    scale_color_manual(values = metadata(sce)$colour_vectors$PatientIds) +
+    ggtitle(&quot;Patient ID on UMAP&quot;)</code></pre>
+<p><img src="figure/03_quality_control.Rmd/dimred-viz-patient-indication-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dittoDimPlot(sce, var = &quot;indication&quot;, reduction.use = &quot;UMAP&quot;, size = 0.2) + 
+    scale_color_manual(values = metadata(sce)$colour_vectors$Indication) +
+    ggtitle(&quot;Patient ID on UMAP&quot;)</code></pre>
+<p><img src="figure/03_quality_control.Rmd/dimred-viz-patient-indication-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>multi_dittoDimPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel], 
+                   reduction.use = &quot;UMAP&quot;, 
+                   assay = &quot;exprs&quot;, size = 0.2) +
+    scale_color_viridis() </code></pre>
+<p><img src="figure/03_quality_control.Rmd/dimred-viz-expression-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre><code>NULL</code></pre>
 </div>
-<div id="add-interaction-graph" class="section level2">
-<h2>Add interaction graph</h2>
-<p>Finally, we will add a 20µm expansion interaction graph to compare to
-mIF.</p>
-<pre class="r"><code>library(imcRtools)
-sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;,
-                         threshold = 20, name = &quot;expansion_20&quot;)</code></pre>
-</div>
-<div id="save-sce-object" class="section level2">
-<h2>Save SCE object</h2>
-<p>Finally, for easy accessability, we will write the SCE object out.
-The object will be stored on the server so that everyone can work with
-it.</p>
-<pre class="r"><code>dir.create(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/&quot;)
-saveRDS(sce, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)</code></pre>
-</div>
-</div>
-<div id="read-in-image-data" class="section level1">
-<h1>Read in image data</h1>
-<p>Here, we read in the images and masks and save them on disk.</p>
-<pre class="r"><code>dir.create(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/&quot;)
-dir.create(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/images&quot;)
-dir.create(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks&quot;)
-
-library(cytomapper)
-images &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/&quot;, on_disk = TRUE, 
-                     h5FilesPath = &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/images&quot;)
-masks &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/masks/&quot;, on_disk = TRUE, 
-                     h5FilesPath = &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks&quot;,
-                    as.is = TRUE)
-
-channelNames(images) &lt;- rownames(sce)
-
-mcols(images) &lt;- mcols(masks) &lt;- DataFrame(image = names(images),
-                                           sample_id = sub(&quot;.tiff&quot;, &quot;&quot;, names(images)))
-
-saveRDS(images, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds&quot;)
-saveRDS(masks, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds&quot;)</code></pre>
+<div id="save-object" class="section level2">
+<h2>Save object</h2>
+<p>Finally, we will save the modified <code>SingleCellExperiment</code>
+object.</p>
+<pre class="r"><code>saveRDS(sce, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -861,98 +790,76 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] tools     stats4    stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] cytomapper_1.7.1            EBImage_4.36.0             
- [3] RColorBrewer_1.1-3          dittoSeq_1.7.0             
- [5] imcRtools_1.3.1             SpatialExperiment_1.4.0    
- [7] forcats_0.5.1               stringr_1.4.0              
- [9] dplyr_1.0.9                 purrr_0.3.4                
-[11] readr_2.1.2                 tidyr_1.2.0                
-[13] tibble_3.1.6                ggplot2_3.3.5              
-[15] tidyverse_1.3.1             SingleCellExperiment_1.16.0
-[17] SummarizedExperiment_1.24.0 Biobase_2.54.0             
-[19] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        
-[21] IRanges_2.28.0              MatrixGenerics_1.6.0       
-[23] matrixStats_0.62.0          S4Vectors_0.32.4           
-[25] BiocGenerics_0.40.0         workflowr_1.7.0            
+ [1] viridis_0.6.2               viridisLite_0.4.0          
+ [3] scater_1.22.0               scuttle_1.4.0              
+ [5] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0
+ [7] Biobase_2.54.0              GenomicRanges_1.46.1       
+ [9] GenomeInfoDb_1.30.1         IRanges_2.28.0             
+[11] S4Vectors_0.32.4            BiocGenerics_0.40.0        
+[13] MatrixGenerics_1.6.0        matrixStats_0.62.0         
+[15] dittoSeq_1.7.0              forcats_0.5.1              
+[17] stringr_1.4.0               dplyr_1.0.9                
+[19] purrr_0.3.4                 readr_2.1.2                
+[21] tidyr_1.2.0                 tibble_3.1.6               
+[23] ggplot2_3.3.5               tidyverse_1.3.1            
+[25] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
-  [1] utf8_1.2.2                shinydashboard_0.7.2     
-  [3] R.utils_2.11.0            tidyselect_1.1.2         
-  [5] htmlwidgets_1.5.4         grid_4.1.3               
-  [7] BiocParallel_1.28.3       DropletUtils_1.14.2      
-  [9] munsell_0.5.0             codetools_0.2-18         
- [11] units_0.8-0               DT_0.22                  
- [13] withr_2.5.0               colorspace_2.0-3         
- [15] knitr_1.39                rstudioapi_0.13          
- [17] git2r_0.30.1              GenomeInfoDbData_1.2.7   
- [19] polyclip_1.10-0           bit64_4.0.5              
- [21] farver_2.1.0              pheatmap_1.0.12          
- [23] rhdf5_2.38.1              rprojroot_2.0.3          
- [25] vctrs_0.4.1               generics_0.1.2           
- [27] xfun_0.30                 R6_2.5.1                 
- [29] ggbeeswarm_0.6.0          graphlayouts_0.8.0       
- [31] locfit_1.5-9.5            concaveman_1.1.0         
- [33] bitops_1.0-7              rhdf5filters_1.6.0       
- [35] RTriangle_1.6-0.10        DelayedArray_0.20.0      
- [37] assertthat_0.2.1          promises_1.2.0.1         
- [39] scales_1.2.0              vroom_1.5.7              
- [41] ggraph_2.0.5              beeswarm_0.4.0           
- [43] gtable_0.3.0              beachmat_2.10.0          
- [45] processx_3.5.3            tidygraph_1.2.1          
- [47] rlang_1.0.2               systemfonts_1.0.4        
- [49] broom_0.8.0               yaml_2.3.5               
- [51] abind_1.4-5               modelr_0.1.8             
- [53] backports_1.4.1           httpuv_1.6.5             
- [55] ellipsis_0.3.2            raster_3.5-15            
- [57] jquerylib_0.1.4           proxy_0.4-26             
- [59] ggridges_0.5.3            plyr_1.8.7               
- [61] Rcpp_1.0.8.3              sparseMatrixStats_1.6.0  
- [63] zlibbioc_1.40.0           classInt_0.4-3           
- [65] RCurl_1.98-1.6            ps_1.7.0                 
- [67] viridis_0.6.2             cowplot_1.1.1            
- [69] haven_2.5.0               ggrepel_0.9.1            
- [71] fs_1.5.2                  magrittr_2.0.3           
- [73] data.table_1.14.2         magick_2.7.3             
- [75] reprex_2.0.1              whisker_0.4              
- [77] hms_1.1.1                 mime_0.12                
- [79] fftwtools_0.9-11          evaluate_0.15            
- [81] xtable_1.8-4              jpeg_0.1-9               
- [83] readxl_1.4.0              gridExtra_2.3            
- [85] compiler_4.1.3            KernSmooth_2.23-20       
- [87] crayon_1.5.1              R.oo_1.24.0              
- [89] htmltools_0.5.2           later_1.3.0              
- [91] tzdb_0.3.0                tiff_0.1-11              
- [93] lubridate_1.8.0           DBI_1.1.2                
- [95] tweenr_1.0.2              dbplyr_2.1.1             
- [97] MASS_7.3-55               sf_1.0-7                 
- [99] Matrix_1.4-1              cli_3.3.0                
-[101] R.methodsS3_1.8.1         parallel_4.1.3           
-[103] igraph_1.3.1              pkgconfig_2.0.3          
-[105] getPass_0.2-2             sp_1.4-7                 
-[107] terra_1.5-21              scuttle_1.4.0            
-[109] xml2_1.3.3                svglite_2.1.0            
-[111] vipor_0.4.5               bslib_0.3.1              
-[113] dqrng_0.3.0               XVector_0.34.0           
-[115] rvest_1.0.2               callr_3.7.0              
-[117] digest_0.6.29             rmarkdown_2.14           
-[119] cellranger_1.1.0          edgeR_3.36.0             
-[121] DelayedMatrixStats_1.16.0 shiny_1.7.1              
-[123] rjson_0.2.21              lifecycle_1.0.1          
-[125] jsonlite_1.8.0            Rhdf5lib_1.16.0          
-[127] BiocNeighbors_1.12.0      viridisLite_0.4.0        
-[129] limma_3.50.3              fansi_1.0.3              
-[131] pillar_1.7.0              lattice_0.20-45          
-[133] fastmap_1.1.0             httr_1.4.2               
-[135] glue_1.6.2                png_0.1-7                
-[137] svgPanZoom_0.3.4          bit_4.0.4                
-[139] ggforce_0.3.3             class_7.3-20             
-[141] stringi_1.7.6             sass_0.4.1               
-[143] HDF5Array_1.22.1          nnls_1.4                 
-[145] e1071_1.7-9              </code></pre>
+  [1] Rtsne_0.16                ggbeeswarm_0.6.0         
+  [3] colorspace_2.0-3          ellipsis_0.3.2           
+  [5] ggridges_0.5.3            rprojroot_2.0.3          
+  [7] XVector_0.34.0            BiocNeighbors_1.12.0     
+  [9] fs_1.5.2                  rstudioapi_0.13          
+ [11] farver_2.1.0              ggrepel_0.9.1            
+ [13] RSpectra_0.16-1           fansi_1.0.3              
+ [15] lubridate_1.8.0           xml2_1.3.3               
+ [17] codetools_0.2-18          sparseMatrixStats_1.6.0  
+ [19] knitr_1.39                jsonlite_1.8.0           
+ [21] broom_0.8.0               dbplyr_2.1.1             
+ [23] uwot_0.1.11               pheatmap_1.0.12          
+ [25] compiler_4.1.3            httr_1.4.2               
+ [27] backports_1.4.1           assertthat_0.2.1         
+ [29] Matrix_1.4-1              fastmap_1.1.0            
+ [31] cli_3.3.0                 later_1.3.0              
+ [33] BiocSingular_1.10.0       htmltools_0.5.2          
+ [35] tools_4.1.3               rsvd_1.0.5               
+ [37] gtable_0.3.0              glue_1.6.2               
+ [39] GenomeInfoDbData_1.2.7    Rcpp_1.0.8.3             
+ [41] cellranger_1.1.0          jquerylib_0.1.4          
+ [43] vctrs_0.4.1               DelayedMatrixStats_1.16.0
+ [45] xfun_0.30                 ps_1.7.0                 
+ [47] beachmat_2.10.0           rvest_1.0.2              
+ [49] irlba_2.3.5               lifecycle_1.0.1          
+ [51] getPass_0.2-2             zlibbioc_1.40.0          
+ [53] scales_1.2.0              hms_1.1.1                
+ [55] promises_1.2.0.1          parallel_4.1.3           
+ [57] RColorBrewer_1.1-3        yaml_2.3.5               
+ [59] gridExtra_2.3             sass_0.4.1               
+ [61] stringi_1.7.6             highr_0.9                
+ [63] ScaledMatrix_1.2.0        BiocParallel_1.28.3      
+ [65] rlang_1.0.2               pkgconfig_2.0.3          
+ [67] bitops_1.0-7              evaluate_0.15            
+ [69] lattice_0.20-45           labeling_0.4.2           
+ [71] cowplot_1.1.1             processx_3.5.3           
+ [73] tidyselect_1.1.2          RcppAnnoy_0.0.19         
+ [75] plyr_1.8.7                magrittr_2.0.3           
+ [77] R6_2.5.1                  generics_0.1.2           
+ [79] DelayedArray_0.20.0       DBI_1.1.2                
+ [81] pillar_1.7.0              haven_2.5.0              
+ [83] whisker_0.4               withr_2.5.0              
+ [85] RCurl_1.98-1.6            modelr_0.1.8             
+ [87] crayon_1.5.1              utf8_1.2.2               
+ [89] tzdb_0.3.0                rmarkdown_2.14           
+ [91] grid_4.1.3                readxl_1.4.0             
+ [93] callr_3.7.0               git2r_0.30.1             
+ [95] reprex_2.0.1              digest_0.6.29            
+ [97] httpuv_1.6.5              munsell_0.5.0            
+ [99] beeswarm_0.4.0            vipor_0.4.5              
+[101] bslib_0.3.1              </code></pre>
 </div>
 </div>
 

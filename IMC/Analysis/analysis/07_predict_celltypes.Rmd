@@ -220,6 +220,19 @@ for(j in unique(sce$celltypes)){
 
 ```
 
+## Define matched cell types
+
+To compare to mIF data, we will need to harmonize the cell types.
+
+```{r matched-celltypes}
+matched_celltype <- sce$celltypes
+matched_celltype[matched_celltype %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")] <- "other"
+matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "Tcell"
+matched_celltype[matched_celltype %in% c("BnCD4", "BnCD8")] <- "BnTcell"
+matched_celltype[matched_celltype == "B_cell"] <- "Bcell"
+sce$matched_celltype <- matched_celltype
+```
+
 # Save RDS
 
 ```{r saveRDS}
