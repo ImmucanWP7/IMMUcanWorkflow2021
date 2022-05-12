@@ -68,7 +68,7 @@ IdentifySecondaryObjects:[module_num:6|svn_version:'Unknown'|variable_revision_n
     Select the input image:masks
     Number of pixels by which to expand the primary objects:1
     Regularization factor:0.05
-    Discard secondary objects touching the border of the image?:Yes
+    Discard secondary objects touching the border of the image?:No
     Discard the associated primary objects?:No
     Name the new primary objects:FilteredNuclei
     Fill holes in identified objects?:Yes
