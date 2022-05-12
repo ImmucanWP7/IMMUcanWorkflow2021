@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Comparison between IMC and IF</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">comparisons</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Comparison between IMC and IF</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-05-03
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>comparisons/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220429code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220429)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220429code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220429)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    IMC/.DS_Store
+    Ignored:    IMC/Analysis/.DS_Store
+    Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    IMC/Analysis/analysis/.DS_Store
+    Ignored:    IMC/Analysis/docs/.DS_Store
+    Ignored:    comparisons/.DS_Store
+    Ignored:    comparisons/.Rproj.user/
+    Ignored:    comparisons/analysis/.DS_Store
+    Ignored:    mIF/.DS_Store
+    Ignored:    mIF/Analysis/.Rproj.user/
+    Ignored:    mIF/Analysis/analysis/.DS_Store
+
+Unstaged changes:
+    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>comparisons/analysis/01_celltype_correlations.Rmd</code>) and
+HTML (<code>comparisons/docs/01_celltype_correlations.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Added differential abundance testing
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/01_celltype_correlations.html" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+<td>
+Added differential abundance testing
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">add09ed</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-01
+</td>
+<td>
+Added marker expression comparison
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/01_celltype_correlations.html" target="_blank">add09ed</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-01
+</td>
+<td>
+Added marker expression comparison
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+<td>
+Celltype correlations
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/01_celltype_correlations.html" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+<td>
+Celltype correlations
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">c22d4e1</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-29
+</td>
+<td>
+Added more projects
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>In this script, we will compare the celltypes observed in mIF with
+those in IMC.</p>
+<div id="load-data" class="section level2">
+<h2>Load data</h2>
+<p>First, we will read in the <code>SingleCellExperiment</code> objects
+storing the IMC and IF data.</p>
+<pre class="r"><code>library(SingleCellExperiment)
+library(tidyverse)
+
+sce_IMC &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)
+sce_mIF &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds&quot;)</code></pre>
+</div>
+<div id="number-of-cells" class="section level2">
+<h2>Number of cells</h2>
+<p>First, we will observe the number of cells per image.</p>
+<pre class="r"><code>no_IMC &lt;- colData(sce_IMC) %&gt;% as_tibble() %&gt;%
+  group_by(sample_id) %&gt;%
+  summarize(count = n())
+no_mIF &lt;- colData(sce_mIF) %&gt;% as_tibble() %&gt;%
+  group_by(sample_id) %&gt;%
+  summarize(count = n())
+
+combined_df &lt;- merge(no_IMC, no_mIF, by=&quot;sample_id&quot;, sort=FALSE)
+combined_df$patient_id &lt;- str_extract(combined_df$sample_id, &quot;[0-9]{8}&quot;)
+
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  geom_smooth(aes(count.x, count.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab(&quot;# Cells in IMC&quot;) + ylab(&quot;# Cells in mIF&quot;) +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/number-of%20cells-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-number-of-cells-1">
+Past versions of "number-of cells-1.png"
+</button>
+</p>
+<div id="fig-no-spaces-number-of-cells-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of cells-1.png" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># With patient as covariate
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  geom_smooth(aes(count.x, count.y, color = patient_id), method=&#39;lm&#39;, formula= y~x,
+              fullrange=FALSE, se= FALSE) + 
+  theme_minimal() + xlab(&quot;# Cells in IMC&quot;) + ylab(&quot;# Cells in mIF&quot;) +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/number-of%20cells-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-number-of-cells-2">
+Past versions of "number-of cells-2.png"
+</button>
+</p>
+<div id="fig-no-spaces-number-of-cells-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of cells-2.png" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="cell-type-fractions" class="section level2">
+<h2>Cell type fractions</h2>
+<p>Next, we will compare the cell type fractions between the
+technologies.</p>
+<pre class="r"><code># Match cell types
+cur_mIF &lt;- colData(sce_mIF)
+mIF_celltypes &lt;- cur_mIF$celltype
+mIF_celltypes[grepl(&quot;Tumor&quot;, mIF_celltypes)] &lt;- &quot;Tumor&quot;
+mIF_celltypes[is.na(mIF_celltypes)] &lt;- &quot;Tcell&quot;
+cur_mIF$celltype &lt;- factor(mIF_celltypes)
+
+cur_IMC &lt;- colData(sce_IMC)
+IMC_celltypes &lt;- cur_IMC$celltypes
+IMC_celltypes[IMC_celltypes %in% c(&quot;CD38&quot;, &quot;HLADR&quot;, &quot;Stroma&quot;, &quot;pDC&quot;, &quot;NK_cell&quot;)] &lt;- &quot;other&quot;
+IMC_celltypes[IMC_celltypes %in% c(&quot;Treg&quot;, &quot;CD4&quot;, &quot;CD8&quot;)] &lt;- &quot;Tcell&quot;
+IMC_celltypes[IMC_celltypes %in% c(&quot;BnCD4&quot;, &quot;BnCD8&quot;)] &lt;- &quot;BnTcell&quot;
+IMC_celltypes[IMC_celltypes == &quot;B_cell&quot;] &lt;- &quot;Bcell&quot;
+cur_IMC$celltype &lt;- factor(IMC_celltypes)
+
+frac_IMC &lt;- cur_IMC %&gt;% as_tibble() %&gt;%
+  group_by(sample_id, celltype, .drop = FALSE) %&gt;%
+  summarize(count = n()) %&gt;%
+  mutate(frac = count/sum(count))</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;sample_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>frac_mIF &lt;- cur_mIF %&gt;% as_tibble() %&gt;%
+  group_by(sample_id, celltype, .drop = FALSE) %&gt;%
+  summarize(count = n()) %&gt;%
+  mutate(frac = count/sum(count))</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;sample_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>combined_df &lt;- merge(frac_IMC, frac_mIF, by=c(&quot;sample_id&quot;, &quot;celltype&quot;), sort=FALSE)
+combined_df$patient_id &lt;- str_extract(combined_df$sample_id, &quot;[0-9]{8}&quot;)
+
+ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  geom_smooth(aes(frac.x, frac.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) +
+  facet_wrap(.~celltype, scales = &quot;fixed&quot;) </code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-celltype-fractions-1">
+Past versions of celltype-fractions-1.png
+</button>
+</p>
+<div id="fig-celltype-fractions-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ggplot(combined_df) + 
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  theme_classic(base_size = 20) + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) + 
+  facet_wrap(.~celltype, scales = &quot;free&quot;) </code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-celltype-fractions-2">
+Past versions of celltype-fractions-2.png
+</button>
+</p>
+<div id="fig-celltype-fractions-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">2a21413</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-04-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We will also now compute the correlation coefficients.</p>
+<pre class="r"><code>combined_df %&gt;%
+  group_by(celltype) %&gt;%
+  mutate(cor_all = cor(frac.x, frac.y)) %&gt;%
+  ungroup() %&gt;%
+  group_by(celltype, patient_id) %&gt;%
+  summarize(cor = cor(frac.x, frac.y),
+            cor_all = mean(cor_all)) %&gt;%
+  ggplot() +
+    geom_boxplot(aes(celltype, cor)) +
+    geom_point(aes(celltype, cor, color = patient_id)) +
+    geom_point(aes(celltype, cor_all), color = &quot;dark red&quot;, size = 3) +
+    theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;celltype&#39;. You can override using the
+`.groups` argument.</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/correlation-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-correlation-1">
+Past versions of correlation-1.png
+</button>
+</p>
+<div id="fig-correlation-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">add09ed</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>And fit linear models</p>
+</div>
+<div id="perform-differential-abundance-analysis"
+class="section level2">
+<h2>Perform differential abundance analysis</h2>
+<p>We will next test for systematic biases in cell type abundances
+between the two technologies.</p>
+<pre class="r"><code>library(edgeR)</code></pre>
+<pre><code>Loading required package: limma</code></pre>
+<pre><code>
+Attaching package: &#39;limma&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    plotMA</code></pre>
+<pre><code>
+Attaching package: &#39;edgeR&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:SingleCellExperiment&#39;:
+
+    cpm</code></pre>
+<pre class="r"><code>library(ggrepel)
+
+abundances_IMC &lt;- cur_IMC %&gt;% as_tibble() %&gt;%
+  group_by(sample_id, celltype) %&gt;%
+  summarize(count = n()) %&gt;%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %&gt;%
+  as.data.frame()</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;sample_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>rownames(abundances_IMC) &lt;- abundances_IMC$celltype
+abundances_IMC$celltype &lt;- NULL
+meta_IMC &lt;- data.frame(sample_id = colnames(abundances_IMC),
+                       patient_id = str_extract(colnames(abundances_IMC), &quot;[0-9]{8}&quot;),
+                       modality = &quot;IMC&quot;)
+
+abundances_IF &lt;- cur_mIF %&gt;% as_tibble() %&gt;%
+  group_by(sample_id, celltype) %&gt;%
+  summarize(count = n()) %&gt;%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %&gt;%
+  as.data.frame()</code></pre>
+<pre><code>`summarise()` has grouped output by &#39;sample_id&#39;. You can override using the
+`.groups` argument.</code></pre>
+<pre class="r"><code>rownames(abundances_IF) &lt;- abundances_IF$celltype
+abundances_IF$celltype &lt;- NULL
+meta_IF &lt;- data.frame(sample_id = colnames(abundances_IF),
+                       patient_id = str_extract(colnames(abundances_IF), &quot;[0-9]{8}&quot;),
+                       modality = &quot;IF&quot;)
+
+combined_df &lt;- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
+combined_meta &lt;- rbind(meta_IMC, meta_IF)
+
+# DA testing
+y.ab &lt;- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)</code></pre>
+<pre><code>Repeated column names found in count matrix</code></pre>
+<pre class="r"><code># Define the design matrix for the model: Add Patient ID to the model to account for matched design, add Location to account for different tumor regions, add tissue type as an additive factor
+design &lt;- model.matrix(~sample_id + modality, data = y.ab$samples)
+
+# Estimate NB and QL dispersion
+y.ab &lt;- estimateDisp(y.ab, design, trend=&quot;none&quot;)
+summary(y.ab$common.dispersion)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.3088  0.3088  0.3088  0.3088  0.3088  0.3088 </code></pre>
+<pre class="r"><code>plotBCV(y.ab, cex=1)</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/test-DA-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-1">
+Past versions of test-DA-1.png
+</button>
+</p>
+<div id="fig-test-DA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>fit.ab &lt;- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
+summary(fit.ab$var.prior)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.5219  0.5219  0.5219  0.5219  0.5219  0.5219 </code></pre>
+<pre class="r"><code>plotQLDisp(fit.ab, cex=1)</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/test-DA-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-2">
+Past versions of test-DA-2.png
+</button>
+</p>
+<div id="fig-test-DA-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># Test for differential abundance of cell types in PT vs met tissue and plot
+res &lt;- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
+summary(decideTests(res))</code></pre>
+<pre><code>       modalityIMC
+Down             2
+NotSig           4
+Up               2</code></pre>
+<pre class="r"><code>DA &lt;- topTags(res)$table
+
+DA$celltype &lt;- rownames(DA)
+DA$sign &lt;- DA$FDR&lt;0.05
+DA</code></pre>
+<pre><code>                  logFC   logCPM            F       PValue          FDR
+DC          1.916373078 14.37508 38.666652030 5.376868e-07 4.301494e-06
+Macrophage -1.249190067 16.41521 32.238955401 2.607631e-06 1.043053e-05
+Tcell      -0.414077176 17.43368 14.347632502 6.210677e-04 1.656181e-03
+BnTcell     0.873802180 15.61665  7.863148826 9.137547e-03 1.827509e-02
+other       0.124890696 17.43185  1.595139912 2.155641e-01 3.081731e-01
+Bcell      -0.470109545 15.53076  1.489046059 2.311298e-01 3.081731e-01
+Neutrophil  0.070199334 14.72275  0.039221830 8.442801e-01 9.219793e-01
+Tumor       0.009603927 18.67315  0.009742276 9.219793e-01 9.219793e-01
+             celltype  sign
+DC                 DC  TRUE
+Macrophage Macrophage  TRUE
+Tcell           Tcell  TRUE
+BnTcell       BnTcell  TRUE
+other           other FALSE
+Bcell           Bcell FALSE
+Neutrophil Neutrophil FALSE
+Tumor           Tumor FALSE</code></pre>
+<pre class="r"><code># Volcano plot
+ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
+  geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
+  theme_classic()</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/test-DA-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-3">
+Past versions of test-DA-3.png
+</button>
+</p>
+<div id="fig-test-DA-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># MA plot
+ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
+  geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
+  geom_abline(intercept = 0, slope = 0, color = &quot;dark red&quot;) +
+  theme_classic(base_size = 20)</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/test-DA-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-test-DA-4">
+Past versions of test-DA-4.png
+</button>
+</p>
+<div id="fig-test-DA-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="compare-expression-of-cell-types" class="section level2">
+<h2>Compare expression of cell types</h2>
+<p>As heatmaps</p>
+</div>
+<div id="marker-expression" class="section level2">
+<h2>Marker expression</h2>
+<p>Here, we will min-max scale the marker expression per image and
+compare binned rank averages.</p>
+<pre class="r"><code>cur_IMC &lt;-  lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IMC &lt;- sce_IMC[,sce_IMC$sample_id == k]
+  cur_sce_IMC &lt;- cur_sce_IMC[c(&quot;CD15&quot;, &quot;Ecad&quot;, &quot;CD3&quot;, &quot;CD11c&quot;, &quot;CD20&quot;, &quot;CD163&quot;),]
+  rownames(cur_sce_IMC) &lt;- c(&quot;CD15&quot;, &quot;CK&quot;, &quot;CD3&quot;, &quot;CD11c&quot;, &quot;CD20&quot;, &quot;CD163&quot;)
+  assay(cur_sce_IMC, &quot;scaled&quot;) &lt;- (assay(cur_sce_IMC, &quot;exprs&quot;) - 
+                                     rowMin(assay(cur_sce_IMC, &quot;exprs&quot;))) / 
+                                  (rowMax(assay(cur_sce_IMC, &quot;exprs&quot;)) - 
+                                     rowMin(assay(cur_sce_IMC, &quot;exprs&quot;)))
+  
+  cur_aggr_IMC &lt;- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IMC &lt;- assay(cur_sce_IMC, &quot;scaled&quot;)[x,]
+    cur_out &lt;- aggregate(cur_marker_IMC, by = list(ntile(cur_marker_IMC, 100)), mean)
+    cur_out$marker &lt;- x
+    return(cur_out)
+  })
+  cur_aggr_IMC &lt;- do.call(rbind, cur_aggr_IMC)
+  cur_aggr_IMC$sample_id &lt;- k 
+  
+  return(cur_aggr_IMC)
+})
+cur_IMC &lt;- do.call(rbind, cur_IMC)
+
+cur_IF &lt;- lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IF &lt;- sce_mIF[,sce_mIF$sample_id == k]
+  assay(cur_sce_IF, &quot;scaled&quot;) &lt;- (assay(cur_sce_IF, &quot;exprs&quot;) - 
+                                     rowMin(assay(cur_sce_IF, &quot;exprs&quot;))) / 
+                                  (rowMax(assay(cur_sce_IF, &quot;exprs&quot;)) - 
+                                     rowMin(assay(cur_sce_IF, &quot;exprs&quot;)))
+  
+  cur_aggr_IF &lt;- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IF &lt;- assay(cur_sce_IF, &quot;scaled&quot;)[x,]
+    cur_out &lt;- aggregate(cur_marker_IF, by = list(ntile(cur_marker_IF, 100)), mean)
+    cur_out$marker &lt;- x
+    return(cur_out)
+  })
+  cur_aggr_IF &lt;- do.call(rbind, cur_aggr_IF)
+  cur_aggr_IF$sample_id &lt;- k 
+  
+  return(cur_aggr_IF)
+})
+
+cur_IF &lt;- do.call(rbind, cur_IF)
+
+combined_df &lt;- merge(cur_IMC, cur_IF, by = c(&quot;Group.1&quot;, &quot;marker&quot;, &quot;sample_id&quot;), sort = FALSE)</code></pre>
+<p>Visualize the results</p>
+<pre class="r"><code>ggplot(combined_df) +
+  geom_line(aes(x.x, x.y, color = sample_id)) + 
+  facet_wrap(. ~ marker) + 
+  geom_abline(intercept = 0, slope = 1, color = &quot;dark red&quot;) + 
+  theme(legend.position = &quot;none&quot;) + xlab(&quot;Expression IMC&quot;) + ylab(&quot;Expression IF&quot;)</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-marker-expression-viz-1">
+Past versions of marker-expression-viz-1.png
+</button>
+</p>
+<div id="fig-marker-expression-viz-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">75d0a6d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-02
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">add09ed</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.3 (2022-03-10)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Catalina 10.15.7
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] ggrepel_0.9.1               edgeR_3.36.0               
+ [3] limma_3.50.3                forcats_0.5.1              
+ [5] stringr_1.4.0               dplyr_1.0.9                
+ [7] purrr_0.3.4                 readr_2.1.2                
+ [9] tidyr_1.2.0                 tibble_3.1.6               
+[11] ggplot2_3.3.5               tidyverse_1.3.1            
+[13] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0
+[15] Biobase_2.54.0              GenomicRanges_1.46.1       
+[17] GenomeInfoDb_1.30.1         IRanges_2.28.0             
+[19] S4Vectors_0.32.4            BiocGenerics_0.40.0        
+[21] MatrixGenerics_1.6.0        matrixStats_0.62.0         
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-157           bitops_1.0-7           fs_1.5.2              
+ [4] lubridate_1.8.0        httr_1.4.2             rprojroot_2.0.3       
+ [7] tools_4.1.3            backports_1.4.1        bslib_0.3.1           
+[10] utf8_1.2.2             R6_2.5.1               mgcv_1.8-40           
+[13] DBI_1.1.2              colorspace_2.0-3       withr_2.5.0           
+[16] tidyselect_1.1.2       compiler_4.1.3         git2r_0.30.1          
+[19] cli_3.3.0              rvest_1.0.2            xml2_1.3.3            
+[22] DelayedArray_0.20.0    labeling_0.4.2         sass_0.4.1            
+[25] scales_1.2.0           digest_0.6.29          rmarkdown_2.14        
+[28] XVector_0.34.0         pkgconfig_2.0.3        htmltools_0.5.2       
+[31] highr_0.9              dbplyr_2.1.1           fastmap_1.1.0         
+[34] rlang_1.0.2            readxl_1.4.0           rstudioapi_0.13       
+[37] farver_2.1.0           jquerylib_0.1.4        generics_0.1.2        
+[40] jsonlite_1.8.0         RCurl_1.98-1.6         magrittr_2.0.3        
+[43] GenomeInfoDbData_1.2.7 Matrix_1.4-1           Rcpp_1.0.8.3          
+[46] munsell_0.5.0          fansi_1.0.3            lifecycle_1.0.1       
+[49] stringi_1.7.6          whisker_0.4            yaml_2.3.5            
+[52] zlibbioc_1.40.0        grid_4.1.3             promises_1.2.0.1      
+[55] crayon_1.5.1           lattice_0.20-45        splines_4.1.3         
+[58] haven_2.5.0            hms_1.1.1              locfit_1.5-9.5        
+[61] knitr_1.39             pillar_1.7.0           reprex_2.0.1          
+[64] glue_1.6.2             evaluate_0.15          modelr_0.1.8          
+[67] vctrs_0.4.1            tzdb_0.3.0             httpuv_1.6.5          
+[70] cellranger_1.1.0       gtable_0.3.0           assertthat_0.2.1      
+[73] xfun_0.30              broom_0.8.0            later_1.3.0           
+[76] workflowr_1.7.0        ellipsis_0.3.2        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

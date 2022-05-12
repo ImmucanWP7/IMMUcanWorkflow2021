@@ -1,0 +1,116 @@
+---
+title: "Spillover correction"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Here we will perform spillover correction for the single-cell and image data.
+
+## Readin data and libraries
+
+```{r,  message=FALSE}
+library(imcRtools)
+library(CATALYST)
+library(cytomapper)
+
+sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+
+# Add column names
+colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
+```
+
+## Spillover matrix
+
+```{r read-data}
+sce_spill <- readSCEfromTXT("/Volumes/immucan_volume/processed_data/Panel_1/Batch20210304/compensation/20220201_IMMUcan_panel_1_1.09_compensation")
+assay(sce_spill, "exprs") <- asinh(counts(sce_spill)/5)
+
+plotSpotHeatmap(sce_spill)
+
+plotSpotHeatmap(sce_spill, log = FALSE, threshold = 70)
+
+bc_key <- as.numeric(unique(sce_spill$sample_mass))
+bc_key <- bc_key[order(bc_key)]
+
+sce_spill <- assignPrelim(sce_spill, bc_key = bc_key)
+sce_spill <- estCutoffs(sce_spill)
+sce_spill <- applyCutoffs(sce_spill)
+
+library(pheatmap)
+cur_table <- table(sce_spill$bc_id, sce_spill$sample_mass)
+
+pheatmap(log10(cur_table + 1),
+         cluster_rows = FALSE,
+         cluster_cols = FALSE)
+
+sce_spill <- filterPixels(sce_spill, minevents = 40, correct_pixels = TRUE)
+
+sce_spill <- computeSpillmat(sce_spill)
+
+isotope_list <- CATALYST::isotope_list
+isotope_list$Ar <- 80
+
+plotSpillmat(sce_spill, isotope_list = isotope_list)
+```
+
+## Single-cell spillover correction
+
+```{r}
+rowData(sce)$channel_name <- paste0(rowData(sce)$channel, "Di")
+sm <- metadata(sce_spill)$spillover_matrix
+sce <- compCytof(sce, sm, 
+                 transform = TRUE, cofactor = 1,
+                 isotope_list = isotope_list, 
+                 overwrite = FALSE)
+
+library(dittoSeq)
+library(patchwork)
+before <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+                           assay.x = "exprs", assay.y = "exprs") +
+    ggtitle("Before compensation")
+after <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+                          assay.x = "compexprs", assay.y = "compexprs") +
+    ggtitle("After compensation")
+before + after
+
+assay(sce, "counts") <- assay(sce, "compcounts") 
+assay(sce, "exprs") <- assay(sce, "compexprs") 
+assay(sce, "compcounts") <- assay(sce, "compexprs") <- NULL
+
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+```
+
+## Image compensation
+
+```{r}
+channelNames(images) <- rowData(sce)$channel_name
+
+library(BiocParallel)
+adapted_sm <- adaptSpillmat(sm, rowData(sce)$channel_name, 
+                            isotope_list = isotope_list)
+images_comp <- compImage(images, adapted_sm, BPPARAM = MulticoreParam(),
+                         overwrite = TRUE)
+channelNames(images_comp) <- rownames(sce)
+saveRDS(images_comp, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+```
+
+And we'll save the tiffs to disk:
+
+```{r}
+library(tiff)
+lapply(names(images_comp), function(x){
+  writeImage(as.array(images_comp[[x]])/(2^16 - 1), 
+             paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/comp_img/", x, ".tiff"),
+            bits.per.sample = 16)
+})
+```

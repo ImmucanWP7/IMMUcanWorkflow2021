@@ -1,0 +1,265 @@
+---
+title: "Comparison between IMC and IF"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script, we will compare the celltypes observed in mIF with those in IMC.
+
+## Load data
+
+First, we will read in the `SingleCellExperiment` objects storing the IMC and 
+IF data.
+
+```{r read-data, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+## Number of cells
+
+First, we will observe the number of cells per image.
+
+```{r number-of cells}
+no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+
+combined_df <- merge(no_IMC, no_mIF, by="sample_id", sort=FALSE)
+combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+
+# With patient as covariate
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y, color = patient_id), method='lm', formula= y~x,
+              fullrange=FALSE, se= FALSE) + 
+  theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+```
+
+## Cell type fractions
+
+Next, we will compare the cell type fractions between the technologies.
+
+```{r celltype-fractions, fig.width=10, fig.height=10}
+# Match cell types
+cur_mIF <- colData(sce_mIF)
+mIF_celltypes <- cur_mIF$celltype
+mIF_celltypes[grepl("Tumor", mIF_celltypes)] <- "Tumor"
+mIF_celltypes[is.na(mIF_celltypes)] <- "Tcell"
+cur_mIF$celltype <- factor(mIF_celltypes)
+
+cur_IMC <- colData(sce_IMC)
+IMC_celltypes <- cur_IMC$celltypes
+IMC_celltypes[IMC_celltypes %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")] <- "other"
+IMC_celltypes[IMC_celltypes %in% c("Treg", "CD4", "CD8")] <- "Tcell"
+IMC_celltypes[IMC_celltypes %in% c("BnCD4", "BnCD8")] <- "BnTcell"
+IMC_celltypes[IMC_celltypes == "B_cell"] <- "Bcell"
+cur_IMC$celltype <- factor(IMC_celltypes)
+
+frac_IMC <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_mIF <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+combined_df <- merge(frac_IMC, frac_mIF, by=c("sample_id", "celltype"), sort=FALSE)
+combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+
+ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
+  facet_wrap(.~celltype, scales = "fixed") 
+
+ggplot(combined_df) + 
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
+  facet_wrap(.~celltype, scales = "free") 
+```
+
+We will also now compute the correlation coefficients.
+
+```{r correlation}
+combined_df %>%
+  group_by(celltype) %>%
+  mutate(cor_all = cor(frac.x, frac.y)) %>%
+  ungroup() %>%
+  group_by(celltype, patient_id) %>%
+  summarize(cor = cor(frac.x, frac.y),
+            cor_all = mean(cor_all)) %>%
+  ggplot() +
+    geom_boxplot(aes(celltype, cor)) +
+    geom_point(aes(celltype, cor, color = patient_id)) +
+    geom_point(aes(celltype, cor_all), color = "dark red", size = 3) +
+    theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+
+And fit linear models
+
+## Perform differential abundance analysis
+
+We will next test for systematic biases in cell type abundances between the 
+two technologies.
+
+```{r test-DA}
+library(edgeR)
+library(ggrepel)
+
+abundances_IMC <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+rownames(abundances_IMC) <- abundances_IMC$celltype
+abundances_IMC$celltype <- NULL
+meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
+                       patient_id = str_extract(colnames(abundances_IMC), "[0-9]{8}"),
+                       modality = "IMC")
+
+abundances_IF <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+rownames(abundances_IF) <- abundances_IF$celltype
+abundances_IF$celltype <- NULL
+meta_IF <- data.frame(sample_id = colnames(abundances_IF),
+                       patient_id = str_extract(colnames(abundances_IF), "[0-9]{8}"),
+                       modality = "IF")
+
+combined_df <- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
+combined_meta <- rbind(meta_IMC, meta_IF)
+
+# DA testing
+y.ab <- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)
+
+# Define the design matrix for the model: Add Patient ID to the model to account for matched design, add Location to account for different tumor regions, add tissue type as an additive factor
+design <- model.matrix(~sample_id + modality, data = y.ab$samples)
+
+# Estimate NB and QL dispersion
+y.ab <- estimateDisp(y.ab, design, trend="none")
+summary(y.ab$common.dispersion)
+plotBCV(y.ab, cex=1)
+fit.ab <- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
+summary(fit.ab$var.prior)
+plotQLDisp(fit.ab, cex=1)
+
+# Test for differential abundance of cell types in PT vs met tissue and plot
+res <- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
+summary(decideTests(res))
+DA <- topTags(res)$table
+
+DA$celltype <- rownames(DA)
+DA$sign <- DA$FDR<0.05
+DA
+
+# Volcano plot
+ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
+  geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
+  theme_classic()
+
+# MA plot
+ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
+  geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
+  geom_abline(intercept = 0, slope = 0, color = "dark red") +
+  theme_classic(base_size = 20)
+```
+
+## Compare expression of cell types
+
+As heatmaps
+
+## Marker expression
+
+Here, we will min-max scale the marker expression per image and compare binned rank averages.
+
+```{r binned-ranks}
+cur_IMC <-  lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == k]
+  cur_sce_IMC <- cur_sce_IMC[c("CD15", "Ecad", "CD3", "CD11c", "CD20", "CD163"),]
+  rownames(cur_sce_IMC) <- c("CD15", "CK", "CD3", "CD11c", "CD20", "CD163")
+  assay(cur_sce_IMC, "scaled") <- (assay(cur_sce_IMC, "exprs") - 
+                                     rowMin(assay(cur_sce_IMC, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_IMC, "exprs")) - 
+                                     rowMin(assay(cur_sce_IMC, "exprs")))
+  
+  cur_aggr_IMC <- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IMC <- assay(cur_sce_IMC, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_IMC, by = list(ntile(cur_marker_IMC, 100)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_IMC <- do.call(rbind, cur_aggr_IMC)
+  cur_aggr_IMC$sample_id <- k 
+  
+  return(cur_aggr_IMC)
+})
+cur_IMC <- do.call(rbind, cur_IMC)
+
+cur_IF <- lapply(unique(sce_IMC$sample_id), function(k){
+  cur_sce_IF <- sce_mIF[,sce_mIF$sample_id == k]
+  assay(cur_sce_IF, "scaled") <- (assay(cur_sce_IF, "exprs") - 
+                                     rowMin(assay(cur_sce_IF, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_IF, "exprs")) - 
+                                     rowMin(assay(cur_sce_IF, "exprs")))
+  
+  cur_aggr_IF <- lapply(rownames(sce_mIF), function(x){
+    cur_marker_IF <- assay(cur_sce_IF, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_IF, by = list(ntile(cur_marker_IF, 100)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_IF <- do.call(rbind, cur_aggr_IF)
+  cur_aggr_IF$sample_id <- k 
+  
+  return(cur_aggr_IF)
+})
+
+cur_IF <- do.call(rbind, cur_IF)
+
+combined_df <- merge(cur_IMC, cur_IF, by = c("Group.1", "marker", "sample_id"), sort = FALSE)
+```
+
+Visualize the results
+
+```{r marker-expression-viz}
+ggplot(combined_df) +
+  geom_line(aes(x.x, x.y, color = sample_id)) + 
+  facet_wrap(. ~ marker) + 
+  geom_abline(intercept = 0, slope = 1, color = "dark red") + 
+  theme(legend.position = "none") + xlab("Expression IMC") + ylab("Expression IF")
+```
