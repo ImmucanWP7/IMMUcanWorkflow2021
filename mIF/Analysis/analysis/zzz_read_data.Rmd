@@ -1,0 +1,108 @@
+---
+title: "Read IFQuant data"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script, we will read in the mIF data that was processed by IFQuant.
+
+## Load data
+
+We will read in the tsv files that contain cells from the same region as 
+the IMC acquisition and store them in `SingleCellExperiment` objects.
+
+```{r load-data, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+cur_files <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration/",
+                        recursive = TRUE, pattern = ".tsv$", full.names = TRUE)
+
+cur_sces <- lapply(cur_files, function(x){
+  cur_data <- read.csv(x, sep = "\t")
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
+                                                         simplify = TRUE)[,1]
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+  colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
+  colData(cur_sce)$sample_id <- str_split(x, "/", simplify = TRUE)[,9]
+  colData(cur_sce)$patient_id <- str_extract(cur_sce$sample_id, "[0-9]{8}")
+  colData(cur_sce)$ROI <- str_split(cur_sce$sample_id, "_", simplify = TRUE)[,5]
+  return(cur_sce)
+})
+
+cur_colnames <- Reduce(intersect, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_sces <- lapply(cur_sces, function(x){
+  colData(x) <- colData(x)[,cur_colnames]
+  return(x)
+})
+
+sce <- do.call("cbind", cur_sces)
+
+# Transform counts
+assay(sce, "exprs") <- asinh(counts(sce))
+```
+
+## Cell type annotation
+
+We will now annotate the cells based on the celltype annotation key.
+
+```{r cell-type-annotation, message=FALSE}
+cur_key <- as.data.frame(read_csv("~/switchdrive/Institution/IMMUCan/Imaging_working_group/data_for_sharing/workflow_samples/mIF/phenotype_key.csv"))
+
+rownames(cur_key) <- cur_key$phenotype
+
+sce$celltype <- cur_key[sce$phenotype,2]
+sce$matched_celltype <- sce$celltype
+sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+```
+
+## Define colors 
+
+Here, we define colors for matched cell types and samples.
+
+```{r define-colors}
+library(RColorBrewer)
+color_vectors <- list()
+matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "Tcell", "Neutrophil", "Macrophage",
+                               "other", "DC", "Bcell", "BnTcell"))
+patient_id <- setNames(brewer.pal(8, "Set1"),
+                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371"))
+color_vectors$matched_celltype <- matched_celltype
+color_vectors$patient_id <- patient_id
+
+metadata(sce)$color_vectors <- color_vectors
+```
+
+## Add interaction graph
+
+Finally, we will add a 20µm expansion interaction graph.
+
+```{r buildSpatialGraph, message=FALSE}
+library(imcRtools)
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
+                         coords = c("nucleus.x", "nucleus.y"),
+                         threshold = 20, name = "expansion_20")
+```
+
+## Save object
+
+Finally, we will save the generated object
+
+```{r}
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+
