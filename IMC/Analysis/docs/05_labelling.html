@@ -37,7 +37,7 @@
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
 <link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="site_libs/datatables-binding-0.22/datatables.js"></script>
+<script src="site_libs/datatables-binding-0.23/datatables.js"></script>
 <link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="site_libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="site_libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
@@ -368,7 +368,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -379,8 +379,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -389,13 +389,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-05
+<strong>Last updated:</strong> 2022-05-30
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -418,18 +418,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -520,15 +523,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree9fbdaaca5847e2c31d04b731337bdc42f181e28dtargetblank9fbdaaca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/9fbdaaca5847e2c31d04b731337bdc42f181e28d" target="_blank">9fbdaac</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree9fbdaaca5847e2c31d04b731337bdc42f181e28dtargetblank9fbdaaca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -538,7 +541,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/9fbdaaca5847e2c31d04b731337bdc42f181e28d" target="_blank">9fbdaac</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -553,23 +556,16 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
     Ignored:    IMC/.DS_Store
-    Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
-    Ignored:    IMC/Analysis/analysis/.DS_Store
-    Ignored:    comparisons/.DS_Store
-    Ignored:    comparisons/.Rproj.user/
-    Ignored:    comparisons/analysis/.DS_Store
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
-    Ignored:    mIF/Analysis/analysis/.DS_Store
 
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
-    Modified:   IMC/Analysis/analysis/02_spillover_correction.Rmd
-    Modified:   IMC/Analysis/analysis/03_quality_control.Rmd
-    Modified:   IMC/Analysis/analysis/07_predict_celltypes.Rmd
+    Modified:   IMC/Analysis/analysis/05_labelling.Rmd
+    Modified:   IMC/Analysis/data/sample_metadata.csv
+    Deleted:    IMC/sample_metadata.csv
 
 </code></pre>
 <p>
@@ -618,10 +614,27 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/05_labelling.html" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+<td>
+Recompiled scripts
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/IMC/Analysis/analysis/05_labelling.Rmd" target="_blank">c22d4e1</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/IMC/Analysis/analysis/05_labelling.Rmd" target="_blank">c22d4e1</a>
 </td>
 <td>
 nilseling
@@ -652,12 +665,7 @@ library(stringr)
 
 sce &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)
 images &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds&quot;)
-masks &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds&quot;)
-
-# Here we exclude sample 10072131 and 10074350 as they will be replaced
-images &lt;- images[!grepl(&quot;10072131|10074350&quot;, names(images))]
-masks &lt;- masks[!grepl(&quot;10072131|10074350&quot;, names(masks))]
-sce &lt;- sce[,!grepl(&quot;10072131|10074350&quot;, sce$sample_id)]</code></pre>
+masks &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds&quot;)</code></pre>
 </div>
 <div id="label-images" class="section level2">
 <h2>Label images</h2>
@@ -773,7 +781,7 @@ table(sce$cell_labels, sce$indication)</code></pre>
   Stroma       210    90   203   537   469
   Treg          30    21    84    16    64
   Tumor       1100  1053  2356  3023  2125
-  unlabelled  5484  7223 18213 12185 13021</code></pre>
+  unlabelled 11815 17558 18213 12185 13021</code></pre>
 </div>
 <div id="define-colour-vector" class="section level2">
 <h2>Define colour vector</h2>
@@ -807,6 +815,43 @@ pie(c(rep(1,length(metadata(sce)$colour_vectors$cell_types))),
     col = metadata(sce)$colour_vectors$cell_types,
     labels = names(metadata(sce)$colour_vectors$cell_types))</code></pre>
 <p><img src="figure/05_labelling.Rmd/define-color-vector-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-define-color-vector-1">
+Past versions of define-color-vector-1.png
+</button>
+</p>
+<div id="fig-define-color-vector-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/05_labelling.Rmd/define-color-vector-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="quality-control-of-labelling-results" class="section level2">
 <h2>Quality control of labelling results</h2>
@@ -853,7 +898,7 @@ as_tibble(colData(sce)) %&gt;%
 <pre><code># A tibble: 1 × 1
   labelled_cells
            &lt;dbl&gt;
-1          0.329</code></pre>
+1          0.274</code></pre>
 <pre class="r"><code># Percent images labelled
 as_tibble(colData(sce)) %&gt;% 
   group_by(sample_id) %&gt;%
@@ -863,7 +908,7 @@ as_tibble(colData(sce)) %&gt;%
 <pre><code># A tibble: 1 × 1
   labelled_images
             &lt;dbl&gt;
-1           0.968</code></pre>
+1           0.769</code></pre>
 <pre class="r"><code># Percent patients labelled
 as_tibble(colData(sce)) %&gt;% 
   group_by(patient_id) %&gt;%
@@ -873,7 +918,7 @@ as_tibble(colData(sce)) %&gt;%
 <pre><code># A tibble: 1 × 1
   labelled_samples
              &lt;dbl&gt;
-1                1</code></pre>
+1              0.8</code></pre>
 <pre class="r"><code># Percent of cells labelled per image
 as_tibble(colData(sce)) %&gt;% 
   group_by(sample_id) %&gt;%
@@ -881,69 +926,85 @@ as_tibble(colData(sce)) %&gt;%
             number_cells = n()) %&gt;%
   as.data.frame()</code></pre>
 <pre><code>                                                 sample_id labelled_cells
-1  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001    0.710632990
-2  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002    0.433178464
-3  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_003    0.280059193
-4  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_004    0.124396584
-5  IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001    0.639014580
-6  IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_002    0.119863014
-7  IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_003    0.054565702
-8  IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_004    0.409899459
-9  IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_005    0.763002180
-10 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_006    0.437348143
-11 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_007    0.106520517
-12 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008    0.266721718
-13 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005    0.229921819
-14 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_006    0.139780577
-15 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_007    0.382171645
-16 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_008    0.377203874
-17 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_001    0.759333333
-18 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_002    0.103284672
-19 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_003    0.086135896
-20 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004    0.003125751
-21   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_001    0.865542924
-22   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_002    0.040826365
-23   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_003    0.118426867
-24   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_004    0.129854729
-25 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_001    0.350345561
-26 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_002    0.140919367
-27 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_003    0.731152993
-28 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_004    0.362465501
-29 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_001    0.319139399
-30 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_002    0.000000000
-31 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_003    0.648338608
+1       IMMUcan_2022_WFLOW_10034294-GI-VAR-TIS-UNST-03_001    0.000000000
+2       IMMUcan_2022_WFLOW_10034294-GI-VAR-TIS-UNST-03_002    0.000000000
+3       IMMUcan_2022_WFLOW_10034294-GI-VAR-TIS-UNST-03_003    0.000000000
+4       IMMUcan_2022_WFLOW_10034294-GI-VAR-TIS-UNST-03_004    0.000000000
+5  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001    0.710632990
+6  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002    0.433178464
+7  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_003    0.280059193
+8  IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_004    0.124396584
+9  IMMUcan_2022_WFLOW_10063152-SPECT-VAR-TIS-01-IMC-01_001    0.000000000
+10 IMMUcan_2022_WFLOW_10063152-SPECT-VAR-TIS-01-IMC-01_002    0.000000000
+11 IMMUcan_2022_WFLOW_10063152-SPECT-VAR-TIS-01-IMC-01_003    0.000000000
+12 IMMUcan_2022_WFLOW_10063152-SPECT-VAR-TIS-01-IMC-01_004    0.000000000
+13 IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001    0.639014580
+14 IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_002    0.119863014
+15 IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_003    0.054565702
+16 IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_004    0.409899459
+17 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_005    0.763002180
+18 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_006    0.437348143
+19 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_007    0.106520517
+20 IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008    0.266721718
+21 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005    0.229921819
+22 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_006    0.139780577
+23 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_007    0.382171645
+24 IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_008    0.377203874
+25 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_001    0.759333333
+26 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_002    0.103284672
+27 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_003    0.086135896
+28 IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004    0.003125751
+29   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_001    0.865542924
+30   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_002    0.040826365
+31   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_003    0.118426867
+32   IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_004    0.129854729
+33 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_001    0.350345561
+34 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_002    0.140919367
+35 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_003    0.731152993
+36 IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_004    0.362465501
+37 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_001    0.319139399
+38 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_002    0.000000000
+39 IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_003    0.648338608
    number_cells
-1          3207
-2          3659
-3          2703
-4          2693
-5          1989
-6          1752
-7          1796
-8          2586
-9          3211
-10         2881
-11         3558
-12         3633
-13         2814
-14         2461
-15         2109
-16         4027
-17         3000
-18         2740
-19         2914
-20         4159
-21         2551
-22         2033
-23         2263
-24         3373
-25         1881
-26         1327
-27         1804
-28         3261
-29         2231
-30         2471
-31         2528</code></pre>
+1          3107
+2          1739
+3          2187
+4          3302
+5          3207
+6          3659
+7          2703
+8          2693
+9          1744
+10         1127
+11         1826
+12         1634
+13         1989
+14         1752
+15         1796
+16         2586
+17         3211
+18         2881
+19         3558
+20         3633
+21         2814
+22         2461
+23         2109
+24         4027
+25         3000
+26         2740
+27         2914
+28         4159
+29         2551
+30         2033
+31         2263
+32         3373
+33         1881
+34         1327
+35         1804
+36         3261
+37         2231
+38         2471
+39         2528</code></pre>
 <p>We will check how balanced the classes are across the images.</p>
 <pre class="r"><code># Total cells per class
 as_tibble(colData(sce)) %&gt;%
@@ -966,7 +1027,7 @@ as_tibble(colData(sce)) %&gt;%
 13      Stroma         1509
 14        Treg          215
 15       Tumor         9657
-16  unlabelled        56126</code></pre>
+16  unlabelled        72792</code></pre>
 <pre class="r"><code># Total cells per class and image
 as_tibble(colData(sce)) %&gt;%
   filter(cell_labels != &quot;unlabelled&quot;) %&gt;%
@@ -1010,6 +1071,43 @@ dittoHeatmap(agr_sce[cur_markers,], assay = &quot;exprs&quot;,
                                      cell_labels = metadata(sce)$colour_vectors$cell_types,
                                      indication = metadata(sce)$colour_vectors$Indication))</code></pre>
 <p><img src="figure/05_labelling.Rmd/quality-control-4-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-quality-control-4-1">
+Past versions of quality-control-4-1.png
+</button>
+</p>
+<div id="fig-quality-control-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/05_labelling.Rmd/quality-control-4-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Centered and scaled
 dittoHeatmap(agr_sce[cur_markers,], assay = &quot;exprs&quot;,
             annot.by = c(&quot;patient_id&quot;, &quot;cell_labels&quot;, &quot;indication&quot;), 
@@ -1020,6 +1118,43 @@ dittoHeatmap(agr_sce[cur_markers,], assay = &quot;exprs&quot;,
             heatmap.colors = colorRampPalette(c(&quot;dark blue&quot;, &quot;white&quot;, &quot;dark red&quot;))(100),
             breaks = seq(-3, 3, length.out = 101))</code></pre>
 <p><img src="figure/05_labelling.Rmd/quality-control-4-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-quality-control-4-2">
+Past versions of quality-control-4-2.png
+</button>
+</p>
+<div id="fig-quality-control-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/05_labelling.Rmd/quality-control-4-2.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Finally, we will represent the gated cells on tSNE.</p>
 <pre class="r"><code>cur_unlab_sce &lt;- sce[,sce$cell_labels == &quot;unlabelled&quot;]
 cur_lab_sce &lt;- sce[,sce$cell_labels != &quot;unlabelled&quot;]
@@ -1036,6 +1171,43 @@ ggplot() +
     scale_color_manual(values = metadata(sce)$colour_vectors$cell_types) + 
     theme_bw()</code></pre>
 <p><img src="figure/05_labelling.Rmd/tsne-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-tsne-1">
+Past versions of tsne-1.png
+</button>
+</p>
+<div id="fig-tsne-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/05_labelling.Rmd/tsne-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="save-sce-object" class="section level1">
 <h1>Save SCE object</h1>
@@ -1049,13 +1221,13 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.1.3 (2022-03-10)
+<pre><code>R version 4.2.0 (2022-04-22)
 Platform: x86_64-apple-darwin17.0 (64-bit)
 Running under: macOS Catalina 10.15.7
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -1066,75 +1238,75 @@ attached base packages:
 
 other attached packages:
  [1] viridis_0.6.2               viridisLite_0.4.0          
- [3] dittoSeq_1.7.0              ggplot2_3.3.5              
- [5] scran_1.22.1                scuttle_1.4.0              
+ [3] dittoSeq_1.8.0              ggplot2_3.3.6              
+ [5] scran_1.24.0                scuttle_1.6.2              
  [7] dplyr_1.0.9                 stringr_1.4.0              
- [9] cytomapper_1.7.1            SingleCellExperiment_1.16.0
-[11] SummarizedExperiment_1.24.0 Biobase_2.54.0             
-[13] GenomicRanges_1.46.1        GenomeInfoDb_1.30.1        
-[15] IRanges_2.28.0              S4Vectors_0.32.4           
-[17] BiocGenerics_0.40.0         MatrixGenerics_1.6.0       
-[19] matrixStats_0.62.0          EBImage_4.36.0             
+ [9] cytomapper_1.8.0            SingleCellExperiment_1.18.0
+[11] SummarizedExperiment_1.26.1 Biobase_2.56.0             
+[13] GenomicRanges_1.48.0        GenomeInfoDb_1.32.2        
+[15] IRanges_2.30.0              S4Vectors_0.34.0           
+[17] BiocGenerics_0.42.0         MatrixGenerics_1.8.0       
+[19] matrixStats_0.62.0          EBImage_4.38.0             
 [21] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] systemfonts_1.0.4         plyr_1.8.7               
   [3] igraph_1.3.1              sp_1.4-7                 
-  [5] shinydashboard_0.7.2      BiocParallel_1.28.3      
+  [5] shinydashboard_0.7.2      BiocParallel_1.30.2      
   [7] crosstalk_1.2.0           digest_0.6.29            
   [9] htmltools_0.5.2           tiff_0.1-11              
  [11] fansi_1.0.3               magrittr_2.0.3           
- [13] ScaledMatrix_1.2.0        cluster_2.1.2            
- [15] limma_3.50.3              svgPanZoom_0.3.4         
+ [13] ScaledMatrix_1.4.0        cluster_2.1.3            
+ [15] limma_3.52.1              svgPanZoom_0.3.4         
  [17] svglite_2.1.0             jpeg_0.1-9               
  [19] colorspace_2.0-3          ggrepel_0.9.1            
- [21] xfun_0.30                 callr_3.7.0              
+ [21] xfun_0.31                 callr_3.7.0              
  [23] crayon_1.5.1              RCurl_1.98-1.6           
  [25] jsonlite_1.8.0            glue_1.6.2               
  [27] gtable_0.3.0              nnls_1.4                 
- [29] zlibbioc_1.40.0           XVector_0.34.0           
- [31] DelayedArray_0.20.0       BiocSingular_1.10.0      
- [33] Rhdf5lib_1.16.0           HDF5Array_1.22.1         
+ [29] zlibbioc_1.42.0           XVector_0.36.0           
+ [31] DelayedArray_0.22.0       BiocSingular_1.12.0      
+ [33] Rhdf5lib_1.18.2           HDF5Array_1.24.0         
  [35] abind_1.4-5               scales_1.2.0             
  [37] pheatmap_1.0.12           DBI_1.1.2                
- [39] edgeR_3.36.0              Rcpp_1.0.8.3             
+ [39] edgeR_3.38.1              Rcpp_1.0.8.3             
  [41] xtable_1.8-4              dqrng_0.3.0              
- [43] rsvd_1.0.5                DT_0.22                  
- [45] metapod_1.2.0             htmlwidgets_1.5.4        
- [47] httr_1.4.2                RColorBrewer_1.1-3       
+ [43] rsvd_1.0.5                DT_0.23                  
+ [45] metapod_1.4.0             htmlwidgets_1.5.4        
+ [47] httr_1.4.3                RColorBrewer_1.1-3       
  [49] ellipsis_0.3.2            farver_2.1.0             
  [51] pkgconfig_2.0.3           sass_0.4.1               
  [53] locfit_1.5-9.5            utf8_1.2.2               
  [55] labeling_0.4.2            tidyselect_1.1.2         
  [57] rlang_1.0.2               later_1.3.0              
- [59] munsell_0.5.0             tools_4.1.3              
+ [59] munsell_0.5.0             tools_4.2.0              
  [61] cli_3.3.0                 generics_0.1.2           
  [63] ggridges_0.5.3            evaluate_0.15            
  [65] fastmap_1.1.0             fftwtools_0.9-11         
  [67] yaml_2.3.5                processx_3.5.3           
  [69] knitr_1.39                fs_1.5.2                 
- [71] purrr_0.3.4               sparseMatrixStats_1.6.0  
+ [71] purrr_0.3.4               sparseMatrixStats_1.8.0  
  [73] whisker_0.4               mime_0.12                
- [75] compiler_4.1.3            rstudioapi_0.13          
+ [75] compiler_4.2.0            rstudioapi_0.13          
  [77] beeswarm_0.4.0            png_0.1-7                
- [79] tibble_3.1.6              statmod_1.4.36           
+ [79] tibble_3.1.7              statmod_1.4.36           
  [81] bslib_0.3.1               stringi_1.7.6            
  [83] highr_0.9                 ps_1.7.0                 
- [85] lattice_0.20-45           bluster_1.4.0            
+ [85] lattice_0.20-45           bluster_1.6.0            
  [87] Matrix_1.4-1              vctrs_0.4.1              
  [89] pillar_1.7.0              lifecycle_1.0.1          
- [91] rhdf5filters_1.6.0        jquerylib_0.1.4          
- [93] BiocNeighbors_1.12.0      cowplot_1.1.1            
+ [91] rhdf5filters_1.8.0        jquerylib_0.1.4          
+ [93] BiocNeighbors_1.14.0      cowplot_1.1.1            
  [95] bitops_1.0-7              irlba_2.3.5              
  [97] raster_3.5-15             httpuv_1.6.5             
  [99] R6_2.5.1                  promises_1.2.0.1         
 [101] gridExtra_2.3             vipor_0.4.5              
 [103] codetools_0.2-18          assertthat_0.2.1         
-[105] rhdf5_2.38.1              rprojroot_2.0.3          
-[107] withr_2.5.0               GenomeInfoDbData_1.2.7   
-[109] parallel_4.1.3            terra_1.5-21             
-[111] grid_4.1.3                beachmat_2.10.0          
-[113] rmarkdown_2.14            DelayedMatrixStats_1.16.0
+[105] rhdf5_2.40.0              rprojroot_2.0.3          
+[107] withr_2.5.0               GenomeInfoDbData_1.2.8   
+[109] parallel_4.2.0            terra_1.5-21             
+[111] grid_4.2.0                beachmat_2.12.0          
+[113] rmarkdown_2.14            DelayedMatrixStats_1.18.0
 [115] git2r_0.30.1              getPass_0.2-2            
 [117] shiny_1.7.1               ggbeeswarm_0.6.0         </code></pre>
 </div>

@@ -101,8 +101,8 @@ color_vectors <- list()
 matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
                              c("Tumor", "Tcell", "Neutrophil", "Macrophage",
                                "other", "DC", "Bcell", "BnTcell"))
-patient_id <- setNames(brewer.pal(8, "Set1"),
-                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371"))
+patient_id <- setNames(brewer.pal(10, "Set3"),
+                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10063152", "10034294"))
 color_vectors$matched_celltype <- matched_celltype
 color_vectors$patient_id <- patient_id
 

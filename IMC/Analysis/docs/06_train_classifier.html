@@ -381,7 +381,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-05
+<strong>Last updated:</strong> 2022-05-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,15 +512,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree9fbdaaca5847e2c31d04b731337bdc42f181e28dtargetblank9fbdaaca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/9fbdaaca5847e2c31d04b731337bdc42f181e28d" target="_blank">9fbdaac</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree9fbdaaca5847e2c31d04b731337bdc42f181e28dtargetblank9fbdaaca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +530,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/9fbdaaca5847e2c31d04b731337bdc42f181e28d" target="_blank">9fbdaac</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -545,23 +545,16 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
     Ignored:    IMC/.DS_Store
-    Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
-    Ignored:    IMC/Analysis/analysis/.DS_Store
-    Ignored:    comparisons/.DS_Store
-    Ignored:    comparisons/.Rproj.user/
-    Ignored:    comparisons/analysis/.DS_Store
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
-    Ignored:    mIF/Analysis/analysis/.DS_Store
 
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
-    Modified:   IMC/Analysis/analysis/02_spillover_correction.Rmd
-    Modified:   IMC/Analysis/analysis/03_quality_control.Rmd
-    Modified:   IMC/Analysis/analysis/07_predict_celltypes.Rmd
+    Modified:   IMC/Analysis/analysis/05_labelling.Rmd
+    Modified:   IMC/Analysis/data/sample_metadata.csv
+    Deleted:    IMC/sample_metadata.csv
 
 </code></pre>
 <p>
@@ -610,10 +603,27 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/06_train_classifier.html" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+<td>
+Recompiled scripts
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/IMC/Analysis/analysis/06_train_classifier.Rmd" target="_blank">c22d4e1</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/IMC/Analysis/analysis/06_train_classifier.Rmd" target="_blank">c22d4e1</a>
 </td>
 <td>
 nilseling
@@ -732,6 +742,43 @@ only parameter that has been tuned is <code>mtry</code>.</p>
                     ymax = Accuracy + AccuracySD),
                 width = 0.4)</code></pre>
 <p><img src="figure/06_train_classifier.Rmd/accuracy-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-accuracy-1">
+Past versions of accuracy-1.png
+</button>
+</p>
+<div id="fig-accuracy-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/06_train_classifier.Rmd/accuracy-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We can also compute the confusion matrix:</p>
 <pre class="r"><code>confusionMatrix(rffit)</code></pre>
 <pre><code>Cross-Validated (5 fold) Confusion Matrix 
@@ -778,6 +825,43 @@ Prediction   NK_cell  pDC Stroma Treg Tumor
 <pre class="r"><code>cur_varImp &lt;- varImp(rffit)
 plot(cur_varImp)</code></pre>
 <p><img src="figure/06_train_classifier.Rmd/variable-importance-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-variable-importance-1">
+Past versions of variable-importance-1.png
+</button>
+</p>
+<div id="fig-variable-importance-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/06_train_classifier.Rmd/variable-importance-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Finally, we will validate the model using the test data.</p>
 <pre class="r"><code># Add dummy variables
 cur_mat &lt;- t(assay(test_sce, &quot;exprs&quot;)[!grepl(&quot;DNA|Histone&quot;, rownames(test_sce)),])
@@ -904,6 +988,43 @@ Balanced Accuracy      0.818091       0.94988    0.942883       0.9749</code></p
   ylab(&quot;Sensitivity (TPR)&quot;) +
   xlab(&quot;1 - Specificity (FPR)&quot;)</code></pre>
 <p><img src="figure/06_train_classifier.Rmd/model-testing-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-model-testing-1">
+Past versions of model-testing-1.png
+</button>
+</p>
+<div id="fig-model-testing-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/06_train_classifier.Rmd/model-testing-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We will also observe the distribution of classification probabilities
 per image and class:</p>
 <pre class="r"><code>cur_pred &lt;- predict(rffit, 
@@ -920,6 +1041,43 @@ cur_pred %&gt;%
   theme(panel.background = element_blank(), 
         axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
 <p><img src="figure/06_train_classifier.Rmd/prediciton-probability-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-prediciton-probability-1">
+Past versions of prediciton-probability-1.png
+</button>
+</p>
+<div id="fig-prediciton-probability-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/06_train_classifier.Rmd/prediciton-probability-1.png" target="_blank">f7cc35b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-11
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -929,13 +1087,13 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.1.3 (2022-03-10)
+<pre><code>R version 4.2.0 (2022-04-22)
 Platform: x86_64-apple-darwin17.0 (64-bit)
 Running under: macOS Catalina 10.15.7
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -947,43 +1105,43 @@ attached base packages:
 other attached packages:
  [1] doParallel_1.0.17           iterators_1.0.14           
  [3] foreach_1.5.2               viridis_0.6.2              
- [5] viridisLite_0.4.0           dittoSeq_1.7.0             
+ [5] viridisLite_0.4.0           dittoSeq_1.8.0             
  [7] forcats_0.5.1               stringr_1.4.0              
  [9] dplyr_1.0.9                 purrr_0.3.4                
 [11] readr_2.1.2                 tidyr_1.2.0                
-[13] tibble_3.1.6                tidyverse_1.3.1            
-[15] scater_1.22.0               scuttle_1.4.0              
-[17] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0
-[19] Biobase_2.54.0              GenomicRanges_1.46.1       
-[21] GenomeInfoDb_1.30.1         IRanges_2.28.0             
-[23] S4Vectors_0.32.4            BiocGenerics_0.40.0        
-[25] MatrixGenerics_1.6.0        matrixStats_0.62.0         
+[13] tibble_3.1.7                tidyverse_1.3.1            
+[15] scater_1.24.0               scuttle_1.6.2              
+[17] SingleCellExperiment_1.18.0 SummarizedExperiment_1.26.1
+[19] Biobase_2.56.0              GenomicRanges_1.48.0       
+[21] GenomeInfoDb_1.32.2         IRanges_2.30.0             
+[23] S4Vectors_0.34.0            BiocGenerics_0.42.0        
+[25] MatrixGenerics_1.8.0        matrixStats_0.62.0         
 [27] caret_6.0-92                lattice_0.20-45            
-[29] ggplot2_3.3.5               workflowr_1.7.0            
+[29] ggplot2_3.3.6               workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] readxl_1.4.0              backports_1.4.1          
-  [3] plyr_1.8.7                splines_4.1.3            
-  [5] BiocParallel_1.28.3       listenv_0.8.0            
+  [3] plyr_1.8.7                splines_4.2.0            
+  [5] BiocParallel_1.30.2       listenv_0.8.0            
   [7] digest_0.6.29             htmltools_0.5.2          
   [9] fansi_1.0.3               magrittr_2.0.3           
- [11] ScaledMatrix_1.2.0        tzdb_0.3.0               
- [13] recipes_0.2.0             globals_0.14.0           
+ [11] ScaledMatrix_1.4.0        tzdb_0.3.0               
+ [13] recipes_0.2.0             globals_0.15.0           
  [15] modelr_0.1.8              gower_1.0.0              
  [17] hardhat_0.2.0             colorspace_2.0-3         
  [19] rvest_1.0.2               ggrepel_0.9.1            
- [21] haven_2.5.0               xfun_0.30                
+ [21] haven_2.5.0               xfun_0.31                
  [23] callr_3.7.0               crayon_1.5.1             
  [25] RCurl_1.98-1.6            jsonlite_1.8.0           
  [27] survival_3.3-1            glue_1.6.2               
  [29] gtable_0.3.0              ipred_0.9-12             
- [31] zlibbioc_1.40.0           XVector_0.34.0           
- [33] DelayedArray_0.20.0       BiocSingular_1.10.0      
+ [31] zlibbioc_1.42.0           XVector_0.36.0           
+ [33] DelayedArray_0.22.0       BiocSingular_1.12.0      
  [35] future.apply_1.9.0        scales_1.2.0             
  [37] pheatmap_1.0.12           DBI_1.1.2                
  [39] Rcpp_1.0.8.3              proxy_0.4-26             
  [41] rsvd_1.0.5                lava_1.6.10              
- [43] prodlim_2019.11.13        httr_1.4.2               
+ [43] prodlim_2019.11.13        httr_1.4.3               
  [45] RColorBrewer_1.1-3        ellipsis_0.3.2           
  [47] farver_2.1.0              pkgconfig_2.0.3          
  [49] nnet_7.3-17               sass_0.4.1               
@@ -991,7 +1149,7 @@ loaded via a namespace (and not attached):
  [53] labeling_0.4.2            tidyselect_1.1.2         
  [55] rlang_1.0.2               reshape2_1.4.4           
  [57] later_1.3.0               munsell_0.5.0            
- [59] cellranger_1.1.0          tools_4.1.3              
+ [59] cellranger_1.1.0          tools_4.2.0              
  [61] cli_3.3.0                 generics_0.1.2           
  [63] ggridges_0.5.3            broom_0.8.0              
  [65] evaluate_0.15             fastmap_1.1.0            
@@ -999,27 +1157,27 @@ loaded via a namespace (and not attached):
  [69] processx_3.5.3            knitr_1.39               
  [71] fs_1.5.2                  randomForest_4.7-1       
  [73] future_1.25.0             nlme_3.1-157             
- [75] sparseMatrixStats_1.6.0   whisker_0.4              
- [77] xml2_1.3.3                compiler_4.1.3           
+ [75] sparseMatrixStats_1.8.0   whisker_0.4              
+ [77] xml2_1.3.3                compiler_4.2.0           
  [79] rstudioapi_0.13           beeswarm_0.4.0           
  [81] e1071_1.7-9               reprex_2.0.1             
  [83] bslib_0.3.1               stringi_1.7.6            
  [85] highr_0.9                 ps_1.7.0                 
  [87] Matrix_1.4-1              vctrs_0.4.1              
  [89] pillar_1.7.0              lifecycle_1.0.1          
- [91] jquerylib_0.1.4           BiocNeighbors_1.12.0     
+ [91] jquerylib_0.1.4           BiocNeighbors_1.14.0     
  [93] cowplot_1.1.1             data.table_1.14.2        
  [95] bitops_1.0-7              irlba_2.3.5              
  [97] httpuv_1.6.5              R6_2.5.1                 
  [99] promises_1.2.0.1          gridExtra_2.3            
 [101] vipor_0.4.5               parallelly_1.31.1        
-[103] codetools_0.2-18          MASS_7.3-55              
+[103] codetools_0.2-18          MASS_7.3-56              
 [105] assertthat_0.2.1          rprojroot_2.0.3          
-[107] withr_2.5.0               GenomeInfoDbData_1.2.7   
-[109] hms_1.1.1                 grid_4.1.3               
-[111] rpart_4.1.16              beachmat_2.10.0          
+[107] withr_2.5.0               GenomeInfoDbData_1.2.8   
+[109] hms_1.1.1                 grid_4.2.0               
+[111] rpart_4.1.16              beachmat_2.12.0          
 [113] timeDate_3043.102         class_7.3-20             
-[115] rmarkdown_2.14            DelayedMatrixStats_1.16.0
+[115] rmarkdown_2.14            DelayedMatrixStats_1.18.0
 [117] git2r_0.30.1              getPass_0.2-2            
 [119] pROC_1.18.0               lubridate_1.8.0          
 [121] ggbeeswarm_0.6.0         </code></pre>
