@@ -24,8 +24,9 @@ the IMC acquisition and store them in `SingleCellExperiment` objects.
 library(SingleCellExperiment)
 library(tidyverse)
 
-cur_files <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration/",
-                        recursive = TRUE, pattern = ".tsv$", full.names = TRUE)
+cur_files <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration_20220523/",
+                        recursive = TRUE, 
+                        pattern = "cells_properties_ROI_coordinates.tsv.gz", full.names = TRUE)
 
 cur_sces <- lapply(cur_files, function(x){
   cur_data <- read.csv(x, sep = "\t")

@@ -263,3 +263,13 @@ ggplot(combined_df) +
   geom_abline(intercept = 0, slope = 1, color = "dark red") + 
   theme(legend.position = "none") + xlab("Expression IMC") + ylab("Expression IF")
 ```
+
+## Visualization on images
+
+We will next plot the location of celltypes on the images.
+
+```{r, image-viz}
+
+
+
+```
