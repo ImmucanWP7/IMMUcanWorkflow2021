@@ -389,7 +389,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-30
+<strong>Last updated:</strong> 2022-06-22
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -520,15 +520,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -538,7 +538,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -553,16 +553,23 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    Alignment/
     Ignored:    IMC/.DS_Store
+    Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    comparisons/.Rproj.user/
+    Ignored:    comparisons/analysis/figure/
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
 
+Untracked files:
+    Untracked:  mIF/Analysis/docs/zzz_read_data.html
+
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
-    Modified:   IMC/Analysis/analysis/05_labelling.Rmd
-    Modified:   IMC/Analysis/data/sample_metadata.csv
-    Deleted:    IMC/sample_metadata.csv
+    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Modified:   mIF/Analysis/analysis/zzz_read_data.Rmd
 
 </code></pre>
 <p>
@@ -609,6 +616,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/04_sample_correction.html" target="_blank">8d1f8ec</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-30
+</td>
+<td>
+Recompiled workflow
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -692,8 +716,8 @@ datatable(data.frame(DataFrame(left = merge_info$left,
           right = merge_info$right,
           batch.size = merge_info$batch.size,
           max_lost_var = rowMax(merge_info$lost.var))))</code></pre>
-<div id="htmlwidget-bbe1b31df61c64cf617b" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-bbe1b31df61c64cf617b">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9"],["10074832",["10074832","10071582"],["10074832","10071582","10068868"],["10074832","10071582","10068868","10073140"],["10074832","10071582","10068868","10073140","10074349"],["10074832","10071582","10068868","10073140","10074349","10061074"],["10074832","10071582","10068868","10073140","10074349","10061074","10034294"],["10074832","10071582","10068868","10073140","10074349","10061074","10034294","10067433"],["10074832","10071582","10068868","10073140","10074349","10061074","10034294","10067433","10063152"]],["10071582","10068868","10073140","10074349","10061074","10034294","10067433","10063152","10075371"],[0.309866331927254,0.423905373907904,0.592665536199716,0.479895502038998,0.669490812528406,0.688354491001786,0.572641241446435,0.689858146623344,0.685267382905631],[0.0170471598126579,0.061187668826545,0.092086352909336,0.070180483358489,0.104099947137267,0.103474586849618,0.128484559404394,0.158742690554211,0.133885365851278]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>left<\/th>\n      <th>right<\/th>\n      <th>batch.size<\/th>\n      <th>max_lost_var<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-28341fb94a6840e4640a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-28341fb94a6840e4640a">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9"],["10074832",["10074832","10071582"],["10074832","10071582","10068868"],["10074832","10071582","10068868","10073140"],["10074832","10071582","10068868","10073140","10074349"],["10074832","10071582","10068868","10073140","10074349","10034294"],["10074832","10071582","10068868","10073140","10074349","10034294","10061074"],["10074832","10071582","10068868","10073140","10074349","10034294","10061074","10067433"],["10074832","10071582","10068868","10073140","10074349","10034294","10061074","10067433","10063152"]],["10071582","10068868","10073140","10074349","10034294","10061074","10067433","10063152","10075371"],[0.309075428897206,0.426890947049041,0.599225584400371,0.481008650616716,0.691120229918873,0.675795482048881,0.537581618606863,0.69360995480725,0.685903223947546],[0.0166139733516016,0.0603759498407664,0.0906806863975654,0.070399522658136,0.0789088850446712,0.10708990066343,0.128113319256661,0.159308503036965,0.124847147693151]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>left<\/th>\n      <th>right<\/th>\n      <th>batch.size<\/th>\n      <th>max_lost_var<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="visualize-corrected-cells" class="section level2">
 <h2>Visualize corrected cells</h2>
@@ -728,6 +752,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-1.png" target="_blank">8d1f8ec</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-30
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-1.png" target="_blank">f7cc35b</a>
@@ -771,6 +806,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-2.png" target="_blank">8d1f8ec</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-2.png" target="_blank">f7cc35b</a>
 </td>
 <td>
@@ -811,6 +857,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-expression-1.png" target="_blank">8d1f8ec</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-30
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-expression-1.png" target="_blank">f7cc35b</a>
@@ -859,14 +916,14 @@ attached base packages:
 
 other attached packages:
  [1] DT_0.23                     viridis_0.6.2              
- [3] viridisLite_0.4.0           scater_1.24.0              
- [5] scuttle_1.6.2               dittoSeq_1.8.0             
- [7] ggplot2_3.3.6               batchelor_1.12.0           
- [9] SingleCellExperiment_1.18.0 SummarizedExperiment_1.26.1
-[11] Biobase_2.56.0              GenomicRanges_1.48.0       
-[13] GenomeInfoDb_1.32.2         IRanges_2.30.0             
-[15] S4Vectors_0.34.0            BiocGenerics_0.42.0        
-[17] MatrixGenerics_1.8.0        matrixStats_0.62.0         
+ [3] viridisLite_0.4.0           scater_1.25.1              
+ [5] scuttle_1.7.2               dittoSeq_1.9.1             
+ [7] ggplot2_3.3.6               batchelor_1.13.0           
+ [9] SingleCellExperiment_1.19.0 SummarizedExperiment_1.27.1
+[11] Biobase_2.57.1              GenomicRanges_1.49.0       
+[13] GenomeInfoDb_1.33.3         IRanges_2.31.0             
+[15] S4Vectors_0.35.1            BiocGenerics_0.43.0        
+[17] MatrixGenerics_1.9.0        matrixStats_0.62.0         
 [19] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
@@ -875,41 +932,41 @@ loaded via a namespace (and not attached):
  [5] httr_1.4.3                rprojroot_2.0.3          
  [7] tools_4.2.0               bslib_0.3.1              
  [9] utf8_1.2.2                R6_2.5.1                 
-[11] irlba_2.3.5               ResidualMatrix_1.6.0     
+[11] irlba_2.3.5               ResidualMatrix_1.7.0     
 [13] vipor_0.4.5               uwot_0.1.11              
 [15] DBI_1.1.2                 colorspace_2.0-3         
 [17] withr_2.5.0               gridExtra_2.3            
-[19] tidyselect_1.1.2          processx_3.5.3           
+[19] tidyselect_1.1.2          processx_3.6.0           
 [21] compiler_4.2.0            git2r_0.30.1             
-[23] cli_3.3.0                 BiocNeighbors_1.14.0     
-[25] DelayedArray_0.22.0       labeling_0.4.2           
+[23] cli_3.3.0                 BiocNeighbors_1.15.1     
+[25] DelayedArray_0.23.0       labeling_0.4.2           
 [27] sass_0.4.1                scales_1.2.0             
 [29] ggridges_0.5.3            callr_3.7.0              
 [31] stringr_1.4.0             digest_0.6.29            
-[33] rmarkdown_2.14            XVector_0.36.0           
+[33] rmarkdown_2.14            XVector_0.37.0           
 [35] pkgconfig_2.0.3           htmltools_0.5.2          
-[37] sparseMatrixStats_1.8.0   highr_0.9                
+[37] sparseMatrixStats_1.9.0   highr_0.9                
 [39] fastmap_1.1.0             htmlwidgets_1.5.4        
 [41] rlang_1.0.2               rstudioapi_0.13          
-[43] DelayedMatrixStats_1.18.0 farver_2.1.0             
+[43] DelayedMatrixStats_1.19.0 farver_2.1.0             
 [45] jquerylib_0.1.4           generics_0.1.2           
 [47] jsonlite_1.8.0            crosstalk_1.2.0          
-[49] BiocParallel_1.30.2       dplyr_1.0.9              
-[51] RCurl_1.98-1.6            magrittr_2.0.3           
-[53] BiocSingular_1.12.0       GenomeInfoDbData_1.2.8   
+[49] BiocParallel_1.31.8       dplyr_1.0.9              
+[51] RCurl_1.98-1.7            magrittr_2.0.3           
+[53] BiocSingular_1.13.0       GenomeInfoDbData_1.2.8   
 [55] Matrix_1.4-1              ggbeeswarm_0.6.0         
 [57] Rcpp_1.0.8.3              munsell_0.5.0            
 [59] fansi_1.0.3               lifecycle_1.0.1          
 [61] stringi_1.7.6             whisker_0.4              
-[63] yaml_2.3.5                zlibbioc_1.42.0          
+[63] yaml_2.3.5                zlibbioc_1.43.0          
 [65] plyr_1.8.7                grid_4.2.0               
 [67] parallel_4.2.0            promises_1.2.0.1         
 [69] ggrepel_0.9.1             crayon_1.5.1             
 [71] lattice_0.20-45           cowplot_1.1.1            
-[73] beachmat_2.12.0           knitr_1.39               
+[73] beachmat_2.13.3           knitr_1.39               
 [75] ps_1.7.0                  pillar_1.7.0             
 [77] igraph_1.3.1              codetools_0.2-18         
-[79] ScaledMatrix_1.4.0        glue_1.6.2               
+[79] ScaledMatrix_1.5.0        glue_1.6.2               
 [81] evaluate_0.15             getPass_0.2-2            
 [83] vctrs_0.4.1               httpuv_1.6.5             
 [85] gtable_0.3.0              purrr_0.3.4              

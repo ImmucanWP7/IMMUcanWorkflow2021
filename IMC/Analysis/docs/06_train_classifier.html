@@ -381,7 +381,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-30
+<strong>Last updated:</strong> 2022-06-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,15 +512,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree189eaa36313e830f0507d71a5d247873157d0439targetblank189eaa3a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +530,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/189eaa36313e830f0507d71a5d247873157d0439" target="_blank">189eaa3</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -545,16 +545,25 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    Alignment/
     Ignored:    IMC/.DS_Store
+    Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    comparisons/.Rproj.user/
+    Ignored:    comparisons/analysis/figure/
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
+
+Untracked files:
+    Untracked:  IMC/Analysis/code/transfer_labels.R
+    Untracked:  mIF/Analysis/docs/zzz_read_data.html
 
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
     Modified:   IMC/Analysis/analysis/05_labelling.Rmd
-    Modified:   IMC/Analysis/data/sample_metadata.csv
-    Deleted:    IMC/sample_metadata.csv
+    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Modified:   mIF/Analysis/analysis/zzz_read_data.Rmd
 
 </code></pre>
 <p>
@@ -601,6 +610,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/06_train_classifier.html" target="_blank">8d1f8ec</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-30
+</td>
+<td>
+Recompiled workflow
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -715,24 +741,24 @@ stopCluster(cl)
 rffit</code></pre>
 <pre><code>Random Forest 
 
-20622 samples
+21347 samples
    42 predictor
    15 classes: &#39;B_cell&#39;, &#39;BnCD4&#39;, &#39;BnCD8&#39;, &#39;CD38&#39;, &#39;CD4&#39;, &#39;CD8&#39;, &#39;DC&#39;, &#39;HLADR&#39;, &#39;Macrophage&#39;, &#39;Neutrophil&#39;, &#39;NK_cell&#39;, &#39;pDC&#39;, &#39;Stroma&#39;, &#39;Treg&#39;, &#39;Tumor&#39; 
 
 No pre-processing
 Resampling: Cross-Validated (5 fold) 
-Summary of sample sizes: 16498, 16498, 16495, 16500, 16497 
+Summary of sample sizes: 17076, 17080, 17077, 17075, 17080 
 Resampling results across tuning parameters:
 
   mtry  Accuracy   Kappa    
-   2    0.8875955  0.8646060
-  12    0.9144112  0.8975064
-  22    0.9162546  0.8997427
-  32    0.9164488  0.8999612
-  42    0.9105327  0.8928576
+   2    0.8907101  0.8680660
+  12    0.9184428  0.9021210
+  22    0.9235014  0.9081923
+  32    0.9222836  0.9067366
+  42    0.9175984  0.9011053
 
 Accuracy was used to select the optimal model using the largest value.
-The final value used for the model was mtry = 32.</code></pre>
+The final value used for the model was mtry = 22.</code></pre>
 <pre class="r"><code>saveRDS(rffit,file = &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/rf_classifier.rds&quot;)</code></pre>
 <p>We will now have a look at the accuracy measures over iterations. The
 only parameter that has been tuned is <code>mtry</code>.</p>
@@ -787,40 +813,40 @@ nilseling
  
             Reference
 Prediction   B_cell BnCD4 BnCD8 CD38  CD4  CD8   DC HLADR Macrophage Neutrophil
-  B_cell        8.7   0.1   0.0  0.1  0.0  0.0  0.0   0.0        0.0        0.1
-  BnCD4         0.1   8.0   0.0  0.1  0.2  0.0  0.0   0.0        0.0        0.0
-  BnCD8         0.1   0.0   5.5  0.0  0.0  0.2  0.0   0.0        0.0        0.0
-  CD38          0.0   0.0   0.0  5.3  0.2  0.1  0.0   0.2        0.2        0.0
-  CD4           0.0   0.0   0.0  0.0  3.3  0.1  0.1   0.1        0.1        0.0
-  CD8           0.0   0.0   0.0  0.1  0.0  6.6  0.0   0.0        0.0        0.1
-  DC            0.0   0.0   0.0  0.0  0.0  0.0  2.0   0.1        0.1        0.0
-  HLADR         0.0   0.0   0.0  0.0  0.1  0.0  0.2   3.8        0.0        0.0
-  Macrophage    0.0   0.0   0.0  0.1  0.1  0.0  0.2   0.1        4.0        0.1
-  Neutrophil    0.0   0.0   0.0  0.0  0.1  0.0  0.1   0.1        0.1        3.6
+  B_cell        9.5   0.0   0.1  0.1  0.0  0.0  0.0   0.0        0.0        0.1
+  BnCD4         0.1   8.0   0.0  0.0  0.1  0.0  0.0   0.0        0.0        0.0
+  BnCD8         0.1   0.0   5.6  0.0  0.0  0.2  0.0   0.0        0.0        0.0
+  CD38          0.0   0.0   0.0  5.1  0.1  0.1  0.0   0.2        0.2        0.0
+  CD4           0.0   0.0   0.0  0.0  3.2  0.1  0.1   0.1        0.1        0.0
+  CD8           0.0   0.0   0.0  0.0  0.0  6.0  0.0   0.0        0.0        0.1
+  DC            0.0   0.0   0.0  0.0  0.0  0.0  2.2   0.1        0.1        0.0
+  HLADR         0.0   0.0   0.0  0.0  0.1  0.0  0.2   4.3        0.0        0.0
+  Macrophage    0.0   0.0   0.0  0.1  0.1  0.0  0.2   0.1        4.5        0.1
+  Neutrophil    0.0   0.0   0.0  0.0  0.0  0.0  0.1   0.1        0.1        3.9
   NK_cell       0.0   0.0   0.0  0.0  0.0  0.0  0.0   0.0        0.0        0.0
-  pDC           0.0   0.0   0.0  0.1  0.0  0.0  0.0   0.0        0.0        0.0
+  pDC           0.0   0.0   0.0  0.0  0.0  0.0  0.0   0.0        0.0        0.0
   Stroma        0.0   0.0   0.0  0.0  0.0  0.0  0.0   0.1        0.0        0.0
   Treg          0.0   0.0   0.0  0.0  0.0  0.0  0.0   0.0        0.0        0.0
-  Tumor         0.1   0.0   0.0  0.0  0.3  0.2  0.1   0.1        0.0        0.2
+  Tumor         0.1   0.0   0.0  0.0  0.3  0.2  0.0   0.1        0.0        0.2
             Reference
 Prediction   NK_cell  pDC Stroma Treg Tumor
-  B_cell         0.0  0.0    0.0  0.0   0.1
+  B_cell         0.1  0.0    0.0  0.0   0.1
   BnCD4          0.0  0.0    0.0  0.0   0.0
   BnCD8          0.0  0.0    0.0  0.0   0.0
   CD38           0.0  0.1    0.0  0.0   0.0
-  CD4            0.1  0.0    0.0  0.1   0.1
-  CD8            0.1  0.0    0.0  0.0   0.1
-  DC             0.1  0.0    0.0  0.0   0.0
-  HLADR          0.1  0.1    0.1  0.0   0.1
-  Macrophage     0.2  0.1    0.0  0.0   0.1
-  Neutrophil     0.0  0.0    0.0  0.0   0.2
-  NK_cell        0.2  0.0    0.0  0.0   0.0
-  pDC            0.0  0.9    0.0  0.0   0.0
-  Stroma         0.0  0.0    4.8  0.0   0.2
-  Treg           0.0  0.0    0.0  0.6   0.0
-  Tumor          0.1  0.0    0.5  0.0  34.1
+  CD4            0.1  0.0    0.0  0.0   0.1
+  CD8            0.0  0.0    0.0  0.0   0.1
+  DC             0.1  0.1    0.0  0.0   0.0
+  HLADR          0.1  0.0    0.1  0.0   0.1
+  Macrophage     0.1  0.0    0.0  0.0   0.1
+  Neutrophil     0.0  0.0    0.0  0.0   0.1
+  NK_cell        0.1  0.0    0.0  0.0   0.0
+  pDC            0.0  0.7    0.0  0.0   0.0
+  Stroma         0.1  0.0    4.4  0.0   0.3
+  Treg           0.0  0.0    0.0  0.4   0.0
+  Tumor          0.1  0.0    0.5  0.0  34.5
                             
- Accuracy (average) : 0.9164</code></pre>
+ Accuracy (average) : 0.9235</code></pre>
 <p>We will also look at the variable importance.</p>
 <pre class="r"><code>cur_varImp &lt;- varImp(rffit)
 plot(cur_varImp)</code></pre>
@@ -882,100 +908,100 @@ cm</code></pre>
 
             Reference
 Prediction   B_cell BnCD4 BnCD8 CD38  CD4  CD8   DC HLADR Macrophage Neutrophil
-  B_cell        604     6     4    5    0    1    1     2          0          3
-  BnCD4           3   549     1    2    6    0    0     0          0          2
-  BnCD8           1     2   376    6    0    7    0     0          0          3
-  CD38            6     0     1  354    9    4    1     4          7          0
-  CD4             0     2     0    2  247    3    4     2          2          4
-  CD8             0     0     3    3    0  454    4     1          0          5
-  DC              0     0     0    5    3    1  138     6          5          0
-  HLADR           0     0     0    4    2    3   11   275          3          3
-  Macrophage      3     0     0    9    5    0   22     4        287         12
-  Neutrophil      1     0     0    1    2    0    4     8         13        247
-  NK_cell         0     0     0    0    0    0    0     3          0          0
-  pDC             0     0     0    7    0    0    0     0          1          0
-  Stroma          0     0     0    2    1    1    0    13          1          1
-  Treg            0     0     0    0    4    0    0     0          0          0
-  Tumor           4     0     0    1   11   19    2     8          0         12
+  B_cell        678     1     1    3    1    0    1     2          1          6
+  BnCD4           2   566     4    2    5    0    0     0          0          2
+  BnCD8           4     3   395    4    0   10    0     0          0          0
+  CD38            2     0     0  372   12    1    2    15         14          0
+  CD4             0     2     0    1  241    4    2     3          4          4
+  CD8             0     0     4    2    0  427    0     3          2         13
+  DC              2     0     0    1    1    1  159     3          5          6
+  HLADR           1     0     0    1    1    2   10   300          4          4
+  Macrophage      3     0     0    1    4    0   15     6        321         11
+  Neutrophil      0     1     0    0    1    0   10     7          4        267
+  NK_cell         0     0     0    0    1    0    2     0          0          0
+  pDC             0     0     0    0    0    0    0     1          0          0
+  Stroma          1     0     0    0    3    0    0    12          0          0
+  Treg            0     0     0    1    0    0    0     0          0          1
+  Tumor           1     0     0    0   21   23    1     8          2          5
             Reference
 Prediction   NK_cell  pDC Stroma Treg Tumor
-  B_cell           2    1      0    0     2
-  BnCD4            2    0      0    1     0
-  BnCD8            0    0      0    1     1
-  CD38             0    4      0    0     1
-  CD4              3    0      0    1     4
-  CD8              3    0      0    1     5
-  DC               4    2      1    0     1
-  HLADR            3    4      1    0     4
-  Macrophage       9   11      0    0    10
-  Neutrophil       0    6      0    0    12
-  NK_cell         18    0      2    0     1
-  pDC              0   58      0    0     0
-  Stroma           5    1    342    0    23
-  Treg             1    0      0   47     2
-  Tumor            8    4     31    2  2348
+  B_cell           4    0      0    0     6
+  BnCD4            0    0      0    0     1
+  BnCD8            1    0      0    1     1
+  CD38             1    8      0    1     2
+  CD4              3    0      0    3     5
+  CD8              3    0      0    0     3
+  DC               6    5      0    0     2
+  HLADR            9    5      5    0     5
+  Macrophage      10    8      0    0     3
+  Neutrophil       0    4      1    0    13
+  NK_cell         13    0      0    1     1
+  pDC              0   43      0    0     0
+  Stroma           2    1    320    0    11
+  Treg             0    0      0   30     1
+  Tumor            9    4     34    2  2461
 
 Overall Statistics
-                                        
-               Accuracy : 0.9238        
-                 95% CI : (0.9173, 0.93)
-    No Information Rate : 0.3515        
-    P-Value [Acc &gt; NIR] : &lt; 2.2e-16     
-                                        
-                  Kappa : 0.9089        
-                                        
- Mcnemar&#39;s Test P-Value : NA            
+                                          
+               Accuracy : 0.9275          
+                 95% CI : (0.9213, 0.9335)
+    No Information Rate : 0.3538          
+    P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
+                                          
+                  Kappa : 0.913           
+                                          
+ Mcnemar&#39;s Test P-Value : NA              
 
 Statistics by Class:
 
                      Class: B_cell Class: BnCD4 Class: BnCD8 Class: CD38
-Sensitivity                0.97106      0.98211      0.97662     0.88279
-Specificity                0.99568      0.99731      0.99676     0.99428
-Pos Pred Value             0.95721      0.96996      0.94710     0.90537
-Neg Pred Value             0.99711      0.99841      0.99861     0.99274
-Precision                  0.95721      0.96996      0.94710     0.90537
-Recall                     0.97106      0.98211      0.97662     0.88279
-F1                         0.96409      0.97600      0.96164     0.89394
-Prevalence                 0.09058      0.08140      0.05607     0.05840
-Detection Rate             0.08796      0.07995      0.05475     0.05155
-Detection Prevalence       0.09189      0.08242      0.05781     0.05694
-Balanced Accuracy          0.98337      0.98971      0.98669     0.93854
+Sensitivity                0.97695      0.98778      0.97772     0.95876
+Specificity                0.99595      0.99755      0.99642     0.99137
+Pos Pred Value             0.96307      0.97251      0.94272     0.86512
+Neg Pred Value             0.99750      0.99893      0.99865     0.99760
+Precision                  0.96307      0.97251      0.94272     0.86512
+Recall                     0.97695      0.98778      0.97772     0.95876
+F1                         0.96996      0.98009      0.95990     0.90954
+Prevalence                 0.09764      0.08061      0.05684     0.05459
+Detection Rate             0.09539      0.07963      0.05557     0.05234
+Detection Prevalence       0.09904      0.08188      0.05895     0.06050
+Balanced Accuracy          0.98645      0.99267      0.98707     0.97507
                      Class: CD4 Class: CD8 Class: DC Class: HLADR
-Sensitivity             0.85172    0.92089   0.73797      0.84356
-Specificity             0.99589    0.99608   0.99581      0.99419
-Pos Pred Value          0.90146    0.94781   0.83133      0.87859
-Neg Pred Value          0.99348    0.99389   0.99269      0.99222
-Precision               0.90146    0.94781   0.83133      0.87859
-Recall                  0.85172    0.92089   0.73797      0.84356
-F1                      0.87589    0.93416   0.78187      0.86072
-Prevalence              0.04223    0.07179   0.02723      0.04747
-Detection Rate          0.03597    0.06611   0.02010      0.04005
-Detection Prevalence    0.03990    0.06975   0.02417      0.04558
-Balanced Accuracy       0.92381    0.95849   0.86689      0.91887
+Sensitivity             0.82818    0.91239   0.78713      0.83333
+Specificity             0.99545    0.99548   0.99537      0.99303
+Pos Pred Value          0.88603    0.93435   0.83246      0.86455
+Neg Pred Value          0.99269    0.99384   0.99378      0.99113
+Precision               0.88603    0.93435   0.83246      0.86455
+Recall                  0.82818    0.91239   0.78713      0.83333
+F1                      0.85613    0.92324   0.80916      0.84866
+Prevalence              0.04094    0.06584   0.02842      0.05065
+Detection Rate          0.03391    0.06007   0.02237      0.04221
+Detection Prevalence    0.03827    0.06429   0.02687      0.04882
+Balanced Accuracy       0.91182    0.95394   0.89125      0.91318
                      Class: Macrophage Class: Neutrophil Class: NK_cell
-Sensitivity                    0.89969           0.84589       0.310345
-Specificity                    0.98702           0.99285       0.999119
-Pos Pred Value                 0.77151           0.84014       0.750000
-Neg Pred Value                 0.99507           0.99315       0.994155
-Precision                      0.77151           0.84014       0.750000
-Recall                         0.89969           0.84589       0.310345
-F1                             0.83068           0.84300       0.439024
-Prevalence                     0.04645           0.04252       0.008446
-Detection Rate                 0.04179           0.03597       0.002621
-Detection Prevalence           0.05417           0.04281       0.003495
-Balanced Accuracy              0.94335           0.91937       0.654732
+Sensitivity                    0.89916           0.83699       0.213115
+Specificity                    0.99096           0.99396       0.999290
+Pos Pred Value                 0.84031           0.86688       0.722222
+Neg Pred Value                 0.99465           0.99235       0.993230
+Precision                      0.84031           0.86688       0.722222
+Recall                         0.89916           0.83699       0.213115
+F1                             0.86874           0.85167       0.329114
+Prevalence                     0.05023           0.04488       0.008582
+Detection Rate                 0.04516           0.03756       0.001829
+Detection Prevalence           0.05374           0.04333       0.002532
+Balanced Accuracy              0.94506           0.91548       0.606203
                      Class: pDC Class: Stroma Class: Treg Class: Tumor
-Sensitivity            0.637363       0.90716    0.886792       0.9727
-Specificity            0.998819       0.99260    0.998973       0.9771
-Pos Pred Value         0.878788       0.87692    0.870370       0.9584
-Neg Pred Value         0.995148       0.99460    0.999119       0.9851
-Precision              0.878788       0.87692    0.870370       0.9584
-Recall                 0.637363       0.90716    0.886792       0.9727
-F1                     0.738854       0.89179    0.878505       0.9655
-Prevalence             0.013252       0.05490    0.007718       0.3515
-Detection Rate         0.008446       0.04980    0.006844       0.3419
-Detection Prevalence   0.009611       0.05679    0.007864       0.3568
-Balanced Accuracy      0.818091       0.94988    0.942883       0.9749</code></pre>
+Sensitivity             0.55128       0.88889    0.789474       0.9785
+Specificity             0.99986       0.99555    0.999576       0.9761
+Pos Pred Value          0.97727       0.91429    0.909091       0.9572
+Neg Pred Value          0.99505       0.99408    0.998869       0.9881
+Precision               0.97727       0.91429    0.909091       0.9572
+Recall                  0.55128       0.88889    0.789474       0.9785
+F1                      0.70492       0.90141    0.845070       0.9678
+Prevalence              0.01097       0.05065    0.005346       0.3538
+Detection Rate          0.00605       0.04502    0.004221       0.3462
+Detection Prevalence    0.00619       0.04924    0.004643       0.3617
+Balanced Accuracy       0.77557       0.94222    0.894525       0.9773</code></pre>
 <pre class="r"><code>data.frame(cm$byClass) %&gt;%
   mutate(class = sub(&quot;Class: &quot;, &quot;&quot;, rownames(cm$byClass))) %&gt;%
   ggplot() + 
@@ -1105,47 +1131,47 @@ attached base packages:
 other attached packages:
  [1] doParallel_1.0.17           iterators_1.0.14           
  [3] foreach_1.5.2               viridis_0.6.2              
- [5] viridisLite_0.4.0           dittoSeq_1.8.0             
+ [5] viridisLite_0.4.0           dittoSeq_1.9.1             
  [7] forcats_0.5.1               stringr_1.4.0              
  [9] dplyr_1.0.9                 purrr_0.3.4                
 [11] readr_2.1.2                 tidyr_1.2.0                
 [13] tibble_3.1.7                tidyverse_1.3.1            
-[15] scater_1.24.0               scuttle_1.6.2              
-[17] SingleCellExperiment_1.18.0 SummarizedExperiment_1.26.1
-[19] Biobase_2.56.0              GenomicRanges_1.48.0       
-[21] GenomeInfoDb_1.32.2         IRanges_2.30.0             
-[23] S4Vectors_0.34.0            BiocGenerics_0.42.0        
-[25] MatrixGenerics_1.8.0        matrixStats_0.62.0         
+[15] scater_1.25.1               scuttle_1.7.2              
+[17] SingleCellExperiment_1.19.0 SummarizedExperiment_1.27.1
+[19] Biobase_2.57.1              GenomicRanges_1.49.0       
+[21] GenomeInfoDb_1.33.3         IRanges_2.31.0             
+[23] S4Vectors_0.35.1            BiocGenerics_0.43.0        
+[25] MatrixGenerics_1.9.0        matrixStats_0.62.0         
 [27] caret_6.0-92                lattice_0.20-45            
 [29] ggplot2_3.3.6               workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] readxl_1.4.0              backports_1.4.1          
   [3] plyr_1.8.7                splines_4.2.0            
-  [5] BiocParallel_1.30.2       listenv_0.8.0            
+  [5] BiocParallel_1.31.8       listenv_0.8.0            
   [7] digest_0.6.29             htmltools_0.5.2          
   [9] fansi_1.0.3               magrittr_2.0.3           
- [11] ScaledMatrix_1.4.0        tzdb_0.3.0               
+ [11] ScaledMatrix_1.5.0        tzdb_0.3.0               
  [13] recipes_0.2.0             globals_0.15.0           
  [15] modelr_0.1.8              gower_1.0.0              
- [17] hardhat_0.2.0             colorspace_2.0-3         
+ [17] hardhat_1.1.0             colorspace_2.0-3         
  [19] rvest_1.0.2               ggrepel_0.9.1            
  [21] haven_2.5.0               xfun_0.31                
  [23] callr_3.7.0               crayon_1.5.1             
- [25] RCurl_1.98-1.6            jsonlite_1.8.0           
+ [25] RCurl_1.98-1.7            jsonlite_1.8.0           
  [27] survival_3.3-1            glue_1.6.2               
- [29] gtable_0.3.0              ipred_0.9-12             
- [31] zlibbioc_1.42.0           XVector_0.36.0           
- [33] DelayedArray_0.22.0       BiocSingular_1.12.0      
+ [29] gtable_0.3.0              ipred_0.9-13             
+ [31] zlibbioc_1.43.0           XVector_0.37.0           
+ [33] DelayedArray_0.23.0       BiocSingular_1.13.0      
  [35] future.apply_1.9.0        scales_1.2.0             
  [37] pheatmap_1.0.12           DBI_1.1.2                
- [39] Rcpp_1.0.8.3              proxy_0.4-26             
+ [39] Rcpp_1.0.8.3              proxy_0.4-27             
  [41] rsvd_1.0.5                lava_1.6.10              
  [43] prodlim_2019.11.13        httr_1.4.3               
  [45] RColorBrewer_1.1-3        ellipsis_0.3.2           
  [47] farver_2.1.0              pkgconfig_2.0.3          
  [49] nnet_7.3-17               sass_0.4.1               
- [51] dbplyr_2.1.1              utf8_1.2.2               
+ [51] dbplyr_2.2.0              utf8_1.2.2               
  [53] labeling_0.4.2            tidyselect_1.1.2         
  [55] rlang_1.0.2               reshape2_1.4.4           
  [57] later_1.3.0               munsell_0.5.0            
@@ -1154,30 +1180,30 @@ loaded via a namespace (and not attached):
  [63] ggridges_0.5.3            broom_0.8.0              
  [65] evaluate_0.15             fastmap_1.1.0            
  [67] yaml_2.3.5                ModelMetrics_1.2.2.2     
- [69] processx_3.5.3            knitr_1.39               
- [71] fs_1.5.2                  randomForest_4.7-1       
- [73] future_1.25.0             nlme_3.1-157             
- [75] sparseMatrixStats_1.8.0   whisker_0.4              
+ [69] processx_3.6.0            knitr_1.39               
+ [71] fs_1.5.2                  randomForest_4.7-1.1     
+ [73] future_1.26.1             nlme_3.1-157             
+ [75] sparseMatrixStats_1.9.0   whisker_0.4              
  [77] xml2_1.3.3                compiler_4.2.0           
  [79] rstudioapi_0.13           beeswarm_0.4.0           
- [81] e1071_1.7-9               reprex_2.0.1             
+ [81] e1071_1.7-11              reprex_2.0.1             
  [83] bslib_0.3.1               stringi_1.7.6            
  [85] highr_0.9                 ps_1.7.0                 
  [87] Matrix_1.4-1              vctrs_0.4.1              
  [89] pillar_1.7.0              lifecycle_1.0.1          
- [91] jquerylib_0.1.4           BiocNeighbors_1.14.0     
+ [91] jquerylib_0.1.4           BiocNeighbors_1.15.1     
  [93] cowplot_1.1.1             data.table_1.14.2        
  [95] bitops_1.0-7              irlba_2.3.5              
  [97] httpuv_1.6.5              R6_2.5.1                 
  [99] promises_1.2.0.1          gridExtra_2.3            
-[101] vipor_0.4.5               parallelly_1.31.1        
-[103] codetools_0.2-18          MASS_7.3-56              
+[101] vipor_0.4.5               parallelly_1.32.0        
+[103] codetools_0.2-18          MASS_7.3-57              
 [105] assertthat_0.2.1          rprojroot_2.0.3          
 [107] withr_2.5.0               GenomeInfoDbData_1.2.8   
 [109] hms_1.1.1                 grid_4.2.0               
-[111] rpart_4.1.16              beachmat_2.12.0          
+[111] rpart_4.1.16              beachmat_2.13.3          
 [113] timeDate_3043.102         class_7.3-20             
-[115] rmarkdown_2.14            DelayedMatrixStats_1.18.0
+[115] rmarkdown_2.14            DelayedMatrixStats_1.19.0
 [117] git2r_0.30.1              getPass_0.2-2            
 [119] pROC_1.18.0               lubridate_1.8.0          
 [121] ggbeeswarm_0.6.0         </code></pre>

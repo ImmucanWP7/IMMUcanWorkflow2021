@@ -76,7 +76,7 @@ Here, we define colors for matched cell types and samples.
 ```{r define-colors}
 library(RColorBrewer)
 color_vectors <- list()
-matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
                              c("Tumor", "Tcell", "Neutrophil", "Macrophage",
                                "other", "DC", "Bcell", "BnTcell"))
 patient_id <- setNames(brewer.pal(8, "Set1"),
@@ -104,6 +104,21 @@ Finally, we will save the generated object
 
 ```{r}
 saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+## Read images
+
+```{r, message=FALSE}
+library(cytomapper)
+
+images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/img/", as.is = TRUE)
+
+channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
+
+mcols(images) <- DataFrame(image = names(images),
+                          sample_id = sub(".tiff", "", names(images)))
+
+saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 ```
 
 

@@ -98,7 +98,7 @@ Here, we define colors for matched cell types and samples.
 ```{r define-colors}
 library(RColorBrewer)
 color_vectors <- list()
-matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
                              c("Tumor", "Tcell", "Neutrophil", "Macrophage",
                                "other", "DC", "Bcell", "BnTcell"))
 patient_id <- setNames(brewer.pal(10, "Set3"),

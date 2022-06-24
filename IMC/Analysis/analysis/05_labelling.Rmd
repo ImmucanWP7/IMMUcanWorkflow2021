@@ -67,6 +67,7 @@ label.files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_W
 
 # Read in SCE objects
 cur_sces <- lapply(label.files, readRDS)
+cur_sces <- cur_sces[-108] 
 
 # Merge SCE objects
 cur_sce <- do.call("cbind", cur_sces)
