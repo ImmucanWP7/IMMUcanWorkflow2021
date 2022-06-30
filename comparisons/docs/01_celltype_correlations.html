@@ -381,7 +381,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-05-03
+<strong>Last updated:</strong> 2022-06-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -515,15 +515,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomBodenmillerIMMUcanIMMUcanWorkflow2021tree75d0a6df2a424569fc993d7f2034379ea37c1598targetblank75d0a6da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree2a51289e9899968d8af665f68150b3cbf7eb3653targetblank2a51289a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -533,7 +533,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/tree/75d0a6df2a424569fc993d7f2034379ea37c1598" target="_blank">75d0a6d</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/2a51289e9899968d8af665f68150b3cbf7eb3653" target="_blank">2a51289</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -549,20 +549,54 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .DS_Store
+    Ignored:    Alignment/
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
-    Ignored:    IMC/Analysis/analysis/.DS_Store
     Ignored:    IMC/Analysis/docs/.DS_Store
-    Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
-    Ignored:    comparisons/analysis/.DS_Store
+    Ignored:    comparisons/analysis/figure/
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
-    Ignored:    mIF/Analysis/analysis/.DS_Store
+
+Untracked files:
+    Untracked:  IMC/Analysis/code/transfer_labels.R
+    Untracked:  mIF/Analysis/docs/zzz_read_data.html
 
 Unstaged changes:
+    Modified:   IMC/Analysis/analysis/01_read_data.Rmd
+    Modified:   IMC/Analysis/analysis/05_labelling.Rmd
+    Modified:   IMC/Analysis/docs/01_read_data.html
+    Modified:   IMC/Analysis/docs/02_spillover_correction.html
+    Modified:   IMC/Analysis/docs/03_quality_control.html
+    Modified:   IMC/Analysis/docs/04_sample_correction.html
+    Modified:   IMC/Analysis/docs/05_labelling.html
+    Modified:   IMC/Analysis/docs/06_train_classifier.html
+    Modified:   IMC/Analysis/docs/07_predict_celltypes.html
+    Deleted:    IMC/Analysis/docs/about.html
+    Modified:   IMC/Analysis/docs/figure/02_spillover_correction.Rmd/unnamed-chunk-2-1.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/cell-numbers-1.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/cell-size-1.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-expression-1.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-1.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-2.png
+    Modified:   IMC/Analysis/docs/figure/03_quality_control.Rmd/expression-differences-1.png
+    Modified:   IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-expression-1.png
+    Modified:   IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-1.png
+    Modified:   IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-2.png
+    Modified:   IMC/Analysis/docs/figure/05_labelling.Rmd/quality-control-4-1.png
+    Modified:   IMC/Analysis/docs/figure/05_labelling.Rmd/quality-control-4-2.png
+    Modified:   IMC/Analysis/docs/figure/05_labelling.Rmd/tsne-1.png
+    Modified:   IMC/Analysis/docs/figure/06_train_classifier.Rmd/accuracy-1.png
+    Modified:   IMC/Analysis/docs/figure/06_train_classifier.Rmd/model-testing-1.png
+    Modified:   IMC/Analysis/docs/figure/06_train_classifier.Rmd/prediciton-probability-1.png
+    Modified:   IMC/Analysis/docs/figure/06_train_classifier.Rmd/variable-importance-1.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/heatmap-visualization-1.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/heatmap-visualization-2.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/red-dim-visualization-classlabels-1.png
+    Modified:   IMC/Analysis/docs/index.html
     Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Modified:   mIF/Analysis/analysis/zzz_read_data.Rmd
 
 </code></pre>
 <p>
@@ -614,7 +648,58 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2a51289e9899968d8af665f68150b3cbf7eb3653/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">2a51289</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-06-20
+</td>
+<td>
+Read in data with local cooridnates
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+<td>
+Adjusted base size
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/docs/01_celltype_correlations.html" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+<td>
+Adjusted base size
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -631,7 +716,7 @@ Added differential abundance testing
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/01_celltype_correlations.html" target="_blank">75d0a6d</a>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/01_celltype_correlations.html" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -648,7 +733,7 @@ Added differential abundance testing
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">add09ed</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">add09ed</a>
 </td>
 <td>
 nilseling
@@ -665,7 +750,7 @@ Added marker expression comparison
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/01_celltype_correlations.html" target="_blank">add09ed</a>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/01_celltype_correlations.html" target="_blank">add09ed</a>
 </td>
 <td>
 nilseling
@@ -682,7 +767,7 @@ Added marker expression comparison
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">2a21413</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">2a21413</a>
 </td>
 <td>
 nilseling
@@ -699,7 +784,7 @@ Celltype correlations
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/01_celltype_correlations.html" target="_blank">2a21413</a>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/01_celltype_correlations.html" target="_blank">2a21413</a>
 </td>
 <td>
 nilseling
@@ -716,7 +801,7 @@ Celltype correlations
 Rmd
 </td>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">c22d4e1</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c22d4e1fe74fdd577574bf3c0c514bb5df0a06fa/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">c22d4e1</a>
 </td>
 <td>
 nilseling
@@ -766,44 +851,7 @@ ggplot(combined_df) +
   geom_smooth(aes(count.x, count.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
   theme_minimal() + xlab(&quot;# Cells in IMC&quot;) + ylab(&quot;# Cells in mIF&quot;) +
   xlim(c(1000, 4500)) + ylim(c(1000, 4500))</code></pre>
-<p><img src="figure/01_celltype_correlations.Rmd/number-of%20cells-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-number-of-cells-1">
-Past versions of "number-of cells-1.png"
-</button>
-</p>
-<div id="fig-no-spaces-number-of-cells-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of cells-1.png" target="_blank">2a21413</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/01_celltype_correlations.Rmd/number-of-cells-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># With patient as covariate
 ggplot(combined_df) + 
   geom_point(aes(count.x, count.y, color = patient_id)) + 
@@ -812,44 +860,7 @@ ggplot(combined_df) +
               fullrange=FALSE, se= FALSE) + 
   theme_minimal() + xlab(&quot;# Cells in IMC&quot;) + ylab(&quot;# Cells in mIF&quot;) +
   xlim(c(1000, 4500)) + ylim(c(1000, 4500))</code></pre>
-<p><img src="figure/01_celltype_correlations.Rmd/number-of%20cells-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-number-of-cells-2">
-Past versions of "number-of cells-2.png"
-</button>
-</p>
-<div id="fig-no-spaces-number-of-cells-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of cells-2.png" target="_blank">2a21413</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/01_celltype_correlations.Rmd/number-of-cells-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="cell-type-fractions" class="section level2">
 <h2>Cell type fractions</h2>
@@ -916,7 +927,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -927,7 +949,7 @@ nilseling
 </tr>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">2a21413</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">2a21413</a>
 </td>
 <td>
 nilseling
@@ -971,7 +993,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -982,7 +1015,7 @@ nilseling
 </tr>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">2a21413</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2a2141368265bcc975aeb5543b40fad8d4b93375/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">2a21413</a>
 </td>
 <td>
 nilseling
@@ -1008,8 +1041,11 @@ nilseling
     geom_point(aes(celltype, cor, color = patient_id)) +
     geom_point(aes(celltype, cor_all), color = &quot;dark red&quot;, size = 3) +
     theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<pre><code>Warning in cor(frac.x, frac.y): the standard deviation is zero</code></pre>
 <pre><code>`summarise()` has grouped output by &#39;celltype&#39;. You can override using the
 `.groups` argument.</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_boxplot).</code></pre>
+<pre><code>Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/correlation-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-correlation-1">
@@ -1035,7 +1071,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1046,7 +1093,7 @@ nilseling
 </tr>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">add09ed</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">add09ed</a>
 </td>
 <td>
 nilseling
@@ -1121,7 +1168,7 @@ design &lt;- model.matrix(~sample_id + modality, data = y.ab$samples)
 y.ab &lt;- estimateDisp(y.ab, design, trend=&quot;none&quot;)
 summary(y.ab$common.dispersion)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.3088  0.3088  0.3088  0.3088  0.3088  0.3088 </code></pre>
+ 0.3039  0.3039  0.3039  0.3039  0.3039  0.3039 </code></pre>
 <pre class="r"><code>plotBCV(y.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1148,7 +1195,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1164,7 +1211,7 @@ nilseling
 <pre class="r"><code>fit.ab &lt;- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
 summary(fit.ab$var.prior)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.5219  0.5219  0.5219  0.5219  0.5219  0.5219 </code></pre>
+ 0.5631  0.5631  0.5631  0.5631  0.5631  0.5631 </code></pre>
 <pre class="r"><code>plotQLDisp(fit.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1191,7 +1238,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1216,24 +1263,24 @@ Up               2</code></pre>
 DA$celltype &lt;- rownames(DA)
 DA$sign &lt;- DA$FDR&lt;0.05
 DA</code></pre>
-<pre><code>                  logFC   logCPM            F       PValue          FDR
-DC          1.916373078 14.37508 38.666652030 5.376868e-07 4.301494e-06
-Macrophage -1.249190067 16.41521 32.238955401 2.607631e-06 1.043053e-05
-Tcell      -0.414077176 17.43368 14.347632502 6.210677e-04 1.656181e-03
-BnTcell     0.873802180 15.61665  7.863148826 9.137547e-03 1.827509e-02
-other       0.124890696 17.43185  1.595139912 2.155641e-01 3.081731e-01
-Bcell      -0.470109545 15.53076  1.489046059 2.311298e-01 3.081731e-01
-Neutrophil  0.070199334 14.72275  0.039221830 8.442801e-01 9.219793e-01
-Tumor       0.009603927 18.67315  0.009742276 9.219793e-01 9.219793e-01
+<pre><code>                 logFC   logCPM           F       PValue          FDR
+DC          1.91178584 14.30182 51.87028686 1.357357e-08 1.085885e-07
+Macrophage -0.92856231 16.32294 17.40826957 1.701523e-04 6.806094e-04
+Tcell      -0.39497758 17.25822 12.88257350 9.397788e-04 2.506077e-03
+BnTcell     0.88681623 15.57105  9.51879268 4.191393e-03 8.382787e-03
+Bcell      -0.26028835 15.53624  0.48014775 4.925938e-01 7.282474e-01
+Tumor       0.05478820 18.66868  0.37085166 5.461855e-01 7.282474e-01
+Neutrophil -0.08158724 14.58055  0.06676996 7.975398e-01 8.801310e-01
+other       0.01478518 17.67130  0.02305159 8.801310e-01 8.801310e-01
              celltype  sign
 DC                 DC  TRUE
 Macrophage Macrophage  TRUE
 Tcell           Tcell  TRUE
 BnTcell       BnTcell  TRUE
-other           other FALSE
 Bcell           Bcell FALSE
+Tumor           Tumor FALSE
 Neutrophil Neutrophil FALSE
-Tumor           Tumor FALSE</code></pre>
+other           other FALSE</code></pre>
 <pre class="r"><code># Volcano plot
 ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
@@ -1263,7 +1310,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1306,7 +1353,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3a84dd86509fca85017d510c405b09733b2e3e26/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">3a84dd8</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-05-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1350,7 +1408,7 @@ compare binned rank averages.</p>
 })
 cur_IMC &lt;- do.call(rbind, cur_IMC)
 
-cur_IF &lt;- lapply(unique(sce_IMC$sample_id), function(k){
+cur_IF &lt;- lapply(unique(sce_mIF$sample_id), function(k){
   cur_sce_IF &lt;- sce_mIF[,sce_mIF$sample_id == k]
   assay(cur_sce_IF, &quot;scaled&quot;) &lt;- (assay(cur_sce_IF, &quot;exprs&quot;) - 
                                      rowMin(assay(cur_sce_IF, &quot;exprs&quot;))) / 
@@ -1403,7 +1461,7 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">75d0a6d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/75d0a6df2a424569fc993d7f2034379ea37c1598/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">75d0a6d</a>
 </td>
 <td>
 nilseling
@@ -1414,7 +1472,7 @@ nilseling
 </tr>
 <tr>
 <td>
-<a href="https://github.com/BodenmillerIMMUcan/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">add09ed</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/add09ed9175efe0986f12d7748eac4ca4d3fca7f/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">add09ed</a>
 </td>
 <td>
 nilseling
@@ -1427,6 +1485,85 @@ nilseling
 </table>
 </div>
 </div>
+</div>
+<div id="visualization-on-images" class="section level2">
+<h2>Visualization on images</h2>
+<p>We will next plot the location of celltypes on the images.</p>
+<pre class="r"><code>library(cytomapper)</code></pre>
+<pre><code>Loading required package: EBImage</code></pre>
+<pre><code>
+Attaching package: &#39;EBImage&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    transpose</code></pre>
+<pre><code>The following object is masked from &#39;package:SummarizedExperiment&#39;:
+
+    resize</code></pre>
+<pre><code>The following object is masked from &#39;package:Biobase&#39;:
+
+    channel</code></pre>
+<pre><code>The following objects are masked from &#39;package:GenomicRanges&#39;:
+
+    resize, tile</code></pre>
+<pre><code>The following objects are masked from &#39;package:IRanges&#39;:
+
+    resize, tile</code></pre>
+<pre><code>
+Attaching package: &#39;cytomapper&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:Biobase&#39;:
+
+    channelNames, channelNames&lt;-</code></pre>
+<pre class="r"><code>images_mIF &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds&quot;)
+images_IMC &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds&quot;)
+
+for (i in unique(sce_IMC$sample_id)) {
+  
+  if (! i %in% names(images_mIF)) next
+  
+  cur_IMC &lt;- plotPixels(images_IMC[i], 
+                        colour_by = c(&quot;Ecad&quot;, &quot;CD3&quot;, &quot;CD20&quot;, &quot;CD163&quot;, &quot;CD15&quot;, &quot;CD11c&quot;),
+                        return_images = TRUE, image_title = NULL, 
+                        scale_bar = NULL, legend = NULL,
+                        bcg = list(Ecad = c(0, 5, 1),
+                                   CD3 = c(0, 5, 1),
+                                   CD20 = c(0, 5, 1),
+                                   CD163 = c(0, 5, 1),
+                                   CD15 = c(0, 5, 1),
+                                   CD11c = c(0, 5, 1)))
+  
+    cur_mIF &lt;- plotPixels(images_mIF[i], 
+                        colour_by = c(&quot;CK&quot;, &quot;CD3&quot;, &quot;CD20&quot;, &quot;CD163&quot;, &quot;CD15&quot;, &quot;CD11c&quot;),
+                        return_images = TRUE, image_title = NULL, 
+                        scale_bar = NULL, legend = NULL,
+                        bcg = list(Ecad = c(0, 5, 1),
+                                   CD3 = c(0, 5, 1),
+                                   CD20 = c(0, 5, 1),
+                                   CD163 = c(0, 5, 1),
+                                   CD15 = c(0, 5, 1),
+                                   CD11c = c(0, 5, 1)))
+    
+    # Add points to IMC
+    cur_sce_IMC &lt;- sce_IMC[,sce_IMC$sample_id == i]
+    cur_sce_mIF &lt;- sce_mIF[,sce_mIF$sample_id == i]
+    pdf(file = paste0(&quot;~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/&quot;, i, &quot;.pdf&quot;))
+    plot(cur_IMC$images[[1]])
+    points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
+           col = &quot;white&quot;, 
+           pch = 16, cex = 1.1)
+    points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
+           col = metadata(cur_sce_IMC)$color_vectors$matched_celltype[cur_sce_IMC$matched_celltype], 
+           pch = 16, cex = 0.9)
+    plot(cur_mIF$images[[1]])
+    points(cur_sce_mIF$nucleus.x, cur_sce_mIF$nucleus.y, 
+           col = &quot;white&quot;, 
+           pch = 16, cex = 1.1)
+    points(cur_sce_mIF$nucleus.x, cur_sce_mIF$nucleus.y, 
+           col = metadata(cur_sce_mIF)$color_vectors$matched_celltype[cur_sce_mIF$matched_celltype], 
+           pch = 16, cex = 0.9)
+    dev.off()
+  
+}</code></pre>
+<p><img src="figure/01_celltype_correlations.Rmd/image-viz-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-13.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-14.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-15.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-16.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-17.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-18.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-19.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-20.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-21.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-22.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-23.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-24.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-25.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-26.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-27.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-28.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-29.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-30.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-31.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-32.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-33.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-34.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-35.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-36.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-37.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-38.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-39.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-40.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-41.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-42.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-43.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-44.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-45.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-46.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-47.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-48.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-49.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-50.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-51.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-52.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-53.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-54.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-55.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-56.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-57.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-58.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-59.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-60.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-61.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-62.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-63.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-64.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-65.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-66.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-67.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-68.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-69.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-70.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-71.png" width="672" style="display: block; margin: auto;" /><img src="figure/01_celltype_correlations.Rmd/image-viz-72.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1436,13 +1573,13 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.1.3 (2022-03-10)
+<pre><code>R version 4.2.0 (2022-04-22)
 Platform: x86_64-apple-darwin17.0 (64-bit)
 Running under: macOS Catalina 10.15.7
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
@@ -1452,45 +1589,56 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] ggrepel_0.9.1               edgeR_3.36.0               
- [3] limma_3.50.3                forcats_0.5.1              
- [5] stringr_1.4.0               dplyr_1.0.9                
- [7] purrr_0.3.4                 readr_2.1.2                
- [9] tidyr_1.2.0                 tibble_3.1.6               
-[11] ggplot2_3.3.5               tidyverse_1.3.1            
-[13] SingleCellExperiment_1.16.0 SummarizedExperiment_1.24.0
-[15] Biobase_2.54.0              GenomicRanges_1.46.1       
-[17] GenomeInfoDb_1.30.1         IRanges_2.28.0             
-[19] S4Vectors_0.32.4            BiocGenerics_0.40.0        
-[21] MatrixGenerics_1.6.0        matrixStats_0.62.0         
+ [1] cytomapper_1.9.0            EBImage_4.39.0             
+ [3] ggrepel_0.9.1               edgeR_3.39.1               
+ [5] limma_3.53.3                forcats_0.5.1              
+ [7] stringr_1.4.0               dplyr_1.0.9                
+ [9] purrr_0.3.4                 readr_2.1.2                
+[11] tidyr_1.2.0                 tibble_3.1.7               
+[13] ggplot2_3.3.6               tidyverse_1.3.1            
+[15] SingleCellExperiment_1.19.0 SummarizedExperiment_1.27.1
+[17] Biobase_2.57.1              GenomicRanges_1.49.0       
+[19] GenomeInfoDb_1.33.3         IRanges_2.31.0             
+[21] S4Vectors_0.35.1            BiocGenerics_0.43.0        
+[23] MatrixGenerics_1.9.0        matrixStats_0.62.0         
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-157           bitops_1.0-7           fs_1.5.2              
- [4] lubridate_1.8.0        httr_1.4.2             rprojroot_2.0.3       
- [7] tools_4.1.3            backports_1.4.1        bslib_0.3.1           
-[10] utf8_1.2.2             R6_2.5.1               mgcv_1.8-40           
-[13] DBI_1.1.2              colorspace_2.0-3       withr_2.5.0           
-[16] tidyselect_1.1.2       compiler_4.1.3         git2r_0.30.1          
-[19] cli_3.3.0              rvest_1.0.2            xml2_1.3.3            
-[22] DelayedArray_0.20.0    labeling_0.4.2         sass_0.4.1            
-[25] scales_1.2.0           digest_0.6.29          rmarkdown_2.14        
-[28] XVector_0.34.0         pkgconfig_2.0.3        htmltools_0.5.2       
-[31] highr_0.9              dbplyr_2.1.1           fastmap_1.1.0         
-[34] rlang_1.0.2            readxl_1.4.0           rstudioapi_0.13       
-[37] farver_2.1.0           jquerylib_0.1.4        generics_0.1.2        
-[40] jsonlite_1.8.0         RCurl_1.98-1.6         magrittr_2.0.3        
-[43] GenomeInfoDbData_1.2.7 Matrix_1.4-1           Rcpp_1.0.8.3          
-[46] munsell_0.5.0          fansi_1.0.3            lifecycle_1.0.1       
-[49] stringi_1.7.6          whisker_0.4            yaml_2.3.5            
-[52] zlibbioc_1.40.0        grid_4.1.3             promises_1.2.0.1      
-[55] crayon_1.5.1           lattice_0.20-45        splines_4.1.3         
-[58] haven_2.5.0            hms_1.1.1              locfit_1.5-9.5        
-[61] knitr_1.39             pillar_1.7.0           reprex_2.0.1          
-[64] glue_1.6.2             evaluate_0.15          modelr_0.1.8          
-[67] vctrs_0.4.1            tzdb_0.3.0             httpuv_1.6.5          
-[70] cellranger_1.1.0       gtable_0.3.0           assertthat_0.2.1      
-[73] xfun_0.30              broom_0.8.0            later_1.3.0           
-[76] workflowr_1.7.0        ellipsis_0.3.2        </code></pre>
+  [1] ggbeeswarm_0.6.0       colorspace_2.0-3       ellipsis_0.3.2        
+  [4] rprojroot_2.0.3        XVector_0.37.0         fftwtools_0.9-11      
+  [7] fs_1.5.2               rstudioapi_0.13        farver_2.1.0          
+ [10] fansi_1.0.3            lubridate_1.8.0        xml2_1.3.3            
+ [13] codetools_0.2-18       splines_4.2.0          knitr_1.39            
+ [16] jsonlite_1.8.0         workflowr_1.7.0        broom_0.8.0           
+ [19] dbplyr_2.2.0           png_0.1-7              shinydashboard_0.7.2  
+ [22] HDF5Array_1.25.1       shiny_1.7.1            compiler_4.2.0        
+ [25] httr_1.4.3             backports_1.4.1        assertthat_0.2.1      
+ [28] Matrix_1.4-1           fastmap_1.1.0          svgPanZoom_0.3.4      
+ [31] cli_3.3.0              later_1.3.0            htmltools_0.5.2       
+ [34] tools_4.2.0            gtable_0.3.0           glue_1.6.2            
+ [37] GenomeInfoDbData_1.2.8 Rcpp_1.0.8.3           raster_3.5-15         
+ [40] cellranger_1.1.0       jquerylib_0.1.4        rhdf5filters_1.9.0    
+ [43] vctrs_0.4.1            svglite_2.1.0          nlme_3.1-157          
+ [46] xfun_0.31              rvest_1.0.2            mime_0.12             
+ [49] lifecycle_1.0.1        terra_1.5-21           zlibbioc_1.43.0       
+ [52] scales_1.2.0           hms_1.1.1              promises_1.2.0.1      
+ [55] parallel_4.2.0         rhdf5_2.41.0           RColorBrewer_1.1-3    
+ [58] yaml_2.3.5             gridExtra_2.3          sass_0.4.1            
+ [61] stringi_1.7.6          highr_0.9              tiff_0.1-11           
+ [64] BiocParallel_1.31.8    systemfonts_1.0.4      rlang_1.0.2           
+ [67] pkgconfig_2.0.3        bitops_1.0-7           evaluate_0.15         
+ [70] lattice_0.20-45        Rhdf5lib_1.19.2        htmlwidgets_1.5.4     
+ [73] labeling_0.4.2         tidyselect_1.1.2       magrittr_2.0.3        
+ [76] R6_2.5.1               nnls_1.4               generics_0.1.2        
+ [79] DelayedArray_0.23.0    DBI_1.1.2              pillar_1.7.0          
+ [82] haven_2.5.0            whisker_0.4            withr_2.5.0           
+ [85] mgcv_1.8-40            sp_1.5-0               abind_1.4-5           
+ [88] RCurl_1.98-1.7         modelr_0.1.8           crayon_1.5.1          
+ [91] utf8_1.2.2             tzdb_0.3.0             rmarkdown_2.14        
+ [94] viridis_0.6.2          jpeg_0.1-9             locfit_1.5-9.5        
+ [97] grid_4.2.0             readxl_1.4.0           git2r_0.30.1          
+[100] reprex_2.0.1           digest_0.6.29          xtable_1.8-4          
+[103] httpuv_1.6.5           munsell_0.5.0          viridisLite_0.4.0     
+[106] beeswarm_0.4.0         vipor_0.4.5            bslib_0.3.1           </code></pre>
 </div>
 </div>
 

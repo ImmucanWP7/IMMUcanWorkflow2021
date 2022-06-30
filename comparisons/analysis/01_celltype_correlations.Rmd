@@ -32,7 +32,7 @@ sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW
 
 First, we will observe the number of cells per image.
 
-```{r number-of cells}
+```{r number-of-cells}
 no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
   group_by(sample_id) %>%
   summarize(count = n())
@@ -230,7 +230,7 @@ cur_IMC <-  lapply(unique(sce_IMC$sample_id), function(k){
 })
 cur_IMC <- do.call(rbind, cur_IMC)
 
-cur_IF <- lapply(unique(sce_IMC$sample_id), function(k){
+cur_IF <- lapply(unique(sce_mIF$sample_id), function(k){
   cur_sce_IF <- sce_mIF[,sce_mIF$sample_id == k]
   assay(cur_sce_IF, "scaled") <- (assay(cur_sce_IF, "exprs") - 
                                      rowMin(assay(cur_sce_IF, "exprs"))) / 
@@ -262,4 +262,72 @@ ggplot(combined_df) +
   facet_wrap(. ~ marker) + 
   geom_abline(intercept = 0, slope = 1, color = "dark red") + 
   theme(legend.position = "none") + xlab("Expression IMC") + ylab("Expression IF")
+```
+
+## Visualization on images
+
+We will next plot the location of celltypes on the images.
+
+```{r, image-viz}
+library(cytomapper)
+images_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
+images_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+
+for (i in unique(sce_IMC$sample_id)) {
+  
+  if (! i %in% names(images_mIF)) next
+  
+  cur_IMC <- plotPixels(images_IMC[i], 
+                        colour_by = c("Ecad", "CD3", "CD20", "CD163", "CD15", "CD11c"),
+                        return_images = TRUE, image_title = NULL, 
+                        scale_bar = NULL, legend = NULL,
+                        bcg = list(Ecad = c(0, 5, 1),
+                                   CD3 = c(0, 5, 1),
+                                   CD20 = c(0, 5, 1),
+                                   CD163 = c(0, 5, 1),
+                                   CD15 = c(0, 5, 1),
+                                   CD11c = c(0, 5, 1)))
+  
+    cur_mIF <- plotPixels(images_mIF[i], 
+                        colour_by = c("CK", "CD3", "CD20", "CD163", "CD15", "CD11c"),
+                        return_images = TRUE, image_title = NULL, 
+                        scale_bar = NULL, legend = NULL,
+                        bcg = list(Ecad = c(0, 5, 1),
+                                   CD3 = c(0, 5, 1),
+                                   CD20 = c(0, 5, 1),
+                                   CD163 = c(0, 5, 1),
+                                   CD15 = c(0, 5, 1),
+                                   CD11c = c(0, 5, 1)))
+    
+    # Add points to IMC
+    cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
+    cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
+    pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/", i, ".pdf"))
+    plot(cur_IMC$images[[1]])
+    points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
+           col = "white", 
+           pch = 16, cex = 1.1)
+    points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
+           col = metadata(cur_sce_IMC)$color_vectors$matched_celltype[cur_sce_IMC$matched_celltype], 
+           pch = 16, cex = 0.9)
+    plot(cur_mIF$images[[1]])
+    points(cur_sce_mIF$nucleus.x, cur_sce_mIF$nucleus.y, 
+           col = "white", 
+           pch = 16, cex = 1.1)
+    points(cur_sce_mIF$nucleus.x, cur_sce_mIF$nucleus.y, 
+           col = metadata(cur_sce_mIF)$color_vectors$matched_celltype[cur_sce_mIF$matched_celltype], 
+           pch = 16, cex = 0.9)
+    dev.off()
+  
+}
+
+# Write out legend
+pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/legend.pdf"))
+plot(1:8, y = rep(1, 8), col = metadata(sce_IMC)$color_vectors$matched_celltype, pch = 16, cex = 2)
+text(1:8, y = rep(0.8, 8), labels = names(metadata(sce_IMC)$color_vectors$matched_celltype))
+text(2, y = 1.2, labels = "Celltypes")
+plot(1:6, y = rep(1, 6), col = c("red", "green", "blue", "cyan", "magenta", "yellow"), pch = 16, cex = 2)
+text(1:6, y = rep(0.8, 6), labels = c("Ecad", "CD3", "CD20", "CD163", "CD15", "CD11c"))
+text(2, y = 1.2, labels = "Marker expression")
+dev.off()
 ```

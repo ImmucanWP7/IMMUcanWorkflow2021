@@ -1,0 +1,127 @@
+---
+title: "Comparison between steinbock and IF"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script, we will compare the celltypes observed in IFquant with those in IMC.
+
+## Load data
+
+First, we will read in the `SingleCellExperiment` objects storing the IMC and 
+IF data.
+
+```{r read-data, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+sce_IFquant <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+sce_steinbock <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/Rout/sce.rds")
+```
+
+## Number of cells
+
+First, we will observe the number of cells per image.
+
+```{r number-of cells}
+no_IFquant <- colData(sce_IFquant) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+no_steinbock <- colData(sce_steinbock) %>% as_tibble() %>%
+  group_by(sample_id) %>%
+  summarize(count = n())
+
+combined_df <- merge(no_IFquant, no_steinbock, by="sample_id", sort=FALSE)
+combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal() + xlab("# Cells from IFquant") + ylab("# Cells from steinbock") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+
+# With patient as covariate
+ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y, color = patient_id), method='lm', formula= y~x,
+              fullrange=FALSE, se= FALSE) + 
+  theme_minimal() + xlab("# Cells from IFquant") + ylab("# Cells from steinbock") +
+  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+```
+
+## Compare expression of cell types
+
+As heatmaps
+
+## Marker expression
+
+Here, we will min-max scale the marker expression per image and compare binned rank averages.
+
+```{r binned-ranks}
+sce_steinbock <- sce_steinbock[rownames(sce_IFquant),]
+
+cur_steinbock <-  lapply(unique(sce_steinbock$sample_id), function(k){
+  cur_sce_steinbock <- sce_steinbock[,sce_steinbock$sample_id == k]
+  assay(cur_sce_steinbock, "scaled") <- (assay(cur_sce_steinbock, "exprs") - 
+                                     rowMin(assay(cur_sce_steinbock, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_steinbock, "exprs")) - 
+                                     rowMin(assay(cur_sce_steinbock, "exprs")))
+  
+  cur_aggr_steinbock <- lapply(rownames(sce_IFquant), function(x){
+    cur_marker_steinbock <- assay(cur_sce_steinbock, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_steinbock, by = list(ntile(cur_marker_steinbock, 1000)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_steinbock <- do.call(rbind, cur_aggr_steinbock)
+  cur_aggr_steinbock$sample_id <- k 
+  
+  return(cur_aggr_steinbock)
+})
+cur_steinbock <- do.call(rbind, cur_steinbock)
+
+cur_IFquant <- lapply(unique(sce_IFquant$sample_id), function(k){
+  cur_sce_IFquant <- sce_IFquant[,sce_IFquant$sample_id == k]
+  assay(cur_sce_IFquant, "scaled") <- (assay(cur_sce_IFquant, "exprs") - 
+                                     rowMin(assay(cur_sce_IFquant, "exprs"))) / 
+                                  (rowMax(assay(cur_sce_IFquant, "exprs")) - 
+                                     rowMin(assay(cur_sce_IFquant, "exprs")))
+  
+  cur_aggr_IFquant <- lapply(rownames(sce_IFquant), function(x){
+    cur_marker_IFquant <- assay(cur_sce_IFquant, "scaled")[x,]
+    cur_out <- aggregate(cur_marker_IFquant, by = list(ntile(cur_marker_IFquant, 1000)), mean)
+    cur_out$marker <- x
+    return(cur_out)
+  })
+  cur_aggr_IFquant <- do.call(rbind, cur_aggr_IFquant)
+  cur_aggr_IFquant$sample_id <- k 
+  
+  return(cur_aggr_IFquant)
+})
+
+cur_IFquant <- do.call(rbind, cur_IFquant)
+
+combined_df <- merge(cur_steinbock, cur_IFquant, by = c("Group.1", "marker", "sample_id"), sort = FALSE)
+```
+
+Visualize the results
+
+```{r marker-expression-viz}
+ggplot(combined_df) +
+  geom_line(aes(x.x, x.y, color = sample_id)) + 
+  geom_smooth(aes(x.x, x.y), color = "red") +
+  facet_wrap(. ~ marker) + 
+  geom_abline(intercept = 0, slope = 1, color = "dark red") + 
+  theme(legend.position = "none") + xlab("Expression steinbock") + ylab("Expression IFquant")
+```
