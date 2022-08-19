@@ -5,7 +5,10 @@ alias steinbock="docker run -v /mnt/immucan_volume/processed_data/Panel_1/2022_W
 
 steinbock preprocess imc panel --namecol Clean_Target
 
-steinbock preprocess imc images --hpf 50 &> /mnt/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/steinbock_img_log.txt 
+steinbock preprocess imc images --hpf 50 &> /mnt/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/log/steinbock_img_log.txt 
+
+# Remove one image due to imperfect alignment
+rm /mnt/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/IMMUcan_Batch20210921_10082495-SPECT-VAR-TIS-01-IMC-01_003.tiff
 
 steinbock segment deepcell --minmax
 
