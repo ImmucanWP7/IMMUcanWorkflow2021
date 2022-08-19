@@ -38,7 +38,7 @@ sce <- read_steinbock("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKF
                       extract_imagemetadata_from = c("width_px",	"height_px",	
                                                      "acquisition_id"))
 sce$image <- paste0(sce$sample_id, ".tiff")
-sce$patient_id <- str_extract(sce$image, "[0-9]{8}")
+sce$patient_id <- sub("_", "", str_extract(sce$image, "_[0-9]{8}"))
 assay(sce, "exprs") <- asinh(counts(sce))
 
 # Specify interesting channels
@@ -61,7 +61,7 @@ all.equal(paste(cell_meta$image, cell_meta$ObjectNumber),
 
 colData(sce) <- cell_meta
 
-sce$ROI <- file_path_sans_ext(str_split(sce$image, "_", simplify = TRUE)[,5])
+sce$ROI <- sub("_", "", str_extract(sce$image, "_00[1-9]"))
 ```
 
 ## Generate colour vectors
@@ -83,30 +83,17 @@ names(col_vec_ROIs) <- unique(sce$ROI)
 col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
                         BCC = "#3F85A7", RCC = "#C81F43")
 
-colour_vectors$PatientIds <- col_vec_patientIds
-colour_vectors$ROIs <- col_vec_ROIs
-colour_vectors$Indication <- col_vec_indication
-
-# Save in metadata slot
-metadata(sce)$colour_vectors <- colour_vectors
-```
-
-## Define colors 
-
-Here, we define colors for matched cell types and samples.
-
-```{r define-colors}
-library(RColorBrewer)
-color_vectors <- list()
 matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
                              c("Tumor", "Tcell", "Neutrophil", "Macrophage",
                                "other", "DC", "Bcell", "BnTcell"))
-patient_id <- setNames(brewer.pal(10, "Set3"),
-                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10063152", "10034294"))
-color_vectors$matched_celltype <- matched_celltype
-color_vectors$patient_id <- patient_id
 
-metadata(sce)$color_vectors <- color_vectors
+colour_vectors$PatientIds <- col_vec_patientIds
+colour_vectors$ROIs <- col_vec_ROIs
+colour_vectors$Indication <- col_vec_indication
+colour_vectors$matched_celltype <- matched_celltype
+
+# Save in metadata slot
+metadata(sce)$colour_vectors <- colour_vectors
 ```
 
 ## Add interaction graph
@@ -118,7 +105,6 @@ library(imcRtools)
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
                          threshold = 20, name = "expansion_20")
 ```
-
 
 ## Save SCE object
 

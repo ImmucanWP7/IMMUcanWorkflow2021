@@ -32,7 +32,7 @@ colnames(sce) <- paste(sce$patient_id, sce$ROI, sce$ObjectNumber, sep = "_")
 ## Spillover matrix
 
 ```{r read-data}
-sce_spill <- readSCEfromTXT("/Volumes/immucan_volume/processed_data/Panel_1/Batch20210304/compensation/20220201_IMMUcan_panel_1_1.09_compensation")
+sce_spill <- readSCEfromTXT("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/compensation/20220201_IMMUcan_panel_1_1.09_compensation")
 assay(sce_spill, "exprs") <- asinh(counts(sce_spill)/5)
 
 plotSpotHeatmap(sce_spill)
