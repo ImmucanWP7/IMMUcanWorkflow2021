@@ -163,7 +163,7 @@ cur_pred <- predict(rffit,
 cur_pred$truth <- factor(test_sce$cell_labels)
 
 cur_pred %>%
-  pivot_longer(cols = B_cell:Tumor) %>%
+  pivot_longer(cols = Bcell:TumorKi67) %>%
   ggplot() +
   geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
   facet_wrap(. ~ truth) + 

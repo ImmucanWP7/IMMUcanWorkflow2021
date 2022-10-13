@@ -14,7 +14,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 Here, we will manually label cells based on their cell type. This is done
-based on the labelling scheme in ...
+based on the labelling scheme in `data/UZH_Gating_scheme_final.pptx`
 
 ## Load data
 
@@ -60,19 +60,25 @@ if (interactive()) {
 
 We next check for labelling quality.
 
-```{r read-labels}
+```{r read-labels, message=FALSE}
+library(stringr)
 library(SingleCellExperiment)
 label.files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/gated_cells/", 
                           full.names = TRUE, pattern = ".rds$")
 
 # Read in SCE objects
 cur_sces <- lapply(label.files, readRDS)
-cur_sces <- cur_sces[-108] 
 
 # Merge SCE objects
+cur_names <- Reduce(intersect, x = lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_sces <- lapply(cur_sces, function(x){
+  colData(x) <- colData(x)[,cur_names]
+  return(x)
+})
 cur_sce <- do.call("cbind", cur_sces)
 
 # now we check if the celltypes were labelled uniquely
+cur_sce$cytomapper_CellLabel <- str_split(cur_sce$cytomapper_CellLabel, "_", simplify = TRUE)[,1]
 names <- unique(cur_sce$cytomapper_CellLabel)
 unique(names)
 
@@ -87,14 +93,20 @@ cur_vec <- cur_sce$cytomapper_CellLabel
 
 cur_tab <- unclass(table(colnames(cur_sce), cur_sce$cytomapper_CellLabel))
 cur_labels <- rep("doublets", nrow(cur_tab))
+names(cur_labels) <- rownames(cur_tab)
 
 # Single assignments
-cur_labels[rowSums(cur_tab) == 1] <- colnames(cur_tab)[apply(cur_tab[rowSums(cur_tab) == 1,], 1,  which.max)]
+single_index <- rowSums(cur_tab) == 1
+cur_labels[single_index] <- colnames(cur_tab)[apply(cur_tab[single_index,], 1, 
+                                                    which.max)]
 
-table(cur_labels)
+# Double assignment within the tumor
+double_index <- rowSums(cur_tab) == 2 & cur_tab[,"Tumor"] == 1
+no_tumor <- cur_tab[,colnames(cur_tab) != "Tumor"]
+cur_labels[double_index] <- colnames(no_tumor)[apply(no_tumor[double_index,], 1, 
+                                                    which.max)]
 
 # Remove doublets
-names(cur_labels) <- rownames(cur_tab)
 cur_labels <- cur_labels[cur_labels != "doublets"]
 table(cur_labels)
 
@@ -112,27 +124,28 @@ table(sce$cell_labels, sce$indication)
 In this step, we will define a colour vector for all further visualization purposes.
 
 ```{r define-color-vector, fig.height=7, fig.width=7}
-cell_types <- c("B_cell", "CD38", "CD4", "CD8", "Treg", "BnCD4", "BnCD8",
-                "DC", "HLADR", "Macrophage", "Neutrophil", "NK_cell", "pDC", "Stroma", 
-                "Tumor", "unlabelled")
+cell_types <- c("Bcell", "Plasma", "CD4", "CD8", "Treg", "BnTcell",
+                "DC", "HLADR", "MacCD163", "Neutrophil", "NK", "pDC", "Mural", 
+                "Tumor", "TumorKi67", "unlabelled", "undefined")
 
 names(cell_types) <- cell_types
-cell_types["B_cell"] <- "red3"
-cell_types["CD38"] <- "goldenrod2"
+cell_types["Bcell"] <- "red3"
+cell_types["Plasma"] <- "goldenrod2"
 cell_types["CD4"] <- "palevioletred1"
 cell_types["CD8"] <- "darkorchid"
 cell_types["Treg"] <- "maroon4"
-cell_types["BnCD4"] <- "darkorange4"
-cell_types["BnCD8"] <- "red4"
+cell_types["BnTcell"] <- "darkorange4"
 cell_types["DC"] <- "green4"
 cell_types["HLADR"] <- "darkgreen"
-cell_types["Macrophage"] <- "green"
+cell_types["MacCD163"] <- "green"
 cell_types["Neutrophil"] <- "blue1"
-cell_types["NK_cell"] <- "yellow"
+cell_types["NK"] <- "yellow"
 cell_types["pDC"] <- "deepskyblue"
-cell_types["Stroma"] <- "tomato"
+cell_types["Mural"] <- "tomato"
 cell_types["Tumor"] <- "sienna4"
+cell_types["TumorKi67"] <- "sienna1"
 cell_types["unlabelled"] <- "gray"
+cell_types["undefined"] <- "black"
 
 metadata(sce)$colour_vectors$cell_types <- cell_types
 
@@ -145,7 +158,7 @@ pie(c(rep(1,length(metadata(sce)$colour_vectors$cell_types))),
 
 Here, we will check a number of statistics to assess labelling quality.
 
-```{r quality-control-1}
+```{r quality-control-1, message=FALSE}
 library(dplyr)
 # 1. How many cells of how many images are labelled
 

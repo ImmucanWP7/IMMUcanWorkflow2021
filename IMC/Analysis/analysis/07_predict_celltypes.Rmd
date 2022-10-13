@@ -57,6 +57,21 @@ names(cell_labels.class) <- rownames(cur_mat)
 cell_labels.prob <- predict.train(rffit, 
               newdata = cur_mat, 
               type = "prob")
+
+library(ggridges)
+
+# Distribution of maximum probabilities
+tibble(max_prob = rowMax(as.matrix(cell_labels.prob)),
+       type = cell_labels.class) %>%
+    ggplot() +
+        geom_density_ridges(aes(x = max_prob, y = type, fill = type)) +
+        scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) +
+        theme_classic(base_size = 15) +
+        xlab("Maximum probability") +
+        ylab("Cell type") + 
+        xlim(c(0,1.2))
+
+cell_labels.class[rowMax(as.matrix(cell_labels.prob)) < 0.2] <- "undefined"
 ```
 
 Store predictions in SCE object.
@@ -143,30 +158,27 @@ cell_types <- cell_types[cell_types != "unlabelled"]
 markers <- vector(mode = "list", length = length(cell_types))
 names(markers) <- cell_types
 
-markers[["B_cell"]] <- c("CD20", "CD3")
-markers[["CD38"]] <- c("CD38")
+markers[["Bcell"]] <- c("CD20", "CD3")
+markers[["Plasma"]] <- c("CD38")
 markers[["CD4"]] <- c("CD4", "CD8a", "FOXP3")
-markers[["BnCD4"]] <- c("CD20", "CD4","CD3")
 markers[["CD8"]] <- c("CD4", "CD8a", "FOXP3")
-markers[["BnCD8"]] <- c("CD20", "CD8a","CD3")
 markers[["Treg"]] <- c("CD4", "CD8a", "FOXP3")
+markers[["BnTcell"]] <- c("CD20", "CD3")
 markers[["DC"]] <- c("CD11c", "CD68")
-markers[["Macrophage"]] <- c("CD11c", "CD163")
+markers[["MacCD163"]] <- c("CD11c", "CD163")
 markers[["HLADR"]] <- c("HLADR", "CD11c")
 markers[["Neutrophil"]] <- c("CD15", "MPO")
-markers[["NK_cell"]] <- c("CD7", "CD3")
+markers[["NK"]] <- c("CD7", "CD3")
 markers[["pDC"]] <- c("CD303")
-markers[["Stroma"]] <- c("SMA", "PDGFRb")
+markers[["Mural"]] <- c("SMA", "PDGFRb")
 markers[["Tumor"]] <- c("Ecad", "CarbonicAnhydrase")
+markers[["TumorKi67"]] <- c("Ecad", "CarbonicAnhydrase", "Ki67")
+markers[["undefined"]] <- c("DNA1")
 ```
 
 Normalize the images.
 
 ```{r normalize}
-# Exclude images
-images <- images[!grepl("10072131|10074350", names(images))]
-masks <- masks[!grepl("10072131|10074350", names(masks))]
-
 images <- CytoImageList(images, on_disk = FALSE)
 masks <- CytoImageList(masks, on_disk = FALSE)
 
@@ -226,10 +238,9 @@ To compare to mIF data, we will need to harmonize the cell types.
 
 ```{r matched-celltypes}
 matched_celltype <- sce$celltypes
-matched_celltype[matched_celltype %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")] <- "other"
+matched_celltype[matched_celltype %in% c("Plasma", "HLADR", "Mural", "pDC", "NK")] <- "other"
 matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "Tcell"
-matched_celltype[matched_celltype %in% c("BnCD4", "BnCD8")] <- "BnTcell"
-matched_celltype[matched_celltype == "B_cell"] <- "Bcell"
+matched_celltype[matched_celltype == "TumorKi67"] <- "Tumor"
 sce$matched_celltype <- matched_celltype
 ```
 
