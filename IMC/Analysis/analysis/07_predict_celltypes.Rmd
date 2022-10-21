@@ -104,6 +104,9 @@ library(dittoSeq)
 
 dittoDimPlot(sce, reduction.use = "UMAP_fastMNN", var = "celltypes", size = 0.2) +
   scale_color_manual(values = metadata(sce)$colour_vectors$cell_types)
+
+dittoDimPlot(sce, reduction.use = "UMAP_fastMNN", var = "indication", size = 0.2) +
+  scale_color_manual(values = metadata(sce)$colour_vectors$Indication)
 ```
 
 ## Visualization of marker expression
@@ -160,8 +163,8 @@ names(markers) <- cell_types
 
 markers[["Bcell"]] <- c("CD20", "CD3")
 markers[["Plasma"]] <- c("CD38")
-markers[["CD4"]] <- c("CD4", "CD8a", "FOXP3")
-markers[["CD8"]] <- c("CD4", "CD8a", "FOXP3")
+markers[["CD4"]] <- c("CD4", "CD8a", "CD3")
+markers[["CD8"]] <- c("CD4", "CD8a", "CD3")
 markers[["Treg"]] <- c("CD4", "CD8a", "FOXP3")
 markers[["BnTcell"]] <- c("CD20", "CD3")
 markers[["DC"]] <- c("CD11c", "CD68")
@@ -172,7 +175,6 @@ markers[["NK"]] <- c("CD7", "CD3")
 markers[["pDC"]] <- c("CD303")
 markers[["Mural"]] <- c("SMA", "PDGFRb")
 markers[["Tumor"]] <- c("Ecad", "CarbonicAnhydrase")
-markers[["TumorKi67"]] <- c("Ecad", "CarbonicAnhydrase", "Ki67")
 markers[["undefined"]] <- c("DNA1")
 ```
 

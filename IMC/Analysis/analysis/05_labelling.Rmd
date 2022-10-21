@@ -126,7 +126,7 @@ In this step, we will define a colour vector for all further visualization purpo
 ```{r define-color-vector, fig.height=7, fig.width=7}
 cell_types <- c("Bcell", "Plasma", "CD4", "CD8", "Treg", "BnTcell",
                 "DC", "HLADR", "MacCD163", "Neutrophil", "NK", "pDC", "Mural", 
-                "Tumor", "TumorKi67", "unlabelled", "undefined")
+                "Tumor", "unlabelled", "undefined")
 
 names(cell_types) <- cell_types
 cell_types["Bcell"] <- "red3"
@@ -143,7 +143,6 @@ cell_types["NK"] <- "yellow"
 cell_types["pDC"] <- "deepskyblue"
 cell_types["Mural"] <- "tomato"
 cell_types["Tumor"] <- "sienna4"
-cell_types["TumorKi67"] <- "sienna1"
 cell_types["unlabelled"] <- "gray"
 cell_types["undefined"] <- "black"
 
