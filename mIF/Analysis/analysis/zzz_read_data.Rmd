@@ -24,9 +24,14 @@ the IMC acquisition and store them in `SingleCellExperiment` objects.
 library(SingleCellExperiment)
 library(tidyverse)
 
-cur_files <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration_20220523/",
+cur_files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/",
                         recursive = TRUE, 
                         pattern = "cells_properties_ROI_coordinates.tsv.gz", full.names = TRUE)
+
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+
+# Select the correct files
+cur_folders <- cur_folders[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_folders)]
 
 cur_sces <- lapply(cur_files, function(x){
   cur_data <- read.csv(x, sep = "\t")

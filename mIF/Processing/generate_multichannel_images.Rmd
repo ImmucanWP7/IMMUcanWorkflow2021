@@ -16,11 +16,22 @@ writes out multichannel images in `.tiff` format.
 library(EBImage)
 library(tiff)
 
-cur_folders <- list.files("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Lausanne_data/ROI_registration_20220523/",
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+
+cur_folders <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/ROI_registration_20220523/",
                           full.names = TRUE)
+
+cur_folders2 <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/ROI_registration_20220713//",
+                          full.names = TRUE)
+
+cur_folders <- c(cur_folders, cur_folders2)
+
+# Select the correct files
+cur_folders <- cur_folders[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_folders)]
 
 for (i in seq_along(cur_folders)) {
     if (length(list.files(cur_folders[i], pattern = "ROI_image.*.rds")) == 0) {
+        print(i)
         next
     }
     
