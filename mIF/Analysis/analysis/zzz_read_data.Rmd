@@ -31,7 +31,7 @@ cur_files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WOR
 sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 
 # Select the correct files
-cur_folders <- cur_folders[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_folders)]
+cur_files <- cur_files[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_files)]
 
 cur_sces <- lapply(cur_files, function(x){
   cur_data <- read.csv(x, sep = "\t")
@@ -42,9 +42,9 @@ cur_sces <- lapply(cur_files, function(x){
   cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
                                                 raw = cur_raw))
   colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
-  colData(cur_sce)$sample_id <- str_split(x, "/", simplify = TRUE)[,9]
-  colData(cur_sce)$patient_id <- str_extract(cur_sce$sample_id, "[0-9]{8}")
-  colData(cur_sce)$ROI <- str_split(cur_sce$sample_id, "_", simplify = TRUE)[,5]
+  colData(cur_sce)$sample_id <- str_split(x, "/", simplify = TRUE)[,11]
+  colData(cur_sce)$patient_id <- sub("-", "", str_extract(cur_sce$sample_id, "[0-9]{8}-"))
+  colData(cur_sce)$ROI <- str_extract(cur_sce$sample_id, "00[1-9]{1}$")
   return(cur_sce)
 })
 
@@ -65,13 +65,17 @@ assay(sce, "exprs") <- asinh(counts(sce))
 We will now annotate the cells based on the celltype annotation key.
 
 ```{r cell-type-annotation, message=FALSE}
-cur_key <- as.data.frame(read_csv("~/switchdrive/Institution/IMMUCan/Imaging_working_group/data_for_sharing/workflow_samples/mIF/phenotype_key.csv"))
+cur_key <- as.data.frame(read_csv("data/phenotype_key.csv"))
 
 rownames(cur_key) <- cur_key$phenotype
 
 sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
+sce$matched_celltype[sce$matched_celltype == "Mac_163"] <- "MacCD163"
+sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
+sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
 ```
 
 ## Define colors 
@@ -82,10 +86,10 @@ Here, we define colors for matched cell types and samples.
 library(RColorBrewer)
 color_vectors <- list()
 matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tcell", "Neutrophil", "Macrophage",
+                             c("Tumor", "Tcell", "Neutrophil", "MacCD163",
                                "other", "DC", "Bcell", "BnTcell"))
-patient_id <- setNames(brewer.pal(8, "Set1"),
-                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371"))
+patient_id <- setNames(brewer.pal(10, "Set3"),
+                       unique(sce$patient_id))
 color_vectors$matched_celltype <- matched_celltype
 color_vectors$patient_id <- patient_id
 
@@ -96,11 +100,15 @@ metadata(sce)$color_vectors <- color_vectors
 
 Finally, we will add a 20µm expansion interaction graph.
 
-```{r buildSpatialGraph, message=FALSE}
+```{r buildSpatialGraph, message=FALSE, fig.height=12, fig.width=12}
 library(imcRtools)
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
                          coords = c("nucleus.x", "nucleus.y"),
-                         threshold = 20, name = "expansion_20")
+                         threshold = 60, name = "expansion_60")
+
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
+            nodes_first = TRUE)
 ```
 
 ## Save object

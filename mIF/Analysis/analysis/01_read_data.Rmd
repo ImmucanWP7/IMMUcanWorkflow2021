@@ -38,7 +38,7 @@ sce <- read_steinbock("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKF
                                                      "acquisition_id"), 
                       image_file = NULL)
 sce$image <- paste0(sce$sample_id, ".tiff")
-sce$patient_id <- str_extract(sce$image, "[0-9]{8}")
+sce$patient_id <- sub("-", "", str_extract(sce$sample_id, "[0-9]{8}-"))
 assay(sce, "exprs") <- asinh(counts(sce))
 
 # Specify interesting channels
@@ -64,7 +64,7 @@ all.equal(paste(cell_meta$image, cell_meta$ObjectNumber),
 
 colData(sce) <- cell_meta
 
-sce$ROI <- file_path_sans_ext(str_split(sce$image, "_", simplify = TRUE)[,5])
+sce$ROI <- str_extract(sce$sample_id, "00[1-9]{1}$")
 ```
 
 ## Generate colour vectors
@@ -77,8 +77,8 @@ library(dittoSeq)
 library(RColorBrewer)
 colour_vectors <- list()
 
-col_vec_patientIds <- dittoColors(reps = 3)[seq_len(length(unique(sce$patient_id)))]
-names(col_vec_patientIds) <- unique(sce$patient_id)
+col_vec_patientIds <- setNames(brewer.pal(10, "Set3"),
+                       unique(sce$patient_id))
 
 col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
 names(col_vec_ROIs) <- unique(sce$ROI)
@@ -99,11 +99,11 @@ Here, we define colors for matched cell types and samples.
 ```{r define-colors}
 library(RColorBrewer)
 color_vectors <- list()
-matched_celltype <- setNames(c("#3F1B03", "#0A3A03", "#066970", "#894F36", "#636160", "#DC6FE2", "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tcell", "Neutrophil", "Macrophage",
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "Tcell", "Neutrophil", "MacCD163",
                                "other", "DC", "Bcell", "BnTcell"))
 patient_id <- setNames(brewer.pal(10, "Set3"),
-                       c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10063152", "10034294"))
+                       unique(sce$patient_id))
 color_vectors$matched_celltype <- matched_celltype
 color_vectors$patient_id <- patient_id
 
@@ -126,7 +126,7 @@ sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
 
 ## Save SCE object
 
-Finally, for easy accessability, we will write the SCE object out.
+Finally, for easy accessibility, we will write the SCE object out.
 The object will be stored on the server so that everyone can work with it.
 
 ```{r save-RDS, warning=FALSE}

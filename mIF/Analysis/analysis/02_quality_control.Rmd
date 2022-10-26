@@ -60,7 +60,7 @@ We will now observe the distribution of cell sizes across all images.
 ```{r cell-size, message=FALSE, fig.height=10, fig.width=10}
 colnames(sce) <- paste0(sce$sample_id, "_", sce$ObjectNumber)
 dittoPlot(sce, var = "area", group.by = "image",  
-          plots = "ridgeplot", color.panel = metadata(sce)$colour_vectors$ROIs) 
+          plots = "ridgeplot") 
 
 summary(sce$area)
 ```
@@ -102,6 +102,10 @@ dittoDimPlot(sce, var = "patient_id", reduction.use = "UMAP", size = 0.2) +
 dittoDimPlot(sce, var = "indication", reduction.use = "UMAP", size = 0.2) + 
     scale_color_manual(values = metadata(sce)$colour_vectors$Indication) +
     ggtitle("Patient ID on UMAP")
+
+dittoDimPlot(sce, var = "ROI", reduction.use = "UMAP", size = 0.2) + 
+    scale_color_manual(values = metadata(sce)$colour_vectors$ROIs) +
+    ggtitle("ROI on UMAP")
 ```
 
 ```{r dimred-viz-expression, fig.height=12}
