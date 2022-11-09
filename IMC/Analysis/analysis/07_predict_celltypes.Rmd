@@ -38,6 +38,8 @@ unlab_sce <- sce[,sce$cell_labels == "unlabelled"]
 rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/rf_classifier.rds")
 ```
 
+## Prediction based on labelled cells
+
 We will predict the labels of all other cells.
 For cell-type classification, we will use the method that was trained across all images. 
 
@@ -91,11 +93,7 @@ cur_probs[rownames(cell_labels.prob),] <- as.matrix(cell_labels.prob)
 sce$probabilities <- DataFrame(cur_probs)
 ```
 
-# Visualization
-
-Here, we will visualize the predicted cell-types and their associated classification probabilities per indication.
-
-## Using reduced dimensions
+### Visualization of reduced dimensions
 
 First, we will plot the class labels on the batch corrected tSNEs.
 
@@ -109,7 +107,7 @@ dittoDimPlot(sce, reduction.use = "UMAP_fastMNN", var = "indication", size = 0.2
   scale_color_manual(values = metadata(sce)$colour_vectors$Indication)
 ```
 
-## Visualization of marker expression
+### Visualization of marker expression
 
 Finally, we will visualize the marker expression per cell type using the classified cells.
 
@@ -147,7 +145,7 @@ dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
             breaks = seq(-3, 3, length.out = 101))
 ```
 
-## Write out example images
+### Write out example images
 
 Here, we will outline the cells of each cell type onto of composite images.
 
@@ -192,6 +190,10 @@ images <- normalize(images, separateImages = TRUE,
 Now, we will loop through the cell-types and indication.
 
 ```{r viz-cell-types}
+if (!dir.exists("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/")) {
+  dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/")
+} 
+
 for(j in unique(sce$celltypes)){
     cur_sce <- sce[,sce$celltypes == j]
     cur_markers <- markers[[j]]
@@ -234,6 +236,177 @@ for(j in unique(sce$celltypes)){
 
 ```
 
+## Prediction based on external pre-trained classifier
+
+Here, we will use a pre-trained classifier to predict cell types.
+We will first adjust the data to match to the classifier
+
+```{r, message=FALSE}
+rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/cell_classification/rf_images.rds")
+
+sce$Indication <- sce$indication
+
+sce$Indication[sce$Indication == "BCC"] <- "BREAS"
+sce$Indication[sce$Indication == "CRC"] <- "GI"
+sce$Indication[sce$Indication == "NSCLC"] <- "GU"
+sce$Indication[sce$Indication == "RCC"] <- "HN"
+sce$Indication[sce$Indication == "SCCHN"] <- "THOR"
+```
+
+### Predict cells
+
+We will now predict all cells in the dataset
+
+```{r predict-cells-2}
+library(ggridges)
+
+# Add dummy variables
+cur_mat <- t(assay(sce, "exprs")[!grepl("DNA|Histone", rownames(sce)),])
+
+dummies <- dummyVars(sample_id ~ Indication, data = colData(sce))
+all_dummies <- predict(dummies, newdata = colData(sce))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cell_labels.class <- as.character(predict.train(rffit, 
+              newdata = cur_mat, 
+              type = "raw"))
+names(cell_labels.class) <- rownames(cur_mat)
+cell_labels.prob <- predict.train(rffit, 
+              newdata = cur_mat, 
+              type = "prob")
+
+cell_labels.class[cell_labels.class == "plasma"] <- "Plasma"
+cell_labels.class[cell_labels.class == "B"] <- "Bcell"
+cell_labels.class[cell_labels.class == "BnT"] <- "BnTcell"
+
+colnames(cell_labels.prob) <- c("Bcell", "BnTcell", "CD4", "CD8", "DC", "HLADR", "MacCD163", "Mural", 
+"Neutrophil", "NK", "pDC", "Plasma", "Treg", "Tumor")
+
+# Distribution of maximum probabilities
+tibble(max_prob = rowMax(as.matrix(cell_labels.prob)),
+       type = cell_labels.class) %>%
+    ggplot() +
+        geom_density_ridges(aes(x = max_prob, y = type, fill = type)) +
+        scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) +
+        theme_classic(base_size = 15) +
+        xlab("Maximum probability") +
+        ylab("Cell type") + 
+        xlim(c(0,1.2))
+
+cell_labels.class[rowMax(as.matrix(cell_labels.prob)) < 0.3] <- "undefined"
+```
+
+Store predictions in SCE object.
+We will not overwrite the labels of the already labelled cells.
+
+```{r store-predictions-2}
+sce$external_celltypes <- cell_labels.class 
+sce$external_probabilities <- DataFrame(cell_labels.prob)
+```
+
+### Visualization of reduced dimensions
+
+First, we will plot the class labels on the batch corrected tSNEs.
+
+```{r red-dim-visualization-classlabels-2, message = FALSE, warning = FALSE}
+library(dittoSeq)
+
+dittoDimPlot(sce, reduction.use = "UMAP_fastMNN", var = "external_celltypes", size = 0.2) +
+  scale_color_manual(values = metadata(sce)$colour_vectors$cell_types)
+
+dittoDimPlot(sce, reduction.use = "UMAP_fastMNN", var = "indication", size = 0.2) +
+  scale_color_manual(values = metadata(sce)$colour_vectors$Indication)
+```
+
+### Visualization of marker expression
+
+Finally, we will visualize the marker expression per cell type using the classified cells.
+
+```{r heatmap-visualization-2}
+agr_sce <- aggregateAcrossCells(sce, 
+                                ids = colData(sce)[,c("sample_id", "external_celltypes")], 
+                                statistics = "mean")
+assay(agr_sce, "exprs") <- asinh(counts(agr_sce))
+colnames(agr_sce) <- paste0(agr_sce$sample_id, "_", 
+                            agr_sce$external_celltypes)
+
+# Define markers that were used for gating
+cur_markers <- c("Ecad", "CarbonicAnhydrase", "Ki67", "CD14", "HLADR", 
+                 "CD11c", "CD163", "CD303", "CD68", "CD15", "MPO", "CD38",
+                 "SMA", "PDGFRb", "CD20", "CD7", "CD3", "CD8a", "CD4", "GrzB", "FOXP3", "PD1")
+
+# Non-scaled
+dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
+            annot.by = c("patient_id", "external_celltypes", "indication"), 
+            cluster_rows = FALSE,
+            scale = "none", heatmap.colors = viridis(100), order.by = "external_celltypes",
+            annotation_colors = list(patient_id = metadata(sce)$colour_vectors$PatientIds,
+                                     external_celltypes = metadata(sce)$colour_vectors$cell_types,
+                                     indication = metadata(sce)$colour_vectors$Indication))
+
+# Centered and scaled
+dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
+            annot.by = c("patient_id", "external_celltypes", "indication"), 
+            cluster_rows = FALSE, order.by = "external_celltypes",
+            annotation_colors = list(patient_id = metadata(sce)$colour_vectors$PatientIds,
+                                     external_celltypes = metadata(sce)$colour_vectors$cell_types,
+                                     indication = metadata(sce)$colour_vectors$Indication),
+            heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+            breaks = seq(-3, 3, length.out = 101))
+```
+
+### Write out example images
+
+Here, we will outline the cells of each cell type onto of composite images.
+
+```{r viz-cell-types-2}
+if (!dir.exists("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/external_CellTypeValidation/")) {
+  dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/external_CellTypeValidation/")
+} 
+
+for(j in unique(sce$external_celltypes)){
+    cur_sce <- sce[,sce$external_celltypes == j]
+    cur_markers <- markers[[j]]
+  
+    if(dim(cur_sce)[2] == 0) {
+      next(j)
+    }
+    
+    if (length(cur_markers) == 1) {
+      cur_col <- "red"
+      names(cur_col) <- j
+      cur_col <- list(cur_col)
+      names(cur_col) <- "external_celltypes"
+      plotPixels(image = images, 
+                object = cur_sce, 
+                mask = masks, 
+                cell_id = "ObjectNumber",
+                img_id = "sample_id", 
+                colour_by = cur_markers, 
+                outline_by = "external_celltypes",
+                image_title = list(text = names(images),
+                                cex = 1), 
+                colour = cur_col,
+                save_plot = list(filename = paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/external_CellTypeValidation/",
+                            j, ".png")))
+    } else {
+        plotPixels(image = images,
+                   object = cur_sce, 
+                   mask = masks, 
+                   cell_id = "ObjectNumber",
+                   img_id = "sample_id", 
+                   colour_by = cur_markers, 
+                   outline_by = "external_celltypes",
+                   image_title = list(text = names(images),
+                                  cex = 1),
+                   save_plot = list(filename = paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/external_CellTypeValidation/",
+                            j, ".png")))
+    }
+}
+
+```
+
 ## Define matched cell types
 
 To compare to mIF data, we will need to harmonize the cell types.
@@ -244,6 +417,12 @@ matched_celltype[matched_celltype %in% c("Plasma", "HLADR", "Mural", "pDC", "NK"
 matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "Tcell"
 matched_celltype[matched_celltype == "TumorKi67"] <- "Tumor"
 sce$matched_celltype <- matched_celltype
+
+ext_matched_celltype <- sce$external_celltypes
+ext_matched_celltype[ext_matched_celltype %in% c("Plasma", "HLADR", "Mural", "pDC", "NK")] <- "other"
+ext_matched_celltype[ext_matched_celltype %in% c("Treg", "CD4", "CD8")] <- "Tcell"
+ext_matched_celltype[ext_matched_celltype == "TumorKi67"] <- "Tumor"
+sce$external_matched_celltype <- ext_matched_celltype
 ```
 
 # Save RDS
