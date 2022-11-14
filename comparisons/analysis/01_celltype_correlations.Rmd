@@ -27,6 +27,8 @@ library(tidyverse)
 sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
 
+sce_IMC$matched_celltype <- sce_IMC$external_matched_celltype
+
 sce_IMC$matched_celltype[sce_IMC$matched_celltype == "undefined"] <- "other"
 ```
 
@@ -291,7 +293,7 @@ ggplot(combined_df) +
 
 We will next plot the location of celltypes on the images.
 
-```{r, image-viz}
+```{r, image-viz, eval=FALSE}
 library(cytomapper)
 images_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 images_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
