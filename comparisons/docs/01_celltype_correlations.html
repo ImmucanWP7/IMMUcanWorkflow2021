@@ -13,7 +13,7 @@
 
 <title>Comparison between IMC and IF</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -357,7 +357,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -368,8 +368,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -378,13 +378,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-09
+<strong>Last updated:</strong> 2022-11-14
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>comparisons/</code> <span
@@ -407,21 +407,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -512,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree9abd60d904088b36b1032d4a15f5df1c8e728081targetblank9abd60da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree3db20f5d6e9aef771926aa764f2ff14a9a19e8d9targetblank3db20f5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/9abd60d904088b36b1032d4a15f5df1c8e728081" target="_blank">9abd60d</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9" target="_blank">3db20f5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree9abd60d904088b36b1032d4a15f5df1c8e728081targetblank9abd60da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree3db20f5d6e9aef771926aa764f2ff14a9a19e8d9targetblank3db20f5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/9abd60d904088b36b1032d4a15f5df1c8e728081" target="_blank">9abd60d</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9" target="_blank">3db20f5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,8 +553,16 @@ Ignored files:
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
 
+Untracked files:
+    Untracked:  IMC/Analysis/docs/site_libs/header-attrs-2.18/
+
 Unstaged changes:
-    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Modified:   IMC/Analysis/analysis/07_predict_celltypes.Rmd
+    Modified:   IMC/Analysis/docs/07_predict_celltypes.html
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/heatmap-visualization-2-1.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/heatmap-visualization-2-2.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/predict-cells-2-1.png
+    Modified:   IMC/Analysis/docs/figure/07_predict_celltypes.Rmd/red-dim-visualization-classlabels-2-1.png
 
 </code></pre>
 <p>
@@ -604,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+<td>
+Exported environment file
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/01_celltype_correlations.html" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+<td>
+Exported environment file
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -926,6 +965,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of-cells-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of-cells-1.png" target="_blank">4554a25</a>
 </td>
 <td>
@@ -970,6 +1020,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of-cells-2.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/number-of-cells-2.png" target="_blank">4554a25</a>
@@ -1038,6 +1099,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-1.png" target="_blank">4554a25</a>
@@ -1115,6 +1187,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">4554a25</a>
@@ -1203,6 +1286,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/correlation-1.png" target="_blank">4554a25</a>
@@ -1299,6 +1393,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/unnamed-chunk-1-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/09d32f61a98b1b588620a3bd76317681b4a3743b/comparisons/docs/figure/01_celltype_correlations.Rmd/unnamed-chunk-1-1.png" target="_blank">09d32f6</a>
 </td>
 <td>
@@ -1341,6 +1446,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/unnamed-chunk-1-2.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/09d32f61a98b1b588620a3bd76317681b4a3743b/comparisons/docs/figure/01_celltype_correlations.Rmd/unnamed-chunk-1-2.png" target="_blank">09d32f6</a>
@@ -1405,7 +1521,7 @@ design &lt;- model.matrix(~sample_id + modality, data = y.ab$samples)
 y.ab &lt;- estimateDisp(y.ab, design, trend=&quot;none&quot;)
 summary(y.ab$common.dispersion)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.2581  0.2581  0.2581  0.2581  0.2581  0.2581 </code></pre>
+ 0.2517  0.2517  0.2517  0.2517  0.2517  0.2517 </code></pre>
 <pre class="r"><code>plotBCV(y.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1430,6 +1546,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-1.png" target="_blank">4554a25</a>
@@ -1459,7 +1586,7 @@ nilseling
 <pre class="r"><code>fit.ab &lt;- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
 summary(fit.ab$var.prior)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.5619  0.5619  0.5619  0.5619  0.5619  0.5619 </code></pre>
+ 0.5631  0.5631  0.5631  0.5631  0.5631  0.5631 </code></pre>
 <pre class="r"><code>plotQLDisp(fit.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1484,6 +1611,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-2.png" target="_blank">4554a25</a>
@@ -1523,14 +1661,14 @@ DA$celltype &lt;- rownames(DA)
 DA$sign &lt;- DA$FDR&lt;0.05
 DA</code></pre>
 <pre><code>                 logFC   logCPM          F       PValue          FDR   celltype
-DC          2.11526359 14.54511 56.7802760 4.246216e-09 3.396973e-08         DC
-Bcell      -0.90478794 15.35011  9.2317191 4.197643e-03 1.679057e-02      Bcell
-BnTcell     0.75786303 15.69220  8.3879988 6.417700e-03 1.711387e-02    BnTcell
-MacCD163   -0.35934699 16.46330  4.4808165 4.060873e-02 8.121746e-02   MacCD163
-Neutrophil  0.56682930 14.66975  3.2710313 7.873150e-02 1.259704e-01 Neutrophil
-other       0.10792410 17.69369  1.1617524 2.876222e-01 3.834962e-01      other
-Tumor      -0.09034737 18.50573  0.5744237 4.529916e-01 5.177047e-01      Tumor
-Tcell      -0.02709685 17.50460  0.1734418 6.793188e-01 6.793188e-01      Tcell
+DC          1.46460329 14.11983 30.4153794 2.507699e-06 2.006159e-05         DC
+Bcell      -0.90747338 15.35245  9.2878931 4.093636e-03 1.531476e-02      Bcell
+BnTcell     0.76510833 15.69665  8.6385707 5.743036e-03 1.531476e-02    BnTcell
+MacCD163   -0.32627321 16.47898  3.7205388 6.092930e-02 1.114637e-01   MacCD163
+Neutrophil  0.58226727 14.67536  3.4923305 6.966479e-02 1.114637e-01 Neutrophil
+other       0.15557750 17.71845  2.5698641 1.168569e-01 1.558092e-01      other
+Tumor      -0.08019097 18.50995  0.4534326 5.046169e-01 5.767050e-01      Tumor
+Tcell      -0.02570271 17.50501  0.1570825 6.939825e-01 6.939825e-01      Tcell
             sign
 DC          TRUE
 Bcell       TRUE
@@ -1567,6 +1705,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-3.png" target="_blank">4554a25</a>
@@ -1621,6 +1770,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/test-DA-4.png" target="_blank">4554a25</a>
@@ -1740,6 +1900,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3db20f5d6e9aef771926aa764f2ff14a9a19e8d9/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">3db20f5</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/comparisons/docs/figure/01_celltype_correlations.Rmd/marker-expression-viz-1.png" target="_blank">4554a25</a>
@@ -1886,8 +2057,8 @@ other attached packages:
  [9] tidyr_1.2.1                 tibble_3.1.8               
 [11] ggplot2_3.4.0               tidyverse_1.3.2            
 [13] SingleCellExperiment_1.20.0 SummarizedExperiment_1.28.0
-[15] Biobase_2.58.0              GenomicRanges_1.50.0       
-[17] GenomeInfoDb_1.34.1         IRanges_2.32.0             
+[15] Biobase_2.58.0              GenomicRanges_1.50.1       
+[17] GenomeInfoDb_1.34.2         IRanges_2.32.0             
 [19] S4Vectors_0.36.0            BiocGenerics_0.44.0        
 [21] MatrixGenerics_1.10.0       matrixStats_0.62.0         
 
@@ -1901,7 +2072,7 @@ loaded via a namespace (and not attached):
 [19] compiler_4.2.1         git2r_0.30.1           cli_3.4.1             
 [22] rvest_1.0.3            xml2_1.3.3             DelayedArray_0.24.0   
 [25] labeling_0.4.2         sass_0.4.2             scales_1.2.1          
-[28] digest_0.6.30          rmarkdown_2.17         XVector_0.38.0        
+[28] digest_0.6.30          rmarkdown_2.18         XVector_0.38.0        
 [31] pkgconfig_2.0.3        htmltools_0.5.3        highr_0.9             
 [34] dbplyr_2.2.1           fastmap_1.1.0          rlang_1.0.6           
 [37] readxl_1.4.1           rstudioapi_0.14        farver_2.1.1          

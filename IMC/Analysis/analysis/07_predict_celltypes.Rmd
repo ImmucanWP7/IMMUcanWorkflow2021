@@ -242,7 +242,7 @@ Here, we will use a pre-trained classifier to predict cell types.
 We will first adjust the data to match to the classifier
 
 ```{r, message=FALSE}
-rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/cell_classification/rf_images.rds")
+rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/cell_classification/rf_images_DCfix.rds")
 
 sce$Indication <- sce$indication
 
