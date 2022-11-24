@@ -94,6 +94,13 @@ ggplot(combined_df) +
   facet_wrap(.~matched_celltype, scales = "fixed") 
 
 ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 12) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
+  facet_wrap(.~matched_celltype, scales = "free") 
+
+ggplot(combined_df) + 
   geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +

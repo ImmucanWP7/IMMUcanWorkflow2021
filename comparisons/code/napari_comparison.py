@@ -21,6 +21,7 @@ import tifffile
 import napari
 import sys
 import re
+from matplotlib import colors
 from xml.etree import ElementTree
 from vispy.color import Colormap
 import numpy as np
@@ -146,30 +147,21 @@ class WidgetChannelsIntensity(QWidget):
                     self.buttons_color[i].setStyleSheet("QPushButton{ background-color: "+color.name()+" }")
 
 ###########################################
-#main
+# main function
 ###########################################
-if __name__ == "__main__":
-    
-    parser = argparse.ArgumentParser(description='exemple: %(prog)s --IMC-image=Zurich_data/ome/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.ome.tiff --IMC-data=Zurich_data/data_for_comparisons/IMC_cells/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.tsv --mIF-image-dir=Lausanne_data/ROI_registration_20220523/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001/ --mIF-data=Zurich_data/data_for_comparisons/mIF_cells/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.tsv')
-    parser.add_argument("--IMC-image", help="IMC ome-tiff image (e.g Zurich_data/ome/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.ome.tiff).",metavar="FILENAME",type=str,default=None)
-    parser.add_argument("--IMC-data", help="IMC single cell data (e.g. Zurich_data/data_for_comparisons/IMC_cells/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.tsv).",metavar="FILENAME",type=str,default=None)
-    parser.add_argument("--mIF-image-dir", help="input directory with mIF images. Should contain ROI_unmixed_<channel_name>.tiff images (e.g. Lausanne_data/ROI_registration_20220523/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001/).",metavar="DIRNAME",type=str,default=None)
-    parser.add_argument("--mIF-data", help="mIF single cell data (e.g. Zurich_data/data_for_comparisons/mIF_cells/IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001.tsv).",metavar="FILENAME",type=str,default=None)
-    parser.add_argument("--metadata", help="mIF panel in tab separated format with header in first row, one row per channel and at least two columns \"name\" and \"color\". Channel names (column \"name\") must correspond to channel names in mIF images filenames (see --mIF-image-dir). Colors must be in R,G,B format (e.g. 255,0,0). If --metadata is not specified, hardcoded IF1 panel is used.",metavar="FILENAME",type=str,default=None)
-
-    args = parser.parse_args()
-    input_imc=args.IMC_image
-    input_imc_data=args.IMC_data
-    input_mIF_dir=args.mIF_image_dir
-    input_mIF_data=args.mIF_data
-    metadata=args.metadata
-
+def napari_comparison(imc_image, 
+                      imc_dir,
+                      imc_panel, 
+                      imc_cells,
+                      mIF_image,
+                      mIF_dir,
+                      mIF_panel,
+                      mIF_cells) -> None:
 
     ####################
     # viewer1 for mIF
     ####################
-
-    viewer1 = napari.Viewer(title=input_mIF_dir)
+    viewer1 = napari.Viewer(title=mIF_dir)
 
     #hide "layer controls" and "layer list" docks
     viewer1.window._qt_viewer.dockLayerControls.hide()
@@ -178,20 +170,11 @@ if __name__ == "__main__":
     ####################
     #panel metadata
     ####################
-    #load panel
-    if metadata:
-        print("loading",metadata)
-        tmp_colnames=np.loadtxt(metadata,max_rows=1,delimiter="\t",dtype="str").tolist()
-        tmp=np.loadtxt(metadata,skiprows=1,delimiter="\t",dtype="str")
-        channel_names=tmp[:,tmp_colnames.index("name")].tolist()
-        channel_colors=tmp[:,tmp_colnames.index("color")].tolist()
-    else:
-        #IF1 panel
-        channel_names=['DAPI', 'CD15', 'CK', 'CD3', 'CD11c', 'CD20', 'CD163', 'autofluorescence']
-        channel_colors=['0,0,255', '255,255,0', '255,204,229', '255,0,0', '255,128,0', '255,255,255', '0,255,0', '0,0,0']
+    channel_names = mIF_panel.name[::-1].tolist()
+    channel_colors = mIF_panel.color[::-1].tolist()
 
     #convert to [0,1] r,g,b
-    channel_colors=[[float(y)/255 for y in x.split(",")] for x in channel_colors]
+    channel_colors = [colors.to_rgb(i) for i in channel_colors]
     cmaps=[Colormap([[0,0,0],col]) for col in channel_colors]
     channel_colormaps=[("colormap_"+str(i),cmaps[i]) for i in range(len(cmaps))]    
         
@@ -199,61 +182,59 @@ if __name__ == "__main__":
     ####################
     #mIF: unmixed images
     ####################
-    for i in range(len(channel_names)):
-        f="ROI_unmixed_"+channel_names[i]+".tiff"
-        print("loading",input_mIF_dir+"/"+f)
-        img = tifffile.imread(input_mIF_dir+"/"+f)
-        if img.dtype != np.uint32:
-            raise RuntimeError("Expecting uint32 image type")
-        #convert from uint32 (img.dtype) to float32
-        depth = 32
-        img=(img*(1.0/(2**depth-1))).astype(np.float32)
-        viewer1.add_image(img,name=channel_names[i],colormap=channel_colormaps[i],blending="additive",contrast_limits=[0,1])
+    viewer1.add_image(mIF_image[::-1], 
+                      channel_axis=0, 
+                      colormap=channel_colormaps, 
+                      name=channel_names, 
+                      visible=True, 
+                      blending="additive")
 
     ###############################
-    #mIF: Nuclei
+    # mIF: Nuclei
     ###############################
 
-    #cells properties
-    print("loading",input_mIF_data)
-    tmp_colnames=np.loadtxt(input_mIF_data,max_rows=1,delimiter="\t",dtype="str").tolist()
-    #nucleus centers
-    mIF_cell_centers=np.loadtxt(input_mIF_data,skiprows=1,usecols=(tmp_colnames.index("nucleus.y"),tmp_colnames.index("nucleus.x")))#order (y,x)
-    #phenotype2:
-    mIF_cell_phenotype=np.loadtxt(input_mIF_data,skiprows=1,dtype="str",usecols=tmp_colnames.index("phenotype"))
-    mIF_cell_type_matched=np.loadtxt(input_mIF_data,skiprows=1,dtype="str",usecols=tmp_colnames.index("matched_celltype"))
+    # nucleus centers
+    mIF_cell_centers = mIF_cells[["nucleus.y", "nucleus.x"]] #order (y,x)
+    # phenotype
+    mIF_cell_phenotype = mIF_cells["phenotype"]
+    mIF_cell_type_matched = mIF_cells["matched_celltype"]
 
-
-
-    mIF_phenotypes=sorted(list(set(mIF_cell_phenotype)))
-    mIF_celltypes_matched=sorted(list(set(mIF_cell_type_matched)))
+    mIF_phenotypes = sorted(list(set(mIF_cell_phenotype)))
+    mIF_celltypes_matched = sorted(list(set(mIF_cell_type_matched)))
+    
+    cm = [(x.min(),np.quantile(x,0.99)) for x in mIF_image]
 
     ###############################
-    #Add nuclei centers
+    # Add nuclei centers
     ###############################
 
-    #add points
+    # add points
     point_size=1 #0.7
     point_size_selected=8 #4
     point_edge_width=0.3 #0.3
-    mIF_all_cells=viewer1.add_points(mIF_cell_centers, name="Nuclei (all)",size=point_size,edge_width=point_edge_width,face_color="black",edge_color="white",visible=True,features={'Phenotype': mIF_cell_phenotype,'Matched cell type': mIF_cell_type_matched})
-    #access features with mIF_all_cells.features["CD15"], mIF_all_cells.features["celltype"], ...
+    mIF_all_cells = viewer1.add_points(mIF_cell_centers, 
+                                       name="Nuclei (all)",
+                                       size=point_size,
+                                       edge_width=point_edge_width,
+                                       face_color="black",
+                                       edge_color="white",
+                                       visible=True,
+                                       features={'Phenotype': mIF_cell_phenotype,
+                                                 'Matched cell type': mIF_cell_type_matched})
 
     ###############################
-    #Add GUI to play with marker intensity
+    # Add GUI to play with marker intensity
     ###############################
-
-    channels_controls1 = WidgetChannelsIntensity(viewer1,channel_names)
+    channels_controls1 = WidgetChannelsIntensity(viewer1, channel_names)
     scrollArea = QScrollArea()
     scrollArea.setWidgetResizable(True)
     scrollArea.setWidget(channels_controls1)
-    viewer1.window.add_dock_widget(scrollArea, area='left',name="Channel controls")
+    viewer1.window.add_dock_widget(scrollArea, area='left', name="Channel controls")
     
     ###############################
-    #Add GUI to select specific cells (using QWidget)
+    # Add GUI to select specific cells (using QWidget)
     ###############################
-
-    #celltypes + marker positivity
+        #celltypes + marker positivity
     class WidgetHighlightNuclei(QWidget):
         def __init__(self,layer_points,celltypes,channel_names_tmp) -> None:
             super().__init__()
@@ -321,73 +302,67 @@ if __name__ == "__main__":
                     mIF_all_cells.edge_color[selected]=[1,1,1,1]
                 mIF_all_cells.refresh()
                 mIF_all_cells.visible=True  #make sure it is visible
-
-
+    
     channel_names_tmp=channel_names[1:-1] #ignore DAPI and autofluorescence
     scrollArea = QScrollArea()
     scrollArea.setWidgetResizable(True)
-    scrollArea.setWidget(WidgetHighlightNuclei(None,mIF_celltypes_matched,channel_names_tmp))
+    scrollArea.setWidget(WidgetHighlightNuclei(None,
+                                               mIF_celltypes_matched,
+                                               channel_names_tmp))
     viewer1.window.add_dock_widget(scrollArea, area='left',name="Highlight nuclei")
     
-    
-
     ####################
     # viewer2 for IMC
     ####################
-
-    viewer2 = napari.Viewer(title=input_imc)
+    viewer2 = napari.Viewer(title=imc_dir)
 
     #hide "layer controls" and "layer list" docks
     viewer2.window._qt_viewer.dockLayerControls.hide()
     viewer2.window._qt_viewer.dockLayerList.hide()
 
-    #extract metadata (layer names)
-    tif=tifffile.TiffFile(input_imc)
-    root=ElementTree.fromstring(tif.ome_metadata)
-    #special case for ome.tiff from zurich
-    layer_names=[]
-    for x in root.findall('{*}Image/{*}Pixels/{*}Channel'):
-        layer_names.append(x.attrib["Name"])
-
-    #load image
-    img2 = tifffile.imread(input_imc)
-
     #contrast limits
-    cm=[(x.min(),np.quantile(x,0.99)) for x in img2]
+    cm = [(x.min(),np.quantile(x,0.99)) for x in imc_image]
+    layer_names = imc_panel.name.tolist()
 
     #default colormap black-white
     layer_colormaps=[("colormap_white",Colormap([[0,0,0],[1,1,1]]))]*len(layer_names)
     #match channel names to mIF image (very specific to this IMC image from zurich and mIF image from ILL)
-    mlabels=[re.sub(".*_", "",x) for x in layer_names]
-    rlabels=channel_names
+    mlabels = layer_names
+    rlabels = channel_names
+    
     try:
-        layer_colormaps[mlabels.index("DNA1")]=channel_colormaps[rlabels.index("DAPI")]
+        layer_colormaps[mlabels.index("DNA1")] = channel_colormaps[rlabels.index("DAPI")]
     except:
         print("not found")
 
     try:
-        layer_colormaps[mlabels.index("CarbonicAnhydrase")]=channel_colormaps[rlabels.index("CK")]
+        layer_colormaps[mlabels.index("CarbonicAnhydrase")] = channel_colormaps[rlabels.index("CK")]
     except:
         print("not found")
 
     try:
-        layer_colormaps[mlabels.index("Ecad")]=channel_colormaps[rlabels.index("CK")]
+        layer_colormaps[mlabels.index("Ecad")] = channel_colormaps[rlabels.index("CK")]
     except:
         print("not found")
 
     for ch in ["CD15","CD163","CD20","CD11c","CD3"]:
         try:
-            layer_colormaps[mlabels.index(ch)]=channel_colormaps[rlabels.index(ch)]
+            layer_colormaps[mlabels.index(ch)] = channel_colormaps[rlabels.index(ch)]
         except:
             print("not found")
 
 
     #add image (scaled to match img1 size), using enlarged contrast_limits to fix slider limits
-    imc_scale=(img.shape[0]/img2[0].shape[0]+img.shape[1]/img2[0].shape[1])/2
-    viewer2.add_image(img2,channel_axis=0,name=layer_names,colormap=layer_colormaps,blending="additive",contrast_limits=cm,scale=(imc_scale,imc_scale))
-
-
-
+    imc_scale=(mIF_image.shape[0]/imc_image[0].shape[0]+mIF_image.shape[1]/imc_image[0].shape[1])/2
+    viewer2.add_image(imc_image,
+                      channel_axis=0,
+                      name=layer_names,
+                      colormap=layer_colormaps,
+                      blending="additive",
+                      contrast_limits=cm,
+                      visible = False,
+                      scale=(imc_scale,imc_scale)
+                     )
 
     # #link views: does not work well. Seems to automatically change zoom sometimes... Problem seems to be solved in napari v0.4.16
     # def viewer1_camera_event(event: napari.utils.events.Event):
@@ -410,33 +385,34 @@ if __name__ == "__main__":
     #Simpler workaround (Public access to Window.qt_viewer is deprecated and will be removed in napari v0.5.0)
     viewer2.window.qt_viewer.view.camera.link(viewer1.window.qt_viewer.view.camera)
 
+    ###############################
+    # IMC Nuclei
+    ###############################
+    # nucleus centers
+    IMC_cell_centers = imc_cells[["Pos_Y", "Pos_X"]] #order (y,x)
+    
+    # phenotype
+    IMC_cell_phenotype = imc_cells["celltypes"]
+    IMC_cell_type_matched = imc_cells["matched_celltype"]
 
-    ###############################
-    #IMC Nuclei
-    ###############################
- 
-    #cells properties
-    print("loading",input_imc_data)
-    tmp_colnames=np.loadtxt(input_imc_data,max_rows=1,delimiter="\t",dtype="str").tolist()
-    #nucleus centers
-    IMC_cell_centers=np.loadtxt(input_imc_data,skiprows=1,usecols=(tmp_colnames.index("Pos_Y"),tmp_colnames.index("Pos_X")))#order (y,x)
-    #phenotype2:
-    IMC_cell_type_original=np.loadtxt(input_imc_data,skiprows=1,dtype="str",usecols=tmp_colnames.index("celltypes"))
-    IMC_cell_type_matched=np.loadtxt(input_imc_data,skiprows=1,dtype="str",usecols=tmp_colnames.index("matched_celltype"))
- 
- 
- 
-    IMC_celltypes_original=sorted(list(set(IMC_cell_type_original)))
-    IMC_celltypes_matched=sorted(list(set(IMC_cell_type_matched)))
+    IMC_phenotypes = sorted(list(set(IMC_cell_phenotype)))
+    IMC_celltypes_matched = sorted(list(set(IMC_cell_type_matched)))
  
     ###############################
     #Add nuclei center
     ###############################
   
     #add points (scaled to match img1 size)
-    IMC_all_cells=viewer2.add_points(IMC_cell_centers, name="Nuclei (all)",size=point_size/imc_scale,edge_width=point_edge_width/imc_scale,face_color="black",edge_color="white",visible=True,features={'Cell type': IMC_cell_type_original,'Matched cell type': IMC_cell_type_matched},scale=(imc_scale,imc_scale))
-    #access features with IMC_all_cells.features["CD15"], IMC_all_cells.features["celltype"], ...
-
+    IMC_all_cells=viewer2.add_points(IMC_cell_centers, 
+                                     name="Nuclei (all)",
+                                     size=point_size/imc_scale,
+                                     edge_width=point_edge_width/imc_scale,
+                                     face_color="black",
+                                     edge_color="white",
+                                     visible=True,
+                                     features={'Cell type': IMC_cell_phenotype,
+                                               'Matched cell type': IMC_cell_type_matched},
+                                     scale=(imc_scale,imc_scale))
     
     ###############################
     #Add GUI to play with marker intensity
