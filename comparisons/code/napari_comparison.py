@@ -25,126 +25,9 @@ from matplotlib import colors
 from xml.etree import ElementTree
 from vispy.color import Colormap
 import numpy as np
-from qtpy.QtWidgets import QVBoxLayout, QWidget, QLabel,QHBoxLayout,QPushButton,QSlider,QScrollArea,QSpacerItem,QSizePolicy,QColorDialog,QRadioButton
+from qtpy.QtWidgets import QVBoxLayout, QWidget, QLabel, QHBoxLayout, QPushButton, QSlider, QScrollArea, QSpacerItem, QSizePolicy, QColorDialog, QRadioButton, QStyle
 from qtpy.QtCore import Qt
 from qtpy.QtGui import QColor,QPixmap,QIcon
-
-
-###########################################
-#WidgetChannelsIntensity
-###########################################
-
-#simple widget to control layer contrast_limits, visibility and color.
-#layer_names: names of the layers to add controls (must be image layers, not checked).
-#default contrast_limits will be taken from viewer.layers[layer_names].contrast_limits
-#Note: not updated if layer colormap or contrast_limits are changed elsewhere.
-
-class WidgetChannelsIntensity(QWidget):
-    def __init__(self,viewer,layer_names) -> None:
-        super().__init__()
-        self.layer_names=layer_names
-        self.viewer=viewer
-        
-        self.colordialog=QColorDialog()
-        #set custom colors
-        try:
-            color_list=[]
-            #add layer colors
-            col_ind=0
-            for i in range(len(self.layer_names)):
-                colRGB=self.viewer.layers[i].colormap.colors[1]
-                color=QColor(round(colRGB[0]*255), round(colRGB[1]*255),round(colRGB[2]*255))
-                if col_ind<self.colordialog.customCount() and not color.name() in color_list:
-                    self.colordialog.setCustomColor(col_ind,color)
-                    color_list.append(color.name())
-                    col_ind=col_ind+1
-            #add plain colors
-            for r in [0,255]:
-                for g in [0,255]:
-                    for b in [0,255]:
-                        color=QColor(r,g,b)
-                        if col_ind<self.colordialog.customCount() and not color.name() in color_list:
-                            self.colordialog.setCustomColor(col_ind,color)
-                            color_list.append(color.name())
-                            col_ind=col_ind+1
-        except:
-            print('cannot set custom colors')
-      
-        #store original contrast limits
-        self.contrast_limits=[]
-        for i in range(len(self.layer_names)):
-            self.contrast_limits.append(self.viewer.layers[self.layer_names[i]].contrast_limits)
-
-        self.setLayout(QVBoxLayout())
-
-        self.buttons_showhide=[]
-        for i in range(len(self.layer_names)):
-            self.buttons_showhide.append(QPushButton("Hide"))
-            self.buttons_showhide[i].setCheckable(True)
-            self.buttons_showhide[i].setChecked(True)
-            self.buttons_showhide[i].clicked.connect(self.btn_show_hide_click)
-
-        self.buttons_color=[]
-        for i in range(len(self.layer_names)):
-            self.buttons_color.append(QPushButton())
-            self.buttons_color[i].clicked.connect(self.btn_color_click)
-            colRGB=self.viewer.layers[i].colormap.colors[1]
-            colname=QColor(round(colRGB[0]*255), round(colRGB[1]*255),round(colRGB[2]*255)).name()
-            self.buttons_color[i].setStyleSheet("QPushButton{ background-color: "+colname+" }")
-            
-        self.sliders=[]
-        self.slider_lim=100
-        for i in range(len(self.layer_names)):
-            self.sliders.append(QSlider(Qt.Horizontal))
-            self.sliders[i].setMinimum(-self.slider_lim)
-            self.sliders[i].setMaximum(self.slider_lim)
-            self.sliders[i].setValue(0)
-            self.sliders[i].valueChanged.connect(self.slider_change)
-            
-        for i in range(len(self.layer_names)):
-            self.layout().addWidget(QLabel(self.layer_names[i]+":"))
-            tmplayout=QHBoxLayout()
-            tmplayout.addWidget(self.buttons_showhide[i])
-            tmplayout.addWidget(self.buttons_color[i])
-            tmplayout.addWidget(self.sliders[i])
-            self.layout().addLayout(tmplayout)
-
-        #add spacer (when the widget is inside a QScrollArea)
-        self.layout().addStretch(1)
-        
-    def slider_change(self):
-        for i in range(len(self.layer_names)):
-            if self.sender()==self.sliders[i]:
-                max_factor=50
-                x=max_factor**(-self.sliders[i].value()/self.slider_lim)
-                self.viewer.layers[self.layer_names[i]].contrast_limits=(self.contrast_limits[i][0],self.contrast_limits[i][1]*x)
-
-    def btn_show_hide_click(self):
-        for i in range(len(self.layer_names)):
-            if self.sender()==self.buttons_showhide[i]:
-                if self.buttons_showhide[i].isChecked():
-                    self.buttons_showhide[i].setText("Hide")
-                    self.viewer.layers[self.layer_names[i]].visible=True
-                    self.sliders[i].setEnabled(True)
-                else:
-                    self.buttons_showhide[i].setText("Show")
-                    self.viewer.layers[self.layer_names[i]].visible=False
-                    self.sliders[i].setEnabled(False)
-
-    def btn_color_click(self):
-        for i in range(len(self.layer_names)):
-            if self.sender()==self.buttons_color[i]:
-                #get layer color
-                colRGB=self.viewer.layers[i].colormap.colors[1]
-                color=QColor(round(colRGB[0]*255), round(colRGB[1]*255),round(colRGB[2]*255))
-                color=self.colordialog.getColor(initial=color)
-                if color.isValid():
-                    #set layer color
-                    cm=self.viewer.layers[i].colormap
-                    cm.update({'colors':[cm.colors[0],[color.redF(),color.greenF(),color.blueF(),color.alphaF()]]})
-                    self.viewer.layers[i].colormap=cm
-                    #set button color
-                    self.buttons_color[i].setStyleSheet("QPushButton{ background-color: "+color.name()+" }")
 
 ###########################################
 # main function
@@ -310,6 +193,14 @@ def napari_comparison(imc_image,
                                                mIF_celltypes_matched,
                                                channel_names_tmp))
     viewer1.window.add_dock_widget(scrollArea, area='left',name="Highlight nuclei")
+    
+    ################################
+    # Widget for selecting samples #
+    ################################
+    selector = QScrollArea()
+    selector.setWidgetResizable(True)
+    selector.setWidget(WidgetFileSelection(viewer1, "test"))
+    viewer1.window.add_dock_widget(selector, area = 'right', name='Select sample')
     
     ####################
     # viewer2 for IMC
