@@ -1,0 +1,92 @@
+---
+title: "Figure 1"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+Code to generate the plots of Figure 1.
+
+## Read data
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+library(imcRtools)
+
+sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+
+sce_imc
+```
+
+## Sample area
+
+```{r}
+colData(sce_imc) %>%
+  as_tibble() %>%
+  select(sample_id, width_px, height_px) %>%
+  unique() %>%
+  mutate(area = width_px * height_px / (1000 * 1000)) %>%
+  summarize(total = sum(area))
+```
+
+## Example image
+
+```{r}
+if (!dir.exists("output/Figure_1/")) dir.create("output/Figure_1/")
+
+cur_sce <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001"]
+
+p <- plotSpatial(cur_sce, 
+            node_color_by = "external_celltypes",
+            img_id = "sample_id") +
+  scale_color_manual(values = metadata(sce_imc)$colour_vectors$cell_types) +
+  theme(axis.text = element_blank(),
+        legend.position = "None") +
+  ggtitle("")
+
+ggsave("output/Figure_1/Figure_1A_1.pdf", p)
+```
+
+## Overview stats
+
+```{r}
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, external_celltypes) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = external_celltypes), 
+           position = "fill", stat = "identity") +
+  scale_fill_manual(values = metadata(sce_imc)$colour_vectors$cell_types,
+                    name = "Cell types") +
+  theme_classic(base_size = 20) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Patients") +
+  ylab("Cell typ proportion")
+
+p
+
+#ggsave("output/Figure_1/Figure_1C_1.pdf", p)
+
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, external_matched_celltype) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = external_matched_celltype, group = indication), 
+           position = "stack", stat = "identity") +
+  scale_fill_manual(values = metadata(sce_imc)$colour_vectors$matched_celltype,
+                    name = "Cell types") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  theme_classic(base_size = 20) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Patients") +
+  ylab("Cell type count")
+
+p
+
+ggsave("output/Figure_1/Figure_1C_2.pdf", p)
+```
