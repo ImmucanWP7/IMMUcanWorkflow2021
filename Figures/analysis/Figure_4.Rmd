@@ -1,0 +1,88 @@
+---
+title: "Figure 4"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+Code to generate the plots of Figure 4.
+
+## Read data
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+library(imcRtools)
+library(RColorBrewer)
+
+sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mif <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+
+sce_imc
+sce_mif
+
+sce_imc$matched_celltype <- sce_imc$external_matched_celltype
+
+sce_imc$matched_celltype[sce_imc$matched_celltype == "undefined"] <- "other"
+
+## Define color scale for the patients
+patient_color <- setNames(c("#BE1E2D", "#FF4B5B", "#F7941D", "#FFCA89", "#00A651", "#5FFF73", "#00AEEF", "#9BD7FF", "#2E3192", "#675BFF"),
+                          c("10067433", "10082495", "10075572", "10074349", "10068868", "10073140", "10075371", "10061074", "10074832", "10071582"))
+
+levels(sce_imc$patient_id) <- names(patient_color)
+levels(sce_mif$patient_id) <- names(patient_color)
+```
+
+## Cell phenotype correlation
+
+```{r}
+if (!dir.exists("output/Figure_4/")) dir.create("output/Figure_4/")
+
+# Match cell types
+cur_mif <- colData(sce_mif)
+cur_imc <- colData(sce_imc)
+
+frac_imc <- cur_imc %>% as_tibble() %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_mif <- cur_mif %>% as_tibble() %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+combined_df <- merge(frac_imc, frac_mif, by=c("sample_id", "matched_celltype"), sort=FALSE)
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+
+cur_res <- combined_df %>%
+  group_by(matched_celltype) %>%
+  mutate(cor_all = cor(frac.x, frac.y)) %>%
+  ungroup() %>%
+  group_by(matched_celltype, patient_id) %>%
+  summarize(cor = cor(frac.x, frac.y),
+            cor_all = mean(cor_all)) %>%
+  ungroup() %>%
+  group_by(matched_celltype) %>%
+  mutate(cor_mean = mean(cor, na.rm = TRUE))
+
+cur_res$patient_id <- factor(cur_res$patient_id, levels = names(patient_color))
+
+p <- ggplot(cur_res) +
+    geom_abline(slope = 0, intercept = 0.5) +
+  geom_abline(slope = 0, intercept = 0.75) +
+    geom_boxplot(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor)) +
+    geom_point(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor, color = patient_id)) +
+    geom_point(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor_all), color = "dark red", size = 3) +
+    theme_classic(base_size = 20) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_color_manual(values = patient_color, name = "Patient ID") + 
+  ylab("Cell phenotype correlation") +
+  xlab("") +
+  scale_y_continuous(breaks = seq(-1,1,0.25))
+
+ggsave(filename = "output/Figure_4/Figure_4A.pdf", plot = p)
+```
+

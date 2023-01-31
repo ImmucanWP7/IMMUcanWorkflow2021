@@ -145,37 +145,3 @@ class WidgetChannelsIntensity(QWidget):
                     self.viewer.layers[i].colormap=cm
                     #set button color
                     self.buttons_color[i].setStyleSheet("QPushButton{ background-color: "+color.name()+" }")
-                    
-class FileNavigator():
-    def __init__(self, folder) -> None:
-        super().__init__()
-        self.folder = folder
-
-
-class WidgetFileSelection(QWidget):
-    def __init__(self, viewer, folder) -> None:
-        super().__init__()
-        self.folder = folder
-        self._app = viewer 
-        
-        self._prev_button = QPushButton(parent=self)
-        self._prev_button.setIcon(
-            self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowBack)
-        )
-        self._prev_button.clicked.connect(self._on_prev_button_clicked)
-
-        self._next_button = QPushButton(parent=self)
-        self._next_button.setIcon(
-            self.style().standardIcon(QStyle.StandardPixmap.SP_ArrowForward)
-        )
-        self._next_button.clicked.connect(self._on_next_button_clicked)
-        
-        self.setLayout(QVBoxLayout())
-        
-    def _on_prev_button_clicked(self, checked: bool = False) -> None:
-        self._app.navigator.prev()
-        self._app.restart()
-
-    def _on_next_button_clicked(self, checked: bool = False) -> None:
-        self._app.navigator.next()
-        self._app.restart()
