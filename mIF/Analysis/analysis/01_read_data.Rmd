@@ -1,5 +1,5 @@
 ---
-title: "Read steinbock data"
+title: "Read IFQuant data"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -13,86 +13,72 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-In this script, we will read in the mIF data that was processed using steinbock.
+In this script, we will read in the mIF data that was processed by IFQuant.
 
-# Load libraries
+## Load data
 
-First, we will load the libraries needed for this part of the analysis.
+We will read in the tsv files that contain cells from the same region as 
+the IMC acquisition and store them in `SingleCellExperiment` objects.
 
-```{r load-libraries, message=FALSE}
-library(S4Vectors)
+```{r load-data, message=FALSE}
 library(SingleCellExperiment)
 library(tidyverse)
-library(imcRtools)
-library(tools)
-```
 
-# Read in the single-cell data
+cur_files <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+                        recursive = TRUE, 
+                        pattern = "cells_properties_ROI_coordinates.tsv.gz", full.names = TRUE)
 
-We use `imcRtools` to read in the data:
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 
-```{r read-data}
-sce <- read_steinbock("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/", 
-                      return_as = "sce", 
-                      extract_imagemetadata_from = c("width_px",	"height_px",	
-                                                     "acquisition_id"), 
-                      image_file = NULL)
-sce$image <- paste0(sce$sample_id, ".tiff")
-sce$patient_id <- sub("-", "", str_extract(sce$sample_id, "[0-9]{8}-"))
+# Select the correct files
+cur_files <- cur_files[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_files)]
+
+cur_sces <- lapply(cur_files, function(x){
+  cur_data <- read.csv(x, sep = "\t")
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
+                                                         simplify = TRUE)[,1]
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+  colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
+  colData(cur_sce)$sample_id <- str_split(x, "/", simplify = TRUE)[,11]
+  colData(cur_sce)$patient_id <- sub("-", "", str_extract(cur_sce$sample_id, "[0-9]{8}-"))
+  colData(cur_sce)$ROI <- str_extract(cur_sce$sample_id, "00[1-9]{1}$")
+  return(cur_sce)
+})
+
+cur_colnames <- Reduce(intersect, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_sces <- lapply(cur_sces, function(x){
+  colData(x) <- colData(x)[,cur_colnames]
+  return(x)
+})
+
+sce <- do.call("cbind", cur_sces)
+
+# Transform counts
 assay(sce, "exprs") <- asinh(counts(sce))
-
-# Specify interesting channels
-rowData(sce)$use_channel <- !grepl("af|DAPI", rownames(sce))
 ```
 
-## Image-level metadata
+## Cell type annotation
 
-Here, we will collect all relevant image-level metadata for these samples.
-These will be added to the cell-level metadata.
+We will now annotate the cells based on the celltype annotation key.
 
-```{r clean-meta}
-meta <- read.csv("../../IMC/Analysis/data/sample_metadata.csv")
+```{r cell-type-annotation, message=FALSE}
+cur_key <- as.data.frame(read_csv("data/phenotype_key.csv"))
 
-# Remove samples from object
-sce <- sce[,sce$patient_id %in% meta$patient_id]
+rownames(cur_key) <- cur_key$phenotype
 
-cell_meta <- merge(colData(sce), meta, 
-                   by = "patient_id", sort = FALSE)
-
-all.equal(paste(cell_meta$image, cell_meta$ObjectNumber), 
-          paste(sce$image, sce$ObjectNumber))
-
-colData(sce) <- cell_meta
-
-sce$ROI <- str_extract(sce$sample_id, "00[1-9]{1}$")
+sce$celltype <- cur_key[sce$phenotype,2]
+sce$matched_celltype <- sce$celltype
+sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
+sce$matched_celltype[sce$matched_celltype == "Mac_163"] <- "MacCD163"
+sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
+sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
 ```
 
-## Generate colour vectors
-
-At this point we want to generate color vectors that we can reproducibly and consistently use throughout the analysis.
-Primarily, we will define colors for 1. the samples, 2. the ROI, 3. the indication.
-
-```{r generate-colour-vectors}
-library(dittoSeq)
-library(RColorBrewer)
-colour_vectors <- list()
-
-col_vec_patientIds <- setNames(brewer.pal(10, "Set3"),
-                       unique(sce$patient_id))
-
-col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
-names(col_vec_ROIs) <- unique(sce$ROI)
-
-col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
-                        BCC = "#3F85A7", RCC = "#C81F43")
-
-colour_vectors$PatientIds <- col_vec_patientIds
-colour_vectors$ROIs <- col_vec_ROIs
-colour_vectors$Indication <- col_vec_indication
-
-# Save in metadata slot
-metadata(sce)$colour_vectors <- colour_vectors
-```
+## Define colors 
 
 Here, we define colors for matched cell types and samples.
 
@@ -112,44 +98,110 @@ metadata(sce)$color_vectors <- color_vectors
 
 ## Add interaction graph
 
-Finally, we will add a 20µm expansion interaction graph to compare to mIF.
+Finally, we will add a 20µm expansion interaction graph.
 
-```{r buildSpatialGraph, message=FALSE}
+```{r buildSpatialGraph, message=FALSE, fig.height=12, fig.width=12}
 library(imcRtools)
-sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
-                         threshold = 20, name = "expansion_20")
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
+                         coords = c("nucleus.x", "nucleus.y"),
+                         threshold = 60, name = "expansion_60")
 
-# Due to differences in resolution, we also use a larger expansion graph
-sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
-                         threshold = 40, name = "expansion_40")
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
+            nodes_first = TRUE)
 ```
 
-## Save SCE object
+## Save object
 
-Finally, for easy accessibility, we will write the SCE object out.
-The object will be stored on the server so that everyone can work with it.
+Finally, we will save the generated object
 
-```{r save-RDS, warning=FALSE}
-dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/Rout/")
-saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/Rout/sce.rds")
+```{r}
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
 ```
 
-# Read in image data
+## Read images
 
-Here, we read in the images and masks and save them on disk.
-
-```{r read-images, message = FALSE, warning=FALSE}
+```{r, message=FALSE}
 library(cytomapper)
-images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/img/",
-                     as.is = TRUE)
-masks <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/masks/",
-                    as.is = TRUE)
 
-channelNames(images) <- rownames(sce)
+images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/img/", as.is = TRUE)
 
-mcols(images) <- mcols(masks) <- DataFrame(image = names(images),
-                                           sample_id = sub(".tiff", "", names(images)))
+channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
 
-saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/Rout/images.rds")
-saveRDS(masks, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/Rout/masks.rds")
+mcols(images) <- DataFrame(image = names(images),
+                          sample_id = sub(".tiff", "", names(images)))
+
+saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 ```
+
+## Read whole slide data
+
+```{r, message=FALSE}
+cur_files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties_", full.names = TRUE)
+cur_files_2 <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties2_", full.names = TRUE)
+
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+
+# Map between Lausanne and Zurich IDs
+cur_table <- read_csv("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
+
+# Read in data
+cur_sces <- lapply(seq_along(cur_files), function(x){
+  cur_data <- read.csv(cur_files[x], sep = "\t")
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
+                                                         simplify = TRUE)[,1]
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+  colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
+  colData(cur_sce)$Lausanne_id <- str_split(str_split(cur_files[x], "/", simplify = TRUE)[,11], "_#_", simplify = TRUE)[,1]
+  colData(cur_sce)$Lausanne_id <- unlist(lapply(str_split(colData(cur_sce)$Lausanne_id, "-"), function(y){paste(y[1:3], collapse = "-")}))
+  colData(cur_sce)$sample_id <- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id), cur_table$mIF)])
+  colData(cur_sce)$patient_id <- as.character(colData(cur_sce)$sample_id)
+  
+  # Secondary data
+  cur_data_2 <- read.csv(cur_files_2[x], sep = "\t")
+  colData(cur_sce) <- as(merge(as.data.frame(colData(cur_sce)), 
+                            as.data.frame(cur_data_2)[,c("cell.ID", "cell.area", "TLS.ID")], by = "cell.ID",
+                            sort = FALSE), "DataFrame")
+  
+  return(cur_sce)
+})
+
+cur_colnames <- Reduce(intersect, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_sces <- lapply(cur_sces, function(x){
+  colData(x) <- colData(x)[,cur_colnames]
+  return(x)
+})
+
+sce <- do.call("cbind", cur_sces)
+
+# Transform counts
+assay(sce, "exprs") <- asinh(counts(sce))
+
+cur_key <- as.data.frame(read_csv("data/phenotype_key.csv"))
+
+rownames(cur_key) <- cur_key$phenotype
+
+sce$celltype <- cur_key[sce$phenotype,2]
+sce$matched_celltype <- sce$celltype
+sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
+sce$matched_celltype[sce$matched_celltype == "Mac_163"] <- "MacCD163"
+sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
+sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
+
+sce$indication <- sce$Lausanne_id
+sce$indication[grepl("BC", sce$indication)] <- "BCC"
+sce$indication[grepl("CRC", sce$indication)] <- "CRC"
+sce$indication[grepl("NSCLC", sce$indication)] <- "NSCLC"
+sce$indication[grepl("RCC", sce$indication)] <- "RCC"
+sce$indication[grepl("SCCHN", sce$indication)] <- "SCCHN"
+
+metadata(sce)$color_vectors <- color_vectors
+
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+```
+
+
