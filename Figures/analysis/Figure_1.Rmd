@@ -17,11 +17,18 @@ library(tidyverse)
 library(imcRtools)
 
 sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
 
 sce_imc
+sce_mIF
+
+unique(sce_imc$celltypes)
+unique(sce_mIF$celltype)
 ```
 
-## Sample area
+## IMC
+
+### Sample area
 
 ```{r}
 colData(sce_imc) %>%
@@ -32,7 +39,7 @@ colData(sce_imc) %>%
   summarize(total = sum(area))
 ```
 
-## Example image
+### Example image
 
 ```{r}
 if (!dir.exists("output/Figure_1/")) dir.create("output/Figure_1/")
@@ -50,7 +57,7 @@ p <- plotSpatial(cur_sce,
 ggsave("output/Figure_1/Figure_1A_1.pdf", p)
 ```
 
-## Overview stats
+### Overview stats
 
 ```{r}
 p <- colData(sce_imc) %>%
@@ -88,5 +95,47 @@ p <- colData(sce_imc) %>%
 
 p
 
-ggsave("output/Figure_1/Figure_1C_2.pdf", p)
+ggsave("output/Figure_1/Figure_1C.pdf", p)
+```
+
+## IMC
+
+### Example image
+
+```{r}
+cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-BC2-0755"]
+
+p <- plotSpatial(cur_sce, 
+            node_color_by = "matched_celltype",
+            img_id = "sample_id", node_size_fix = 0.1,
+            coords = c("nucleus.x", "nucleus.y")) +
+  scale_color_manual(values = metadata(sce_mIF)$color_vectors$matched_celltype) +
+  theme(axis.text = element_blank(),
+        legend.position = "None") +
+  ggtitle("")
+
+ggsave("output/Figure_1/Figure_1A_2.pdf", p, width = 12, height = 12)
+```
+
+### Overview stats
+
+```{r}
+p <- colData(sce_mIF) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, matched_celltype) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = matched_celltype, group = indication), 
+           position = "stack", stat = "identity") +
+  scale_fill_manual(values = metadata(sce_mIF)$color_vectors$matched_celltype,
+                    name = "Cell types") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  theme_classic(base_size = 20) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Patients") +
+  ylab("Cell type count")
+
+p
+
+ggsave("output/Figure_1/Figure_1B.pdf", p)
 ```
