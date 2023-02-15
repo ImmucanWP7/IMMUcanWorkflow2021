@@ -16,18 +16,11 @@ writes out multichannel images in `.tiff` format.
 library(EBImage)
 library(tiff)
 
-sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+cur_path <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+if (!dir.exists(cur_path)) dir.create(cur_path)
 
-cur_folders <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/ROI_registration_20220523/",
+cur_folders <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
                           full.names = TRUE)
-
-cur_folders2 <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/ROI_registration_20220713//",
-                          full.names = TRUE)
-
-cur_folders <- c(cur_folders, cur_folders2)
-
-# Select the correct files
-cur_folders <- cur_folders[grepl(paste(unique(sce_IMC$sample_id), collapse = "|"), cur_folders)]
 
 for (i in seq_along(cur_folders)) {
     if (length(list.files(cur_folders[i], pattern = "ROI_image.*.rds")) == 0) {
@@ -51,7 +44,7 @@ for (i in seq_along(cur_folders)) {
     
     cur_channels <- abind(cur_channels, along = 3)
     
-    writeImage(as.array(cur_channels)/(2^16 - 1), paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/steinbock/img/",
+    writeImage(as.array(cur_channels)/(2^16 - 1), paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
                                     basename(cur_folders[i]), ".tiff"),
                bits.per.sample = 16)
 }

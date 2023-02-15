@@ -1,14 +1,12 @@
-name: "mIF"
+name: "mIF data preparation"
 output_dir: ../docs
 navbar:
   title: "mIF"
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  - text: Read data
+    href: 01_read_data.html
 output:
   workflowr::wflow_html:
     toc: yes
