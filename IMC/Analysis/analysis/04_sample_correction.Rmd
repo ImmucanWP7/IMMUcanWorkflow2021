@@ -72,11 +72,11 @@ We can now visualize the patient IDs and expression on the UMAPs.
 
 ```{r dimred-viz-patient-indication, message=FALSE}
 dittoDimPlot(sce, var = "patient_id", reduction.use = "UMAP_fastMNN", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$PatientIds) +
+    scale_color_manual(values = metadata(sce)$color_vectors$patient_id) +
     ggtitle("Patient ID on UMAP")
 
 dittoDimPlot(sce, var = "indication", reduction.use = "UMAP_fastMNN", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$Indication) +
+    scale_color_manual(values = metadata(sce)$color_vectors$Indication) +
     ggtitle("Patient ID on UMAP")
 ```
 
