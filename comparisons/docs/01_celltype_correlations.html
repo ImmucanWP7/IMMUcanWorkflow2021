@@ -13,7 +13,7 @@
 
 <title>Comparison between IMC and IF</title>
 
-<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -378,7 +378,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-15
+<strong>Last updated:</strong> 2023-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -512,15 +512,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree0110f855221e5541d643bf526adb45249e2df0cetargetblank0110f85a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/0110f855221e5541d643bf526adb45249e2df0ce" target="_blank">0110f85</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree0110f855221e5541d643bf526adb45249e2df0cetargetblank0110f85a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +530,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/0110f855221e5541d643bf526adb45249e2df0ce" target="_blank">0110f85</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -547,17 +547,34 @@ were generated:
 Ignored files:
     Ignored:    .DS_Store
     Ignored:    Alignment/
+    Ignored:    Figures/.Rproj.user/
+    Ignored:    Figures/output/.DS_Store
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
     Ignored:    IMC/Analysis/docs/.DS_Store
     Ignored:    comparisons/.Rproj.user/
+    Ignored:    comparisons/code/.DS_Store
     Ignored:    comparisons/code/.ipynb_checkpoints/
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
+    Ignored:    mIF/Analysis/analysis/.DS_Store
+    Ignored:    mIF/Processing/.DS_Store
+
+Untracked files:
+    Untracked:  Figures/analysis/Figure_2.Rmd
+    Untracked:  Figures/output/Figure_2/
+    Untracked:  comparisons/analysis/02_mIF_IMC_integration.Rmd
 
 Unstaged changes:
     Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Deleted:    comparisons/analysis/02_steinbock_comparison.Rmd
+    Deleted:    comparisons/analysis/03_steinbock_vs_IFquant_comparison.Rmd
+    Deleted:    comparisons/analysis/04_mIF_IMC_integration.Rmd
+    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
+    Modified:   mIF/Analysis/docs/01_read_data.html
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png
 
 </code></pre>
 <p>
@@ -604,6 +621,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c0cad8fb3581fc9763a9b34bd58249bb9fdba309/comparisons/analysis/01_celltype_correlations.Rmd" target="_blank">c0cad8f</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-24
+</td>
+<td>
+Refactoring
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/c0cad8fb3581fc9763a9b34bd58249bb9fdba309/comparisons/docs/01_celltype_correlations.html" target="_blank">c0cad8f</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-24
+</td>
+<td>
+Refactoring
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -927,11 +978,7 @@ storing the IMC and IF data.</p>
 library(tidyverse)
 
 sce_IMC &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)
-sce_mIF &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds&quot;)
-
-sce_IMC$matched_celltype &lt;- sce_IMC$external_matched_celltype
-
-sce_IMC$matched_celltype[sce_IMC$matched_celltype == &quot;undefined&quot;] &lt;- &quot;other&quot;</code></pre>
+sce_mIF &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds&quot;)</code></pre>
 </div>
 <div id="number-of-cells" class="section level2">
 <h2>Number of cells</h2>
@@ -1066,6 +1113,11 @@ technologies.</p>
 <pre class="r"><code># Match cell types
 cur_mIF &lt;- colData(sce_mIF)
 cur_IMC &lt;- colData(sce_IMC)
+
+cur_mIF$sample_id &lt;- as.factor(cur_mIF$sample_id)
+cur_mIF$matched_celltype &lt;- as.factor(cur_mIF$matched_celltype)
+cur_IMC$sample_id &lt;- as.factor(cur_IMC$sample_id)
+cur_IMC$matched_celltype &lt;- as.factor(cur_IMC$matched_celltype)
 
 frac_IMC &lt;- cur_IMC %&gt;% as_tibble() %&gt;%
   group_by(sample_id, matched_celltype, .drop = FALSE) %&gt;%
@@ -1212,6 +1264,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c0cad8fb3581fc9763a9b34bd58249bb9fdba309/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">c0cad8f</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/d94e4f6dd00bd61c4ec776f6931571cc081faa78/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-2.png" target="_blank">d94e4f6</a>
 </td>
 <td>
@@ -1287,6 +1350,43 @@ nilseling
   theme_classic(base_size = 20) + xlab(&quot;Fraction cell types in IMC&quot;) + ylab(&quot;Fraction cell types in mIF&quot;) + 
   facet_wrap(.~matched_celltype, scales = &quot;free&quot;) </code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/celltype-fractions-3.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-celltype-fractions-3">
+Past versions of celltype-fractions-3.png
+</button>
+</p>
+<div id="fig-celltype-fractions-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c0cad8fb3581fc9763a9b34bd58249bb9fdba309/comparisons/docs/figure/01_celltype_correlations.Rmd/celltype-fractions-3.png" target="_blank">c0cad8f</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2022-11-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We will also now compute the correlation coefficients.</p>
 <pre class="r"><code>combined_df %&gt;%
   group_by(matched_celltype) %&gt;%
@@ -1302,8 +1402,6 @@ nilseling
     theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
 <pre><code>`summarise()` has grouped output by &#39;matched_celltype&#39;. You can override using
 the `.groups` argument.</code></pre>
-<pre><code>Warning: Removed 4 rows containing non-finite values (`stat_boxplot()`).</code></pre>
-<pre><code>Warning: Removed 4 rows containing missing values (`geom_point()`).</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/correlation-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-correlation-1">
@@ -1595,7 +1693,7 @@ design &lt;- model.matrix(~sample_id + modality, data = y.ab$samples)
 y.ab &lt;- estimateDisp(y.ab, design, trend=&quot;none&quot;)
 summary(y.ab$common.dispersion)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.2517  0.2517  0.2517  0.2517  0.2517  0.2517 </code></pre>
+ 0.2632  0.2632  0.2632  0.2632  0.2632  0.2632 </code></pre>
 <pre class="r"><code>plotBCV(y.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1671,7 +1769,7 @@ nilseling
 <pre class="r"><code>fit.ab &lt;- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
 summary(fit.ab$var.prior)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- 0.5631  0.5631  0.5631  0.5631  0.5631  0.5631 </code></pre>
+  0.523   0.523   0.523   0.523   0.523   0.523 </code></pre>
 <pre class="r"><code>plotQLDisp(fit.ab, cex=1)</code></pre>
 <p><img src="figure/01_celltype_correlations.Rmd/test-DA-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -1748,32 +1846,32 @@ nilseling
 res &lt;- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
 summary(decideTests(res))</code></pre>
 <pre><code>       modalityIMC
-Down             1
-NotSig           5
+Down             0
+NotSig           6
 Up               2</code></pre>
 <pre class="r"><code>DA &lt;- topTags(res)$table
 
 DA$celltype &lt;- rownames(DA)
 DA$sign &lt;- DA$FDR&lt;0.05
 DA</code></pre>
-<pre><code>                 logFC   logCPM          F       PValue          FDR   celltype
-DC          1.46460329 14.11983 30.4153794 2.507699e-06 2.006159e-05         DC
-Bcell      -0.90747338 15.35245  9.2878931 4.093636e-03 1.531476e-02      Bcell
-BnTcell     0.76510833 15.69665  8.6385707 5.743036e-03 1.531476e-02    BnTcell
-MacCD163   -0.32627321 16.47898  3.7205388 6.092930e-02 1.114637e-01   MacCD163
-Neutrophil  0.58226727 14.67536  3.4923305 6.966479e-02 1.114637e-01 Neutrophil
-other       0.15557750 17.71845  2.5698641 1.168569e-01 1.558092e-01      other
-Tumor      -0.08019097 18.50995  0.4534326 5.046169e-01 5.767050e-01      Tumor
-Tcell      -0.02570271 17.50501  0.1570825 6.939825e-01 6.939825e-01      Tcell
-            sign
-DC          TRUE
-Bcell       TRUE
-BnTcell     TRUE
-MacCD163   FALSE
-Neutrophil FALSE
-other      FALSE
-Tumor      FALSE
-Tcell      FALSE</code></pre>
+<pre><code>                  logFC   logCPM            F       PValue          FDR
+DC          2.452446528 13.95982 67.545241934 5.473215e-10 4.378572e-09
+BnTcell     1.195354029 15.57746 13.491632199 8.085141e-04 3.234057e-03
+MacCD163   -0.198691964 16.37673  1.895386956 1.763732e-01 3.554799e-01
+Tumor      -0.147285544 18.54515  1.626036253 2.097244e-01 3.554799e-01
+Bcell      -0.382091473 15.10708  1.538542550 2.221749e-01 3.554799e-01
+Neutrophil  0.342571225 14.71451  1.258989234 2.691942e-01 3.589256e-01
+other       0.033517774 17.77824  0.107973878 7.442039e-01 8.505187e-01
+Tcell       0.003942018 17.50505  0.004085831 9.493569e-01 9.493569e-01
+             celltype  sign
+DC                 DC  TRUE
+BnTcell       BnTcell  TRUE
+MacCD163     MacCD163 FALSE
+Tumor           Tumor FALSE
+Bcell           Bcell FALSE
+Neutrophil Neutrophil FALSE
+other           other FALSE
+Tcell           Tcell FALSE</code></pre>
 <pre class="r"><code># Volcano plot
 ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
@@ -2103,7 +2201,7 @@ for (i in unique(sce_IMC$sample_id)) {
     # Add points to IMC
     cur_sce_IMC &lt;- sce_IMC[,sce_IMC$sample_id == i]
     cur_sce_mIF &lt;- sce_mIF[,sce_mIF$sample_id == i]
-    pdf(file = paste0(&quot;~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/&quot;, i, &quot;.pdf&quot;))
+    pdf(file = paste0(&quot;/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/&quot;, i, &quot;.pdf&quot;))
     plot(cur_IMC$images[[1]])
     points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
            col = &quot;white&quot;, 
@@ -2123,7 +2221,7 @@ for (i in unique(sce_IMC$sample_id)) {
 }
 
 # Write out legend
-pdf(file = paste0(&quot;~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/legend.pdf&quot;))
+pdf(file = paste0(&quot;/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/legend.pdf&quot;))
 plot(1:8, y = rep(1, 8), col = metadata(sce_IMC)$color_vectors$matched_celltype, pch = 16, cex = 2)
 text(1:8, y = rep(0.8, 8), labels = names(metadata(sce_IMC)$color_vectors$matched_celltype))
 text(2, y = 1.2, labels = &quot;Celltypes&quot;)
@@ -2140,8 +2238,8 @@ cell labels for the IMC and mIF data.</p>
     cur_sce_IMC &lt;- sce_IMC[,sce_IMC$sample_id == i]
     cur_sce_mIF &lt;- sce_mIF[,sce_mIF$sample_id == i]
    
-    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0(&quot;~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/data_for_comparisons/IMC_cells/&quot;, i, &quot;.tsv&quot;))   
-        write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0(&quot;~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/data_for_comparisons/mIF_cells//&quot;, i, &quot;.tsv&quot;))   
+    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0(&quot;/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/&quot;, i, &quot;.tsv&quot;))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0(&quot;/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells//&quot;, i, &quot;.tsv&quot;))   
 }</code></pre>
 <br>
 <p>
@@ -2152,9 +2250,9 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.1 (2022-06-23)
+<pre><code>R version 4.2.2 (2022-10-31)
 Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Catalina 10.15.7
+Running under: macOS Big Sur ... 10.16
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
@@ -2168,48 +2266,50 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] ggrepel_0.9.2               edgeR_3.40.0               
- [3] limma_3.54.0                forcats_0.5.2              
- [5] stringr_1.4.1               dplyr_1.0.10               
- [7] purrr_0.3.5                 readr_2.1.3                
- [9] tidyr_1.2.1                 tibble_3.1.8               
+ [1] ggrepel_0.9.3               edgeR_3.40.2               
+ [3] limma_3.54.1                forcats_1.0.0              
+ [5] stringr_1.5.0               dplyr_1.1.0                
+ [7] purrr_1.0.1                 readr_2.1.3                
+ [9] tidyr_1.3.0                 tibble_3.1.8               
 [11] ggplot2_3.4.0               tidyverse_1.3.2            
 [13] SingleCellExperiment_1.20.0 SummarizedExperiment_1.28.0
-[15] Biobase_2.58.0              GenomicRanges_1.50.1       
-[17] GenomeInfoDb_1.34.2         IRanges_2.32.0             
-[19] S4Vectors_0.36.0            BiocGenerics_0.44.0        
-[21] MatrixGenerics_1.10.0       matrixStats_0.62.0         
+[15] Biobase_2.58.0              GenomicRanges_1.50.2       
+[17] GenomeInfoDb_1.34.9         IRanges_2.32.0             
+[19] S4Vectors_0.36.1            BiocGenerics_0.44.0        
+[21] MatrixGenerics_1.10.0       matrixStats_0.63.0         
+[23] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-160           bitops_1.0-7           fs_1.5.2              
- [4] bit64_4.0.5            lubridate_1.9.0        httr_1.4.4            
- [7] rprojroot_2.0.3        tools_4.2.1            backports_1.4.1       
-[10] bslib_0.4.1            utf8_1.2.2             R6_2.5.1              
-[13] mgcv_1.8-41            DBI_1.1.3              colorspace_2.0-3      
-[16] withr_2.5.0            tidyselect_1.2.0       bit_4.0.4             
-[19] compiler_4.2.1         git2r_0.30.1           cli_3.4.1             
-[22] rvest_1.0.3            xml2_1.3.3             DelayedArray_0.24.0   
-[25] labeling_0.4.2         sass_0.4.2             scales_1.2.1          
-[28] digest_0.6.30          rmarkdown_2.18         XVector_0.38.0        
-[31] pkgconfig_2.0.3        htmltools_0.5.3        highr_0.9             
-[34] dbplyr_2.2.1           fastmap_1.1.0          rlang_1.0.6           
-[37] readxl_1.4.1           rstudioapi_0.14        farver_2.1.1          
-[40] jquerylib_0.1.4        generics_0.1.3         jsonlite_1.8.3        
-[43] vroom_1.6.0            googlesheets4_1.0.1    RCurl_1.98-1.9        
-[46] magrittr_2.0.3         GenomeInfoDbData_1.2.9 Matrix_1.5-1          
-[49] Rcpp_1.0.9             munsell_0.5.0          fansi_1.0.3           
-[52] lifecycle_1.0.3        stringi_1.7.8          whisker_0.4           
-[55] yaml_2.3.6             zlibbioc_1.44.0        grid_4.2.1            
-[58] parallel_4.2.1         promises_1.2.0.1       crayon_1.5.2          
-[61] lattice_0.20-45        splines_4.2.1          haven_2.5.1           
-[64] hms_1.1.2              locfit_1.5-9.6         knitr_1.40            
-[67] pillar_1.8.1           reprex_2.0.2           glue_1.6.2            
-[70] evaluate_0.18          modelr_0.1.9           vctrs_0.5.0           
-[73] tzdb_0.3.0             httpuv_1.6.6           cellranger_1.1.0      
-[76] gtable_0.3.1           assertthat_0.2.1       cachem_1.0.6          
-[79] xfun_0.34              broom_1.0.1            later_1.3.0           
-[82] googledrive_2.0.0      gargle_1.2.1           workflowr_1.7.0       
-[85] timechange_0.1.1       ellipsis_0.3.2        </code></pre>
+ [1] googledrive_2.0.0      colorspace_2.1-0       ellipsis_0.3.2        
+ [4] rprojroot_2.0.3        XVector_0.38.0         fs_1.6.0              
+ [7] rstudioapi_0.14        farver_2.1.1           bit64_4.0.5           
+[10] fansi_1.0.4            lubridate_1.9.1        xml2_1.3.3            
+[13] splines_4.2.2          cachem_1.0.6           knitr_1.42            
+[16] jsonlite_1.8.4         broom_1.0.3            dbplyr_2.3.0          
+[19] compiler_4.2.2         httr_1.4.4             backports_1.4.1       
+[22] assertthat_0.2.1       Matrix_1.5-3           fastmap_1.1.0         
+[25] gargle_1.3.0           cli_3.6.0              later_1.3.0           
+[28] htmltools_0.5.4        tools_4.2.2            gtable_0.3.1          
+[31] glue_1.6.2             GenomeInfoDbData_1.2.9 Rcpp_1.0.10           
+[34] cellranger_1.1.0       jquerylib_0.1.4        vctrs_0.5.2           
+[37] nlme_3.1-162           xfun_0.37              ps_1.7.2              
+[40] rvest_1.0.3            timechange_0.2.0       lifecycle_1.0.3       
+[43] googlesheets4_1.0.1    getPass_0.2-2          zlibbioc_1.44.0       
+[46] scales_1.2.1           vroom_1.6.1            hms_1.1.2             
+[49] promises_1.2.0.1       parallel_4.2.2         yaml_2.3.7            
+[52] sass_0.4.5             stringi_1.7.12         highr_0.10            
+[55] rlang_1.0.6            pkgconfig_2.0.3        bitops_1.0-7          
+[58] evaluate_0.20          lattice_0.20-45        archive_1.1.5         
+[61] labeling_0.4.2         bit_4.0.5              processx_3.8.0        
+[64] tidyselect_1.2.0       magrittr_2.0.3         R6_2.5.1              
+[67] generics_0.1.3         DelayedArray_0.24.0    DBI_1.1.3             
+[70] pillar_1.8.1           haven_2.5.1            whisker_0.4.1         
+[73] withr_2.5.0            mgcv_1.8-41            RCurl_1.98-1.10       
+[76] modelr_0.1.10          crayon_1.5.2           utf8_1.2.3            
+[79] tzdb_0.3.0             rmarkdown_2.20         locfit_1.5-9.7        
+[82] grid_4.2.2             readxl_1.4.1           callr_3.7.3           
+[85] git2r_0.31.0           reprex_2.0.2           digest_0.6.31         
+[88] httpuv_1.6.8           munsell_0.5.0          bslib_0.4.2           </code></pre>
 </div>
 </div>
 

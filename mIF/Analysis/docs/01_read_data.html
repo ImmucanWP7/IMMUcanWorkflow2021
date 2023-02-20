@@ -375,7 +375,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-02-14
+<strong>Last updated:</strong> 2023-02-17
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -509,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb7494670833c09e29bc237bd2a4d3209511924c6targetblankb749467a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b7494670833c09e29bc237bd2a4d3209511924c6" target="_blank">b749467</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb7494670833c09e29bc237bd2a4d3209511924c6targetblankb749467a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b7494670833c09e29bc237bd2a4d3209511924c6" target="_blank">b749467</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,11 +558,17 @@ Ignored files:
     Ignored:    mIF/Analysis/analysis/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
 
+Untracked files:
+    Untracked:  Figures/analysis/Figure_2.Rmd
+    Untracked:  Figures/output/Figure_2/
+    Untracked:  comparisons/analysis/02_mIF_IMC_integration.Rmd
+
 Unstaged changes:
+    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
+    Deleted:    comparisons/analysis/02_steinbock_comparison.Rmd
+    Deleted:    comparisons/analysis/03_steinbock_vs_IFquant_comparison.Rmd
+    Deleted:    comparisons/analysis/04_mIF_IMC_integration.Rmd
     Modified:   mIF/Analysis/analysis/01_read_data.Rmd
-    Modified:   mIF/Analysis/analysis/_site.yml
-    Modified:   mIF/Processing/generate_multichannel_images.Rmd
-    Modified:   mIF/Processing/generate_multichannel_images.html
 
 </code></pre>
 <p>
@@ -609,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/analysis/01_read_data.Rmd" target="_blank">7371b3e</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-15
+</td>
+<td>
+Compiled mIF workflow
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/docs/01_read_data.html" target="_blank">7371b3e</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-15
+</td>
+<td>
+Compiled mIF workflow
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -893,8 +933,8 @@ cur_sces &lt;- lapply(cur_files, function(x){
                                                 raw = cur_raw))
   colData(cur_sce) &lt;- DataFrame(cur_data[,!grepl(&quot;score&quot;, colnames(cur_data))])
   
-  colData(cur_sce)$sample_id &lt;- str_extract(x, &quot;100.*00[1-9]{1}&quot;)
-  colData(cur_sce)$patient_id &lt;- str_extract(cur_sce$sample_id, &quot;[0-9]{8}&quot;)
+  colData(cur_sce)$sample_id &lt;- str_extract(x, &quot;IMMUcan_[2|B].*00[1-9]{1}&quot;)
+  colData(cur_sce)$patient_id &lt;- sub(&quot;-&quot;, &quot;&quot;, str_extract(cur_sce$sample_id, &quot;[0-9]{8}-&quot;))
   colData(cur_sce)$ROI &lt;- str_extract(cur_sce$sample_id, &quot;00[1-9]{1}$&quot;)
   
   # Add additional information from whole slide
@@ -952,10 +992,84 @@ plotSpatial(sce, img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot
             draw_edges = TRUE, colPairName = &quot;expansion_60&quot;, node_size_fix = 0.1,
             nodes_first = TRUE)</code></pre>
 <p><img src="figure/01_read_data.Rmd/buildSpatialGraph-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-buildSpatialGraph-1">
+Past versions of buildSpatialGraph-1.png
+</button>
+</p>
+<div id="fig-buildSpatialGraph-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png" target="_blank">7371b3e</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotSpatial(sce, img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;), 
             draw_edges = TRUE, colPairName = &quot;expansion_40&quot;, node_size_fix = 0.1,
             nodes_first = TRUE)</code></pre>
 <p><img src="figure/01_read_data.Rmd/buildSpatialGraph-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-buildSpatialGraph-2">
+Past versions of buildSpatialGraph-2.png
+</button>
+</p>
+<div id="fig-buildSpatialGraph-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png" target="_blank">7371b3e</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="save-object" class="section level3">
 <h3>Save object</h3>
@@ -985,7 +1099,7 @@ Session information
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.2.2 (2022-10-31)
 Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Catalina 10.15.7
+Running under: macOS Big Sur ... 10.16
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib

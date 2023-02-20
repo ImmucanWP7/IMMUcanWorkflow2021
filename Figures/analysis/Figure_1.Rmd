@@ -39,7 +39,7 @@ colData(sce_imc) %>%
   summarize(total = sum(area))
 ```
 
-### Example image
+### IMC Example image
 
 ```{r}
 if (!dir.exists("output/Figure_1/")) dir.create("output/Figure_1/")
@@ -57,50 +57,7 @@ p <- plotSpatial(cur_sce,
 ggsave("output/Figure_1/Figure_1A_1.pdf", p)
 ```
 
-### Overview stats
-
-```{r}
-p <- colData(sce_imc) %>%
-  as_tibble() %>%
-  group_by(patient_id, indication, external_celltypes) %>%
-  count() %>%
-  ggplot() + 
-  geom_bar(aes(patient_id, n, fill = external_celltypes), 
-           position = "fill", stat = "identity") +
-  scale_fill_manual(values = metadata(sce_imc)$colour_vectors$cell_types,
-                    name = "Cell types") +
-  theme_classic(base_size = 20) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  xlab("Patients") +
-  ylab("Cell typ proportion")
-
-p
-
-#ggsave("output/Figure_1/Figure_1C_1.pdf", p)
-
-p <- colData(sce_imc) %>%
-  as_tibble() %>%
-  group_by(patient_id, indication, external_matched_celltype) %>%
-  count() %>%
-  ggplot() + 
-  geom_bar(aes(patient_id, n, fill = external_matched_celltype, group = indication), 
-           position = "stack", stat = "identity") +
-  scale_fill_manual(values = metadata(sce_imc)$colour_vectors$matched_celltype,
-                    name = "Cell types") +
-  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-  theme_classic(base_size = 20) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  xlab("Patients") +
-  ylab("Cell type count")
-
-p
-
-ggsave("output/Figure_1/Figure_1C.pdf", p)
-```
-
-## IMC
-
-### Example image
+### mIF Example image
 
 ```{r}
 cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-BC2-0755"]
@@ -115,27 +72,4 @@ p <- plotSpatial(cur_sce,
   ggtitle("")
 
 ggsave("output/Figure_1/Figure_1A_2.pdf", p, width = 12, height = 12)
-```
-
-### Overview stats
-
-```{r}
-p <- colData(sce_mIF) %>%
-  as_tibble() %>%
-  group_by(patient_id, indication, matched_celltype) %>%
-  count() %>%
-  ggplot() + 
-  geom_bar(aes(patient_id, n, fill = matched_celltype, group = indication), 
-           position = "stack", stat = "identity") +
-  scale_fill_manual(values = metadata(sce_mIF)$color_vectors$matched_celltype,
-                    name = "Cell types") +
-  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-  theme_classic(base_size = 20) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  xlab("Patients") +
-  ylab("Cell type count")
-
-p
-
-ggsave("output/Figure_1/Figure_1B.pdf", p)
 ```

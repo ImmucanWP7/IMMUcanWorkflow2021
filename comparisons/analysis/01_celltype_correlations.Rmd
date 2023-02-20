@@ -26,10 +26,6 @@ library(tidyverse)
 
 sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
-
-sce_IMC$matched_celltype <- sce_IMC$external_matched_celltype
-
-sce_IMC$matched_celltype[sce_IMC$matched_celltype == "undefined"] <- "other"
 ```
 
 ## Number of cells
@@ -72,6 +68,11 @@ Next, we will compare the cell type fractions between the technologies.
 # Match cell types
 cur_mIF <- colData(sce_mIF)
 cur_IMC <- colData(sce_IMC)
+
+cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
+cur_mIF$matched_celltype <- as.factor(cur_mIF$matched_celltype)
+cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
+cur_IMC$matched_celltype <- as.factor(cur_IMC$matched_celltype)
 
 frac_IMC <- cur_IMC %>% as_tibble() %>%
   group_by(sample_id, matched_celltype, .drop = FALSE) %>%
@@ -334,7 +335,7 @@ for (i in unique(sce_IMC$sample_id)) {
     # Add points to IMC
     cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
     cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
-    pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/", i, ".pdf"))
+    pdf(file = paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/", i, ".pdf"))
     plot(cur_IMC$images[[1]])
     points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
            col = "white", 
@@ -354,7 +355,7 @@ for (i in unique(sce_IMC$sample_id)) {
 }
 
 # Write out legend
-pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/legend.pdf"))
+pdf(file = paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/legend.pdf"))
 plot(1:8, y = rep(1, 8), col = metadata(sce_IMC)$color_vectors$matched_celltype, pch = 16, cex = 2)
 text(1:8, y = rep(0.8, 8), labels = names(metadata(sce_IMC)$color_vectors$matched_celltype))
 text(2, y = 1.2, labels = "Celltypes")
@@ -374,7 +375,7 @@ for (i in unique(sce_IMC$sample_id)) {
     cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
     cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
    
-    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/data_for_comparisons/IMC_cells/", i, ".tsv"))   
-        write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/data_for_comparisons/mIF_cells//", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells//", i, ".tsv"))   
 }
 ```

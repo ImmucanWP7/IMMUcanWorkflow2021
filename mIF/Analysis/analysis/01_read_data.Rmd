@@ -126,8 +126,8 @@ cur_sces <- lapply(cur_files, function(x){
                                                 raw = cur_raw))
   colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
   
-  colData(cur_sce)$sample_id <- str_extract(x, "100.*00[1-9]{1}")
-  colData(cur_sce)$patient_id <- str_extract(cur_sce$sample_id, "[0-9]{8}")
+  colData(cur_sce)$sample_id <- str_extract(x, "IMMUcan_[2|B].*00[1-9]{1}")
+  colData(cur_sce)$patient_id <- sub("-", "", str_extract(cur_sce$sample_id, "[0-9]{8}-"))
   colData(cur_sce)$ROI <- str_extract(cur_sce$sample_id, "00[1-9]{1}$")
   
   # Add additional information from whole slide
