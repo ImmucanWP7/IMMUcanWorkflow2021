@@ -1,0 +1,56 @@
+---
+title: "Spatial comparison"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+```
+
+Here, we will perform spatial comparison of the mIF and IMC data.
+
+## Load data
+
+First, we will read in the `SingleCellExperiment` objects storing the IMC and 
+IF data.
+
+```{r read-data, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+sce_IF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+```
+
+## Graph visualization
+
+First, we will visualize the constructed graphs.
+
+```{r plotSpatial, message=TRUE, fig.height=20, fig.width=20}
+library(imcRtools)
+
+plotSpatial(sce_IF, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_40",
+            nodes_first = FALSE, node_color_by = "matched_celltype") +
+  scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
+
+plotSpatial(sce_IMC, img_id = "sample_id", coords = c("Pos_X", "Pos_Y"), 
+            draw_edges = TRUE, colPairName = "expansion_20",
+            nodes_first = FALSE, node_color_by = "matched_celltype") +
+  scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
+
+plotSpatial(sce_IF, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60",
+            nodes_first = FALSE, node_color_by = "matched_celltype") +
+  scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
+
+plotSpatial(sce_IMC, img_id = "sample_id", coords = c("Pos_X", "Pos_Y"), 
+            draw_edges = TRUE, colPairName = "expansion_30",
+            nodes_first = FALSE, node_color_by = "matched_celltype") +
+  scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
+```
