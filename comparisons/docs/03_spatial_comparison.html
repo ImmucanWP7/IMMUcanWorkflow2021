@@ -416,10 +416,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -512,15 +512,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree4b189fbb58091dcde30e0cdecfbfd9c6dbad386atargetblank4b189fba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeae20729b0dbf8e3b329b25172e7c27ed09e4a8b7targetblankae20729a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/4b189fbb58091dcde30e0cdecfbfd9c6dbad386a" target="_blank">4b189fb</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/ae20729b0dbf8e3b329b25172e7c27ed09e4a8b7" target="_blank">ae20729</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree4b189fbb58091dcde30e0cdecfbfd9c6dbad386atargetblank4b189fba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeae20729b0dbf8e3b329b25172e7c27ed09e4a8b7targetblankae20729a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +530,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/4b189fbb58091dcde30e0cdecfbfd9c6dbad386a" target="_blank">4b189fb</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/ae20729b0dbf8e3b329b25172e7c27ed09e4a8b7" target="_blank">ae20729</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,8 +562,8 @@ Ignored files:
     Ignored:    mIF/Analysis/docs/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
 
-Untracked files:
-    Untracked:  comparisons/analysis/03_spatial_comparison.Rmd
+Unstaged changes:
+    Modified:   comparisons/analysis/03_spatial_comparison.Rmd
 
 </code></pre>
 <p>
@@ -578,10 +578,75 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>comparisons/analysis/03_spatial_comparison.Rmd</code>) and HTML
+(<code>comparisons/docs/03_spatial_comparison.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/analysis/03_spatial_comparison.Rmd" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+<td>
+Start of spatial comparison
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/03_spatial_comparison.html" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+<td>
+Start of spatial comparison
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -604,24 +669,210 @@ sce_IMC &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_
 <pre><code>Loading required package: SpatialExperiment</code></pre>
 <pre class="r"><code>plotSpatial(sce_IF, img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;), 
             draw_edges = TRUE, colPairName = &quot;expansion_40&quot;,
-            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;) +
+            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;, node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)</code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/plotSpatial-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plotSpatial-1">
+Past versions of plotSpatial-1.png
+</button>
+</p>
+<div id="fig-plotSpatial-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-1.png" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotSpatial(sce_IMC, img_id = &quot;sample_id&quot;, coords = c(&quot;Pos_X&quot;, &quot;Pos_Y&quot;), 
             draw_edges = TRUE, colPairName = &quot;expansion_20&quot;,
-            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;) +
+            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;, node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)</code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/plotSpatial-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plotSpatial-2">
+Past versions of plotSpatial-2.png
+</button>
+</p>
+<div id="fig-plotSpatial-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-2.png" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotSpatial(sce_IF, img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;), 
             draw_edges = TRUE, colPairName = &quot;expansion_60&quot;,
-            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;) +
+            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;, node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)</code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/plotSpatial-3.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plotSpatial-3">
+Past versions of plotSpatial-3.png
+</button>
+</p>
+<div id="fig-plotSpatial-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-3.png" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plotSpatial(sce_IMC, img_id = &quot;sample_id&quot;, coords = c(&quot;Pos_X&quot;, &quot;Pos_Y&quot;), 
             draw_edges = TRUE, colPairName = &quot;expansion_30&quot;,
-            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;) +
+            nodes_first = FALSE, node_color_by = &quot;matched_celltype&quot;, node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)</code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/plotSpatial-4.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-plotSpatial-4">
+Past versions of plotSpatial-4.png
+</button>
+</p>
+<div id="fig-plotSpatial-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-4.png" target="_blank">97be4c4</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="calculate-the-mean-interactions-per-image-anc-celltype-pairs"
+class="section level2">
+<h2>Calculate the mean interactions per image anc celltype pairs</h2>
+<pre class="r"><code>out_IF &lt;- countInteractions(sce_IF, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_40&quot;, label = &quot;matched_celltype&quot;)
+out_IMC &lt;- countInteractions(sce_IMC, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_20&quot;, label = &quot;matched_celltype&quot;)
+
+out_IF$for_matching &lt;- paste(out_IF$group_by, out_IF$from_label, out_IF$to_label, sep = &quot;_&quot;)
+out_IMC$for_matching &lt;- paste(out_IMC$group_by, out_IMC$from_label, out_IMC$to_label, sep = &quot;_&quot;)
+
+merged &lt;- merge(out_IMC, out_IF, by = &quot;for_matching&quot;, sort = FALSE)
+
+merged &lt;- merged[!is.na(merged$ct.x) &amp; !is.na(merged$ct.y),]
+
+ggplot(as.data.frame(merged)) + 
+  geom_point(aes(ct.x, ct.y)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  geom_smooth(aes(ct.x, ct.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab(&quot;Interactions in IMC&quot;) + ylab(&quot;Interactions in mIF&quot;) +
+  facet_grid(from_label.x~to_label.x, scales = &quot;free&quot;) </code></pre>
+<p><img src="figure/03_spatial_comparison.Rmd/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out_IF &lt;- countInteractions(sce_IF, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_60&quot;, label = &quot;matched_celltype&quot;)
+out_IMC &lt;- countInteractions(sce_IMC, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_30&quot;, label = &quot;matched_celltype&quot;)
+
+out_IF$for_matching &lt;- paste(out_IF$group_by, out_IF$from_label, out_IF$to_label, sep = &quot;_&quot;)
+out_IMC$for_matching &lt;- paste(out_IMC$group_by, out_IMC$from_label, out_IMC$to_label, sep = &quot;_&quot;)
+
+merged &lt;- merge(out_IMC, out_IF, by = &quot;for_matching&quot;, sort = FALSE)
+
+merged &lt;- merged[!is.na(merged$ct.x) &amp; !is.na(merged$ct.y),]
+
+ggplot(as.data.frame(merged)) + 
+  geom_point(aes(ct.x, ct.y)) + 
+  geom_abline(slope = 1, intercept = 0, color = &quot;dark red&quot;) +
+  geom_smooth(aes(ct.x, ct.y), method=&#39;lm&#39;, formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab(&quot;Interactions in IMC&quot;) + ylab(&quot;Interactions in mIF&quot;) +
+  facet_grid(from_label.x~to_label.x, scales = &quot;free&quot;) </code></pre>
+<p><img src="figure/03_spatial_comparison.Rmd/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -664,8 +915,8 @@ loaded via a namespace (and not attached):
   [3] R.utils_2.12.2            tidyselect_1.2.0         
   [5] htmlwidgets_1.6.1         grid_4.2.2               
   [7] BiocParallel_1.32.5       DropletUtils_1.18.1      
-  [9] munsell_0.5.0             codetools_0.2-18         
- [11] units_0.8-1               DT_0.27                  
+  [9] munsell_0.5.0             units_0.8-1              
+ [11] codetools_0.2-18          DT_0.27                  
  [13] withr_2.5.0               colorspace_2.1-0         
  [15] highr_0.10                knitr_1.42               
  [17] rstudioapi_0.14           labeling_0.4.2           
@@ -686,55 +937,57 @@ loaded via a namespace (and not attached):
  [47] beeswarm_0.4.0            gtable_0.3.1             
  [49] beachmat_2.14.0           tidygraph_1.2.3          
  [51] workflowr_1.7.0           rlang_1.0.6              
- [53] systemfonts_1.0.4         gargle_1.3.0             
- [55] broom_1.0.3               yaml_2.3.7               
- [57] abind_1.4-5               modelr_0.1.10            
- [59] backports_1.4.1           httpuv_1.6.8             
- [61] tools_4.2.2               ellipsis_0.3.2           
- [63] raster_3.6-14             jquerylib_0.1.4          
- [65] RColorBrewer_1.1-3        proxy_0.4-27             
- [67] Rcpp_1.0.10               sparseMatrixStats_1.10.0 
- [69] zlibbioc_1.44.0           classInt_0.4-8           
- [71] RCurl_1.98-1.10           viridis_0.6.2            
- [73] haven_2.5.1               ggrepel_0.9.3            
- [75] fs_1.6.0                  magrittr_2.0.3           
- [77] data.table_1.14.6         magick_2.7.3             
- [79] reprex_2.0.2              googledrive_2.0.0        
- [81] hms_1.1.2                 mime_0.12                
- [83] evaluate_0.20             fftwtools_0.9-11         
- [85] xtable_1.8-4              jpeg_0.1-10              
- [87] readxl_1.4.1              gridExtra_2.3            
- [89] compiler_4.2.2            KernSmooth_2.23-20       
- [91] crayon_1.5.2              R.oo_1.25.0              
- [93] htmltools_0.5.4           later_1.3.0              
- [95] tzdb_0.3.0                tiff_0.1-11              
- [97] lubridate_1.9.1           DBI_1.1.3                
- [99] tweenr_2.0.2.9000         dbplyr_2.3.0             
-[101] MASS_7.3-58.2             sf_1.0-9                 
-[103] Matrix_1.5-3              cli_3.6.0                
-[105] R.methodsS3_1.8.2         parallel_4.2.2           
-[107] cytomapper_1.11.2         igraph_1.3.5             
-[109] pkgconfig_2.0.3           sp_1.6-0                 
-[111] terra_1.7-3               scuttle_1.8.4            
-[113] xml2_1.3.3                svglite_2.1.1            
-[115] vipor_0.4.5               bslib_0.4.2              
-[117] dqrng_0.3.0               XVector_0.38.0           
-[119] rvest_1.0.3               digest_0.6.31            
-[121] rmarkdown_2.20            cellranger_1.1.0         
-[123] edgeR_3.40.2              distances_0.1.9          
-[125] DelayedMatrixStats_1.20.0 shiny_1.7.4              
-[127] EBImage_4.40.0            rjson_0.2.21             
-[129] lifecycle_1.0.3           jsonlite_1.8.4           
-[131] Rhdf5lib_1.20.0           BiocNeighbors_1.16.0     
-[133] viridisLite_0.4.1         limma_3.54.1             
-[135] fansi_1.0.4               pillar_1.8.1             
-[137] lattice_0.20-45           fastmap_1.1.0            
-[139] httr_1.4.4                glue_1.6.2               
-[141] png_0.1-8                 svgPanZoom_0.3.4         
-[143] bit_4.0.5                 ggforce_0.4.1            
-[145] class_7.3-20              stringi_1.7.12           
-[147] sass_0.4.5                HDF5Array_1.26.0         
-[149] nnls_1.4                  e1071_1.7-13             </code></pre>
+ [53] systemfonts_1.0.4         splines_4.2.2            
+ [55] gargle_1.3.0              broom_1.0.3              
+ [57] yaml_2.3.7                abind_1.4-5              
+ [59] modelr_0.1.10             backports_1.4.1          
+ [61] httpuv_1.6.8              tools_4.2.2              
+ [63] ellipsis_0.3.2            raster_3.6-14            
+ [65] jquerylib_0.1.4           RColorBrewer_1.1-3       
+ [67] proxy_0.4-27              Rcpp_1.0.10              
+ [69] sparseMatrixStats_1.10.0  zlibbioc_1.44.0          
+ [71] classInt_0.4-8            RCurl_1.98-1.10          
+ [73] viridis_0.6.2             haven_2.5.1              
+ [75] ggrepel_0.9.3             fs_1.6.0                 
+ [77] magrittr_2.0.3            data.table_1.14.6        
+ [79] magick_2.7.3              reprex_2.0.2             
+ [81] googledrive_2.0.0         whisker_0.4.1            
+ [83] hms_1.1.2                 mime_0.12                
+ [85] evaluate_0.20             fftwtools_0.9-11         
+ [87] xtable_1.8-4              jpeg_0.1-10              
+ [89] readxl_1.4.1              gridExtra_2.3            
+ [91] compiler_4.2.2            KernSmooth_2.23-20       
+ [93] crayon_1.5.2              R.oo_1.25.0              
+ [95] htmltools_0.5.4           mgcv_1.8-41              
+ [97] later_1.3.0               tzdb_0.3.0               
+ [99] tiff_0.1-11               lubridate_1.9.1          
+[101] DBI_1.1.3                 tweenr_2.0.2.9000        
+[103] dbplyr_2.3.0              MASS_7.3-58.2            
+[105] sf_1.0-9                  Matrix_1.5-3             
+[107] cli_3.6.0                 R.methodsS3_1.8.2        
+[109] parallel_4.2.2            cytomapper_1.11.2        
+[111] igraph_1.3.5              pkgconfig_2.0.3          
+[113] sp_1.6-0                  terra_1.7-3              
+[115] scuttle_1.8.4             xml2_1.3.3               
+[117] svglite_2.1.1             vipor_0.4.5              
+[119] bslib_0.4.2               dqrng_0.3.0              
+[121] XVector_0.38.0            rvest_1.0.3              
+[123] digest_0.6.31             rmarkdown_2.20           
+[125] cellranger_1.1.0          edgeR_3.40.2             
+[127] distances_0.1.9           DelayedMatrixStats_1.20.0
+[129] shiny_1.7.4               EBImage_4.40.0           
+[131] rjson_0.2.21              nlme_3.1-162             
+[133] lifecycle_1.0.3           jsonlite_1.8.4           
+[135] Rhdf5lib_1.20.0           BiocNeighbors_1.16.0     
+[137] viridisLite_0.4.1         limma_3.54.1             
+[139] fansi_1.0.4               pillar_1.8.1             
+[141] lattice_0.20-45           fastmap_1.1.0            
+[143] httr_1.4.4                glue_1.6.2               
+[145] png_0.1-8                 svgPanZoom_0.3.4         
+[147] bit_4.0.5                 ggforce_0.4.1            
+[149] class_7.3-20              stringi_1.7.12           
+[151] sass_0.4.5                HDF5Array_1.26.0         
+[153] nnls_1.4                  e1071_1.7-13             </code></pre>
 </div>
 </div>
 

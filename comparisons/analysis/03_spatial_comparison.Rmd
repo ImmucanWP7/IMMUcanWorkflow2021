@@ -36,21 +36,61 @@ library(imcRtools)
 
 plotSpatial(sce_IF, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
             draw_edges = TRUE, colPairName = "expansion_40",
-            nodes_first = FALSE, node_color_by = "matched_celltype") +
+            nodes_first = FALSE, node_color_by = "matched_celltype", node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
 
 plotSpatial(sce_IMC, img_id = "sample_id", coords = c("Pos_X", "Pos_Y"), 
             draw_edges = TRUE, colPairName = "expansion_20",
-            nodes_first = FALSE, node_color_by = "matched_celltype") +
+            nodes_first = FALSE, node_color_by = "matched_celltype", node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
 
 plotSpatial(sce_IF, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
             draw_edges = TRUE, colPairName = "expansion_60",
-            nodes_first = FALSE, node_color_by = "matched_celltype") +
+            nodes_first = FALSE, node_color_by = "matched_celltype", node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
 
 plotSpatial(sce_IMC, img_id = "sample_id", coords = c("Pos_X", "Pos_Y"), 
             draw_edges = TRUE, colPairName = "expansion_30",
-            nodes_first = FALSE, node_color_by = "matched_celltype") +
+            nodes_first = FALSE, node_color_by = "matched_celltype", node_size_fix = 0.5) +
   scale_color_manual(values = metadata(sce_IF)$color_vectors$matched_celltype)
+```
+
+## Calculate the mean interactions per image anc celltype pairs
+
+```{r, fig.width=10, fig.height=10}
+out_IF <- countInteractions(sce_IF, group_by = "sample_id", colPairName = "expansion_40", label = "matched_celltype")
+out_IMC <- countInteractions(sce_IMC, group_by = "sample_id", colPairName = "expansion_20", label = "matched_celltype")
+
+out_IF$for_matching <- paste(out_IF$group_by, out_IF$from_label, out_IF$to_label, sep = "_")
+out_IMC$for_matching <- paste(out_IMC$group_by, out_IMC$from_label, out_IMC$to_label, sep = "_")
+
+merged <- merge(out_IMC, out_IF, by = "for_matching", sort = FALSE)
+
+merged <- merged[!is.na(merged$ct.x) & !is.na(merged$ct.y),]
+
+ggplot(as.data.frame(merged)) + 
+  geom_point(aes(ct.x, ct.y)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(ct.x, ct.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab("Interactions in IMC") + ylab("Interactions in mIF") +
+  facet_grid(from_label.x~to_label.x, scales = "free") 
+```
+
+```{r, fig.width=10, fig.height=10}
+out_IF <- countInteractions(sce_IF, group_by = "sample_id", colPairName = "expansion_60", label = "matched_celltype")
+out_IMC <- countInteractions(sce_IMC, group_by = "sample_id", colPairName = "expansion_30", label = "matched_celltype")
+
+out_IF$for_matching <- paste(out_IF$group_by, out_IF$from_label, out_IF$to_label, sep = "_")
+out_IMC$for_matching <- paste(out_IMC$group_by, out_IMC$from_label, out_IMC$to_label, sep = "_")
+
+merged <- merge(out_IMC, out_IF, by = "for_matching", sort = FALSE)
+
+merged <- merged[!is.na(merged$ct.x) & !is.na(merged$ct.y),]
+
+ggplot(as.data.frame(merged)) + 
+  geom_point(aes(ct.x, ct.y)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(ct.x, ct.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab("Interactions in IMC") + ylab("Interactions in mIF") +
+  facet_grid(from_label.x~to_label.x, scales = "free") 
 ```
