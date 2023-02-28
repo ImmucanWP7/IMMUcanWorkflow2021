@@ -357,7 +357,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -368,8 +368,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -378,13 +378,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-02-19
+<strong>Last updated:</strong> 2023-02-23
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>comparisons/</code> <span
@@ -407,21 +407,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -512,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,22 +556,11 @@ Ignored files:
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
+    Ignored:    mIF/Analysis/docs/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
 
-Untracked files:
-    Untracked:  Figures/analysis/Figure_2.Rmd
-    Untracked:  Figures/output/Figure_2/
-    Untracked:  comparisons/analysis/02_mIF_IMC_integration.Rmd
-
 Unstaged changes:
-    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
-    Deleted:    comparisons/analysis/02_steinbock_comparison.Rmd
-    Deleted:    comparisons/analysis/03_steinbock_vs_IFquant_comparison.Rmd
-    Deleted:    comparisons/analysis/04_mIF_IMC_integration.Rmd
-    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
     Modified:   mIF/Analysis/docs/01_read_data.html
-    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png
-    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png
 
 </code></pre>
 <p>
@@ -589,10 +575,75 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>comparisons/analysis/02_mIF_IMC_integration.Rmd</code>) and HTML
+(<code>comparisons/docs/02_mIF_IMC_integration.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/analysis/02_mIF_IMC_integration.Rmd" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+<td>
+Recompiled comparison scripts
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/02_mIF_IMC_integration.html" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+<td>
+Recompiled comparison scripts
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -649,12 +700,160 @@ colnames(sce_merged) &lt;- seq_len(ncol(sce_merged))
 
 dittoDimPlot(sce_merged, var = &quot;technology&quot;, size = 0.5)</code></pre>
 <p><img src="figure/02_mIF_IMC_integration.Rmd/fastMNN-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fastMNN-1">
+Past versions of fastMNN-1.png
+</button>
+</p>
+<div id="fig-fastMNN-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/figure/02_mIF_IMC_integration.Rmd/fastMNN-1.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>dittoDimPlot(sce_merged, var = &quot;matched_celltype&quot;, size = 0.5)</code></pre>
 <p><img src="figure/02_mIF_IMC_integration.Rmd/fastMNN-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fastMNN-2">
+Past versions of fastMNN-2.png
+</button>
+</p>
+<div id="fig-fastMNN-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/figure/02_mIF_IMC_integration.Rmd/fastMNN-2.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>dittoDimPlot(sce_merged[,sce_merged$technology == &quot;IMC&quot;], var = &quot;matched_celltype&quot;, size = 0.5)</code></pre>
 <p><img src="figure/02_mIF_IMC_integration.Rmd/fastMNN-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fastMNN-3">
+Past versions of fastMNN-3.png
+</button>
+</p>
+<div id="fig-fastMNN-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/figure/02_mIF_IMC_integration.Rmd/fastMNN-3.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>dittoDimPlot(sce_merged[,sce_merged$technology == &quot;IF&quot;], var = &quot;matched_celltype&quot;, size = 0.5)</code></pre>
 <p><img src="figure/02_mIF_IMC_integration.Rmd/fastMNN-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-fastMNN-4">
+Past versions of fastMNN-4.png
+</button>
+</p>
+<div id="fig-fastMNN-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/figure/02_mIF_IMC_integration.Rmd/fastMNN-4.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>We can now estimate the fraction of unmatched cell types in the
 data.</p>
 <pre class="r"><code>library(tidyverse)
@@ -677,6 +876,43 @@ colnames(for_plot) &lt;- paste(&quot;IF&quot;, colnames(for_plot))
 
 pheatmap(log10(for_plot + 10), color = viridis(100))</code></pre>
 <p><img src="figure/02_mIF_IMC_integration.Rmd/unmatched-cells-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unmatched-cells-1">
+Past versions of unmatched-cells-1.png
+</button>
+</p>
+<div id="fig-unmatched-cells-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/comparisons/docs/figure/02_mIF_IMC_integration.Rmd/unmatched-cells-1.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

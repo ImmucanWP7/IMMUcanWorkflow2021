@@ -354,7 +354,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -365,8 +365,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -375,13 +375,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-02-17
+<strong>Last updated:</strong> 2023-02-23
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -404,21 +404,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -509,15 +506,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec81be89030d7f88b766df14ed106d2b6ae552774targetblankc81be89a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +524,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c81be89030d7f88b766df14ed106d2b6ae552774" target="_blank">c81be89</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -557,18 +554,6 @@ Ignored files:
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
-
-Untracked files:
-    Untracked:  Figures/analysis/Figure_2.Rmd
-    Untracked:  Figures/output/Figure_2/
-    Untracked:  comparisons/analysis/02_mIF_IMC_integration.Rmd
-
-Unstaged changes:
-    Modified:   comparisons/analysis/01_celltype_correlations.Rmd
-    Deleted:    comparisons/analysis/02_steinbock_comparison.Rmd
-    Deleted:    comparisons/analysis/03_steinbock_vs_IFquant_comparison.Rmd
-    Deleted:    comparisons/analysis/04_mIF_IMC_integration.Rmd
-    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
 
 </code></pre>
 <p>
@@ -615,6 +600,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/mIF/Analysis/analysis/01_read_data.Rmd" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+<td>
+Recompiled comparison scripts
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/2d8fb909ce911fa217f35bd21bec2288f9e8b360/mIF/Analysis/docs/01_read_data.html" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+<td>
+Recompiled comparison scripts
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1016,6 +1035,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png" target="_blank">7371b3e</a>
 </td>
 <td>
@@ -1055,6 +1085,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/2d8fb909ce911fa217f35bd21bec2288f9e8b360/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png" target="_blank">2d8fb90</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-20
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/7371b3e7ee27ab053d1f819996c1ce7624ca0948/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png" target="_blank">7371b3e</a>

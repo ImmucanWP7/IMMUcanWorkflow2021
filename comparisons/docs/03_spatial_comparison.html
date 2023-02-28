@@ -357,7 +357,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -368,8 +368,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -382,9 +382,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>comparisons/</code> <span
@@ -407,21 +407,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -512,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeae20729b0dbf8e3b329b25172e7c27ed09e4a8b7targetblankae20729a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/ae20729b0dbf8e3b329b25172e7c27ed09e4a8b7" target="_blank">ae20729</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeae20729b0dbf8e3b329b25172e7c27ed09e4a8b7targetblankae20729a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree73b44963552d04b3ea306e058750f82a83c83db0targetblank73b4496a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -530,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/ae20729b0dbf8e3b329b25172e7c27ed09e4a8b7" target="_blank">ae20729</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/73b44963552d04b3ea306e058750f82a83c83db0" target="_blank">73b4496</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -563,7 +560,7 @@ Ignored files:
     Ignored:    mIF/Processing/.DS_Store
 
 Unstaged changes:
-    Modified:   comparisons/analysis/03_spatial_comparison.Rmd
+    Modified:   mIF/Analysis/docs/01_read_data.html
 
 </code></pre>
 <p>
@@ -610,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/analysis/03_spatial_comparison.Rmd" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+<td>
+First start on spatial comparison
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/03_spatial_comparison.html" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+<td>
+First start on spatial comparison
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -696,6 +727,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-1.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-1.png" target="_blank">97be4c4</a>
 </td>
 <td>
@@ -736,6 +778,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-2.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-2.png" target="_blank">97be4c4</a>
@@ -780,6 +833,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-3.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-3.png" target="_blank">97be4c4</a>
 </td>
 <td>
@@ -822,6 +886,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-4.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/97be4c4e01c7b5294c6bc95f0bbd0a33d06a6fb6/comparisons/docs/figure/03_spatial_comparison.Rmd/plotSpatial-4.png" target="_blank">97be4c4</a>
 </td>
 <td>
@@ -856,6 +931,43 @@ ggplot(as.data.frame(merged)) +
   theme_classic(base_size = 20) + xlab(&quot;Interactions in IMC&quot;) + ylab(&quot;Interactions in mIF&quot;) +
   facet_grid(from_label.x~to_label.x, scales = &quot;free&quot;) </code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/unnamed-chunk-1-1.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>out_IF &lt;- countInteractions(sce_IF, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_60&quot;, label = &quot;matched_celltype&quot;)
 out_IMC &lt;- countInteractions(sce_IMC, group_by = &quot;sample_id&quot;, colPairName = &quot;expansion_30&quot;, label = &quot;matched_celltype&quot;)
 
@@ -873,6 +985,43 @@ ggplot(as.data.frame(merged)) +
   theme_classic(base_size = 20) + xlab(&quot;Interactions in IMC&quot;) + ylab(&quot;Interactions in mIF&quot;) +
   facet_grid(from_label.x~to_label.x, scales = &quot;free&quot;) </code></pre>
 <p><img src="figure/03_spatial_comparison.Rmd/unnamed-chunk-2-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/73b44963552d04b3ea306e058750f82a83c83db0/comparisons/docs/figure/03_spatial_comparison.Rmd/unnamed-chunk-2-1.png" target="_blank">73b4496</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-02-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -908,7 +1057,7 @@ other attached packages:
 [15] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
 [17] IRanges_2.32.0              S4Vectors_0.36.1           
 [19] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
-[21] matrixStats_0.63.0         
+[21] matrixStats_0.63.0          workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] utf8_1.2.3                shinydashboard_0.7.2     
@@ -935,8 +1084,8 @@ loaded via a namespace (and not attached):
  [43] promises_1.2.0.1          scales_1.2.1             
  [45] ggraph_2.1.0              googlesheets4_1.0.1      
  [47] beeswarm_0.4.0            gtable_0.3.1             
- [49] beachmat_2.14.0           tidygraph_1.2.3          
- [51] workflowr_1.7.0           rlang_1.0.6              
+ [49] beachmat_2.14.0           processx_3.8.0           
+ [51] tidygraph_1.2.3           rlang_1.0.6              
  [53] systemfonts_1.0.4         splines_4.2.2            
  [55] gargle_1.3.0              broom_1.0.3              
  [57] yaml_2.3.7                abind_1.4-5              
@@ -947,47 +1096,49 @@ loaded via a namespace (and not attached):
  [67] proxy_0.4-27              Rcpp_1.0.10              
  [69] sparseMatrixStats_1.10.0  zlibbioc_1.44.0          
  [71] classInt_0.4-8            RCurl_1.98-1.10          
- [73] viridis_0.6.2             haven_2.5.1              
- [75] ggrepel_0.9.3             fs_1.6.0                 
- [77] magrittr_2.0.3            data.table_1.14.6        
- [79] magick_2.7.3              reprex_2.0.2             
- [81] googledrive_2.0.0         whisker_0.4.1            
- [83] hms_1.1.2                 mime_0.12                
- [85] evaluate_0.20             fftwtools_0.9-11         
- [87] xtable_1.8-4              jpeg_0.1-10              
- [89] readxl_1.4.1              gridExtra_2.3            
- [91] compiler_4.2.2            KernSmooth_2.23-20       
- [93] crayon_1.5.2              R.oo_1.25.0              
- [95] htmltools_0.5.4           mgcv_1.8-41              
- [97] later_1.3.0               tzdb_0.3.0               
- [99] tiff_0.1-11               lubridate_1.9.1          
-[101] DBI_1.1.3                 tweenr_2.0.2.9000        
-[103] dbplyr_2.3.0              MASS_7.3-58.2            
-[105] sf_1.0-9                  Matrix_1.5-3             
-[107] cli_3.6.0                 R.methodsS3_1.8.2        
-[109] parallel_4.2.2            cytomapper_1.11.2        
-[111] igraph_1.3.5              pkgconfig_2.0.3          
-[113] sp_1.6-0                  terra_1.7-3              
-[115] scuttle_1.8.4             xml2_1.3.3               
-[117] svglite_2.1.1             vipor_0.4.5              
-[119] bslib_0.4.2               dqrng_0.3.0              
-[121] XVector_0.38.0            rvest_1.0.3              
-[123] digest_0.6.31             rmarkdown_2.20           
-[125] cellranger_1.1.0          edgeR_3.40.2             
-[127] distances_0.1.9           DelayedMatrixStats_1.20.0
-[129] shiny_1.7.4               EBImage_4.40.0           
-[131] rjson_0.2.21              nlme_3.1-162             
-[133] lifecycle_1.0.3           jsonlite_1.8.4           
-[135] Rhdf5lib_1.20.0           BiocNeighbors_1.16.0     
-[137] viridisLite_0.4.1         limma_3.54.1             
-[139] fansi_1.0.4               pillar_1.8.1             
-[141] lattice_0.20-45           fastmap_1.1.0            
-[143] httr_1.4.4                glue_1.6.2               
-[145] png_0.1-8                 svgPanZoom_0.3.4         
-[147] bit_4.0.5                 ggforce_0.4.1            
-[149] class_7.3-20              stringi_1.7.12           
-[151] sass_0.4.5                HDF5Array_1.26.0         
-[153] nnls_1.4                  e1071_1.7-13             </code></pre>
+ [73] ps_1.7.2                  viridis_0.6.2            
+ [75] haven_2.5.1               ggrepel_0.9.3            
+ [77] fs_1.6.0                  magrittr_2.0.3           
+ [79] data.table_1.14.6         magick_2.7.3             
+ [81] reprex_2.0.2              googledrive_2.0.0        
+ [83] whisker_0.4.1             hms_1.1.2                
+ [85] mime_0.12                 evaluate_0.20            
+ [87] fftwtools_0.9-11          xtable_1.8-4             
+ [89] jpeg_0.1-10               readxl_1.4.1             
+ [91] gridExtra_2.3             compiler_4.2.2           
+ [93] KernSmooth_2.23-20        crayon_1.5.2             
+ [95] R.oo_1.25.0               htmltools_0.5.4          
+ [97] mgcv_1.8-41               later_1.3.0              
+ [99] tzdb_0.3.0                tiff_0.1-11              
+[101] lubridate_1.9.1           DBI_1.1.3                
+[103] tweenr_2.0.2.9000         dbplyr_2.3.0             
+[105] MASS_7.3-58.2             sf_1.0-9                 
+[107] Matrix_1.5-3              cli_3.6.0                
+[109] R.methodsS3_1.8.2         parallel_4.2.2           
+[111] cytomapper_1.11.2         igraph_1.3.5             
+[113] pkgconfig_2.0.3           getPass_0.2-2            
+[115] sp_1.6-0                  terra_1.7-3              
+[117] scuttle_1.8.4             xml2_1.3.3               
+[119] svglite_2.1.1             vipor_0.4.5              
+[121] bslib_0.4.2               dqrng_0.3.0              
+[123] XVector_0.38.0            rvest_1.0.3              
+[125] callr_3.7.3               digest_0.6.31            
+[127] rmarkdown_2.20            cellranger_1.1.0         
+[129] edgeR_3.40.2              distances_0.1.9          
+[131] DelayedMatrixStats_1.20.0 shiny_1.7.4              
+[133] EBImage_4.40.0            rjson_0.2.21             
+[135] nlme_3.1-162              lifecycle_1.0.3          
+[137] jsonlite_1.8.4            Rhdf5lib_1.20.0          
+[139] BiocNeighbors_1.16.0      viridisLite_0.4.1        
+[141] limma_3.54.1              fansi_1.0.4              
+[143] pillar_1.8.1              lattice_0.20-45          
+[145] fastmap_1.1.0             httr_1.4.4               
+[147] glue_1.6.2                png_0.1-8                
+[149] svgPanZoom_0.3.4          bit_4.0.5                
+[151] class_7.3-20              ggforce_0.4.1            
+[153] stringi_1.7.12            sass_0.4.5               
+[155] HDF5Array_1.26.0          nnls_1.4                 
+[157] e1071_1.7-13             </code></pre>
 </div>
 </div>
 
