@@ -64,7 +64,7 @@ ggplot(combined_df) +
 
 Next, we will compare the cell type fractions between the technologies.
 
-```{r celltype-fractions, fig.width=8, fig.height=10}
+```{r celltype-fractions, fig.width=12, fig.height=16}
 # Match cell types
 cur_mIF <- colData(sce_mIF)
 cur_IMC <- colData(sce_IMC)
@@ -86,6 +86,7 @@ frac_mIF <- cur_mIF %>% as_tibble() %>%
 
 combined_df <- merge(frac_IMC, frac_mIF, by=c("sample_id", "matched_celltype"), sort=FALSE)
 combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+combined_df$ROI <- sub("_", "", str_extract(combined_df$sample_id, "_00[1-9]"))
 
 ggplot(combined_df) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
@@ -106,7 +107,16 @@ ggplot(combined_df) +
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
-  facet_wrap(.~matched_celltype, scales = "free") 
+  facet_wrap(.~matched_celltype, scales = "free") +
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id)
+
+ggplot(combined_df) + 
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = ROI)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
+  facet_wrap(.~matched_celltype, scales = "free") +
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id))
 ```
 
 We will also now compute the correlation coefficients.

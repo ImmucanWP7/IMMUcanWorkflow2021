@@ -63,9 +63,12 @@ cur_sces <- lapply(seq_along(cur_files), function(x){
   
   # Secondary data
   cur_data_2 <- read.csv(cur_files_2[x], sep = "\t")
-  colData(cur_sce) <- as(merge(as.data.frame(colData(cur_sce)), 
-                            as.data.frame(cur_data_2)[,c("cell.ID", "cell.area", "TLS.ID")], by = "cell.ID",
-                            sort = FALSE), "DataFrame")
+  
+  stopifnot(all.equal(cur_sce$cell.ID, cur_data_2$cell.ID))
+  
+  cur_cd <- cbind(colData(cur_sce), cur_data_2[,c("cell.area", "TLS.ID")])
+  
+  colData(cur_sce) <- cur_cd
   
   return(cur_sce)
 })
@@ -79,10 +82,10 @@ cur_sces <- lapply(cur_sces, function(x){
 sce <- do.call("cbind", cur_sces)
 
 # Transform counts
-assay(sce, "exprs") <- asinh(counts(sce))
+assay(sce, "exprs") <- log(counts(sce))
 
 # Add phenotype labels
-cur_key <- as.data.frame(read_csv("data/phenotype_key.csv"))
+cur_key <- as.data.frame(read_csv("~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv"))
 
 rownames(cur_key) <- cur_key$phenotype
 
@@ -90,9 +93,9 @@ sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
 sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
-sce$matched_celltype[sce$matched_celltype == "Mac_163"] <- "MacCD163"
 sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
 sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
+sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 
 sce$indication <- sce$Lausanne_id
 sce$indication[grepl("BC", sce$indication)] <- "BCC"
@@ -134,11 +137,12 @@ cur_sces <- lapply(cur_files, function(x){
   cur_sce_2 <- sce[,sce$patient_id == unique(cur_sce$patient_id)]
   cur_df <- colData(cur_sce_2)[match(cur_sce$cell.ID, cur_sce_2$cell.ID),]
   
-  # Sanity check that phenotypes match
+  # Sanity check that phenotypes and cell IDs match
   stopifnot(all.equal(cur_sce$phenotype, cur_df$phenotype))
+  stopifnot(all.equal(cur_sce$cell.ID, cur_df$cell.ID))
   
   # Transfer cell area and TLS id
-  colData(cur_sce) <- merge(colData(cur_sce), cur_df[,c("cell.ID", "cell.area", "TLS.ID")], by = "cell.ID", sort = FALSE)
+  colData(cur_sce) <- cbind(colData(cur_sce), cur_df[,c("cell.area", "TLS.ID")])
   
   return(cur_sce)
 })
@@ -152,7 +156,7 @@ cur_sces <- lapply(cur_sces, function(x){
 sce <- do.call("cbind", cur_sces)
 
 # Transform counts
-assay(sce, "exprs") <- asinh(counts(sce))
+assay(sce, "exprs") <- log(counts(sce))
 
 metadata(sce)$color_vectors <- color_vectors
 ```
@@ -166,9 +170,9 @@ sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
 sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
-sce$matched_celltype[sce$matched_celltype == "Mac_163"] <- "MacCD163"
 sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
 sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
+sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 ```
 
 ### Add interaction graph

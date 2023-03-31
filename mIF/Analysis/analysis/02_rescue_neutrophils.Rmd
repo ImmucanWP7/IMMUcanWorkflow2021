@@ -1,0 +1,25 @@
+---
+title: "Rescue neutrophils"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+```
+
+In this script, we will try to rescue some of the neutrophil annotations.
+
+## Read in the data
+
+```{r define-colors}
+library(SingleCellExperiment)
+
+sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+
