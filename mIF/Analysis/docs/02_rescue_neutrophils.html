@@ -11,7 +11,7 @@
 
 
 
-<title>Reading in the data</title>
+<title>Rescue neutrophils</title>
 
 <script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -324,7 +324,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">IMMUcanWorkflow2022 - IMC analysis</a>
+      <a class="navbar-brand" href="index.html">mIF</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -333,18 +333,6 @@ div.tocify {
 </li>
 <li>
   <a href="01_read_data.html">Read data</a>
-</li>
-<li>
-  <a href="02_spillover_correction.html">Spillover correction</a>
-</li>
-<li>
-  <a href="03_quality_control.html">Quality control</a>
-</li>
-<li>
-  <a href="04_sample_correction.html">Sample correction</a>
-</li>
-<li>
-  <a href="05_predict_celltypes.html">Celltype prediction</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -358,7 +346,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Reading in the data</h1>
+<h1 class="title toc-ignore">Rescue neutrophils</h1>
 
 </div>
 
@@ -454,16 +442,16 @@ empty environment.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220321code">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220429code">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Seed:</strong>
-<code>set.seed(20220321)</code> </a>
+<code>set.seed(20220429)</code> </a>
 </p>
 </div>
-<div id="strongSeedstrongcodesetseed20220321code"
+<div id="strongSeedstrongcodesetseed20220429code"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20220321)</code> was run prior to running
+<p>The command <code>set.seed(20220429)</code> was run prior to running
 the code in the R Markdown file. Setting a seed ensures that any results
 that rely on randomness, e.g. subsampling or permutations, are
 reproducible.</p>
@@ -561,6 +549,8 @@ Ignored files:
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    IMC/Analysis/analysis/figure/
+    Ignored:    IMC/Analysis/docs/.DS_Store
     Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
     Ignored:    comparisons/code/.DS_Store
@@ -568,17 +558,21 @@ Ignored files:
     Ignored:    mIF/.DS_Store
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
-    Ignored:    mIF/Analysis/docs/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
 
 Untracked files:
-    Untracked:  mIF/Analysis/docs/02_rescue_neutrophils.html
-    Untracked:  mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/
-    Untracked:  mIF/Analysis/docs/site_libs/header-attrs-2.21/
+    Untracked:  IMC/Analysis/docs/site_libs/header-attrs-2.21/
 
 Unstaged changes:
     Modified:   IMC/Analysis/analysis/01_read_data.Rmd
     Modified:   IMC/Analysis/analysis/05_predict_celltypes.Rmd
+    Modified:   IMC/Analysis/docs/01_read_data.html
+    Modified:   IMC/Analysis/docs/02_spillover_correction.html
+    Deleted:    IMC/Analysis/docs/03_quality_control.html
+    Deleted:    IMC/Analysis/docs/04_sample_correction.html
+    Deleted:    IMC/Analysis/docs/05_predict_celltypes.html
+    Deleted:    IMC/Analysis/docs/index.html
+    Modified:   comparisons/code/napari_comparison.ipynb
     Modified:   mIF/Analysis/analysis/02_rescue_neutrophils.Rmd
 
 </code></pre>
@@ -598,11 +592,11 @@ have uncommitted changes.
 <p>
 These are the previous versions of the repository in which changes were
 made to the R Markdown
-(<code>IMC/Analysis/analysis/01_read_data.Rmd</code>) and HTML
-(<code>IMC/Analysis/docs/01_read_data.html</code>) files. If you’ve
-configured a remote Git repository (see <code>?wflow_git_remote</code>),
-click on the hyperlinks in the table below to view the files as they
-were in that past version.
+(<code>mIF/Analysis/analysis/02_rescue_neutrophils.Rmd</code>) and HTML
+(<code>mIF/Analysis/docs/02_rescue_neutrophils.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -631,288 +625,16 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">c81be89</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/d077ceb81a9f1d5ff3a9c9cadddf59b1df2231c7/mIF/Analysis/analysis/02_rescue_neutrophils.Rmd" target="_blank">d077ceb</a>
 </td>
 <td>
 nilseling
 </td>
 <td>
-2023-02-16
+2023-03-31
 </td>
 <td>
-Recompiled IMC workflow
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/01_read_data.html" target="_blank">c81be89</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2023-02-16
-</td>
-<td>
-Recompiled IMC workflow
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/9abd60d904088b36b1032d4a15f5df1c8e728081/IMC/Analysis/docs/01_read_data.html" target="_blank">9abd60d</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-11-09
-</td>
-<td>
-Compiled scripts
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/329cfe69b24cf8a10aa69b2fb4a27b155bfcc091/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">329cfe6</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-08-19
-</td>
-<td>
-Added phenotype key for mIF
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/329cfe69b24cf8a10aa69b2fb4a27b155bfcc091/IMC/Analysis/docs/01_read_data.html" target="_blank">329cfe6</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-08-19
-</td>
-<td>
-Added phenotype key for mIF
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/4554a259201ef6a52df476c8208dede506b41b04/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">4554a25</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-06-24
-</td>
-<td>
-Recompiled scripts
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/4554a259201ef6a52df476c8208dede506b41b04/IMC/Analysis/docs/01_read_data.html" target="_blank">4554a25</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-06-24
-</td>
-<td>
-Recompiled scripts
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">8d1f8ec</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-05-30
-</td>
-<td>
-Recompiled workflow
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/8d1f8ec230505f81891267366712aeb5847bda1a/IMC/Analysis/docs/01_read_data.html" target="_blank">8d1f8ec</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-05-30
-</td>
-<td>
-Recompiled workflow
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">f7cc35b</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-05-11
-</td>
-<td>
-Recompiled scripts
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/f7cc35b2360b342abaa00a75373b5f8a03f47633/IMC/Analysis/docs/01_read_data.html" target="_blank">f7cc35b</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-05-11
-</td>
-<td>
-Recompiled scripts
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6c50ede74c6d98836497c5a6a1086bf3a3c5eea7/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">6c50ede</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-22
-</td>
-<td>
-Final labelling script
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/6c50ede74c6d98836497c5a6a1086bf3a3c5eea7/IMC/Analysis/docs/01_read_data.html" target="_blank">6c50ede</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-22
-</td>
-<td>
-Final labelling script
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/f2f26f0c537c08bd12d758a2ce9727dfb8fdf4e5/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">f2f26f0</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-19
-</td>
-<td>
-Compiled scripts
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/f2f26f0c537c08bd12d758a2ce9727dfb8fdf4e5/IMC/Analysis/docs/01_read_data.html" target="_blank">f2f26f0</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-04-19
-</td>
-<td>
-Compiled scripts
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/68d9d518e34a38bf4f97cec51900b71ff6daf9df/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">68d9d51</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-03-21
-</td>
-<td>
-Added reader and QC script
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/eb48a2a37d45ffbe080222fd4f88017d6faa9d79/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">eb48a2a</a>
-</td>
-<td>
-nilseling
-</td>
-<td>
-2022-03-21
-</td>
-<td>
-Start of analysis workflow
+Modifications
 </td>
 </tr>
 </tbody>
@@ -922,132 +644,104 @@ Start of analysis workflow
 </div>
 </div>
 </div>
-<p>In this script, we read in the single-cell and image data generated
-by the <a
-href="https://github.com/BodenmillerGroup/steinbock">steinbock</a>
-framework.</p>
-<div id="load-libraries" class="section level1">
-<h1>Load libraries</h1>
-<p>First, we will load the libraries needed for this part of the
-analysis.</p>
-<pre class="r"><code>library(S4Vectors)
-library(SingleCellExperiment)
-library(tidyverse)
+<p>In this script, we will try to rescue some of the neutrophil
+annotations.</p>
+<div id="read-in-the-data" class="section level2">
+<h2>Read in the data</h2>
+<pre class="r"><code>library(SingleCellExperiment)
+
+sce &lt;- readRDS(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds&quot;)</code></pre>
+</div>
+<div id="observe-the-distribution-of-cd15-and-ck"
+class="section level2">
+<h2>Observe the distribution of CD15 and CK</h2>
+<pre class="r"><code>library(ggplot2)
 library(imcRtools)
-library(tools)</code></pre>
+
+cur_sce &lt;- sce[,sce$matched_celltype %in% c(&quot;Tumor&quot;, &quot;Tumor_CD15&quot;, &quot;Neutrophil&quot;)]
+
+cur_df &lt;- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score normalized&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cur_df &lt;- as.data.frame(cbind(t(assay(cur_sce, &quot;raw&quot;)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score raw&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="read-in-the-single-cell-data" class="section level1">
-<h1>Read in the single-cell data</h1>
-<p>We use <code>imcRtools</code> to read in the data:</p>
-<pre class="r"><code>sce &lt;- read_steinbock(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/&quot;, 
-                      return_as = &quot;sce&quot;, 
-                      extract_imagemetadata_from = c(&quot;width_px&quot;,    &quot;height_px&quot;,    
-                                                     &quot;acquisition_id&quot;))
-sce$image &lt;- paste0(sce$sample_id, &quot;.tiff&quot;)
-sce$patient_id &lt;- sub(&quot;_&quot;, &quot;&quot;, str_extract(sce$image, &quot;_[0-9]{8}&quot;))
-assay(sce, &quot;exprs&quot;) &lt;- asinh(counts(sce))
+<div id="visualize-image-with-neutrophil-issue" class="section level2">
+<h2>Visualize image with neutrophil issue</h2>
+<pre class="r"><code>cur_sce &lt;- sce[,sce$sample_id == &quot;IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_005&quot;]
 
-# Specify interesting channels
-rowData(sce)$use_channel &lt;- !grepl(&quot;DNA|HistoneH3&quot;, rownames(sce))</code></pre>
-<div id="image-level-metadata" class="section level2">
-<h2>Image-level metadata</h2>
-<p>Here, we will collect all relevant image-level metadata for these
-samples. These will be added to the cell-level metadata.</p>
-<pre class="r"><code>meta &lt;- read.csv(&quot;data/sample_metadata.csv&quot;)
-meta$patient_id &lt;- as.character(meta$patient_id)
+cur_df &lt;- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
 
-cell_meta &lt;- left_join(as.data.frame(colData(sce)), meta, 
-                   by = &quot;patient_id&quot;)
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score normalized&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cur_df &lt;- as.data.frame(cbind(t(assay(cur_sce, &quot;raw&quot;)), colData(cur_sce))) 
 
-all.equal(paste(cell_meta$image, cell_meta$ObjectNumber), 
-          paste(sce$image, sce$ObjectNumber))</code></pre>
-<pre><code>[1] TRUE</code></pre>
-<pre class="r"><code>colData(sce) &lt;- as(cell_meta, &quot;DataFrame&quot;)
-
-sce$ROI &lt;- sub(&quot;_&quot;, &quot;&quot;, str_extract(sce$image, &quot;_00[1-9]&quot;))</code></pre>
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score raw&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotSpatial(cur_sce, node_color_by = &quot;celltype&quot;, img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;))</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="generate-colour-vectors" class="section level2">
-<h2>Generate colour vectors</h2>
-<p>At this point we want to generate color vectors that we can
-reproducibly and consistently use throughout the analysis. Primarily, we
-will define colors for 1. the samples, 2. the ROI, 3. the
-indication.</p>
-<pre class="r"><code>library(dittoSeq)
-library(RColorBrewer)
-color_vectors &lt;- list()
+<div id="compare-against-image-with-real-cd15-tumor-expression"
+class="section level2">
+<h2>Compare against image with real CD15 Tumor expression</h2>
+<p>Example 1</p>
+<pre class="r"><code>cur_sce &lt;- sce[,sce$sample_id == &quot;IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001&quot;]
 
-patient_id &lt;- setNames(brewer.pal(10, &quot;Set3&quot;),
-                       c(&quot;10082495&quot;, &quot;10067433&quot;, &quot;10074349&quot;, &quot;10075572&quot;, &quot;10068868&quot;, 
-                         &quot;10073140&quot;, &quot;10075371&quot;, &quot;10061074&quot;, &quot;10071582&quot;, &quot;10074832&quot;))
+cur_df &lt;- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
 
-col_vec_ROIs &lt;- colorRampPalette(c(&quot;dark green&quot;, &quot;white&quot;, &quot;dark red&quot;))(length(unique(sce$ROI)))
-names(col_vec_ROIs) &lt;- unique(sce$ROI)
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score normalized&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cur_df &lt;- as.data.frame(cbind(t(assay(cur_sce, &quot;raw&quot;)), colData(cur_sce))) 
 
-col_vec_indication &lt;- c(CRC = &quot;#5B1C55&quot;, SCCHN = &quot;#39BEB4&quot;, NSCLC = &quot;#F79C1D&quot;, 
-                        BCC = &quot;#3F85A7&quot;, RCC = &quot;#C81F43&quot;)
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score raw&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Example 2</p>
+<pre class="r"><code>cur_sce &lt;- sce[,sce$sample_id == &quot;IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005&quot;]
 
-matched_celltype &lt;- setNames(c(&quot;coral3&quot;, &quot;chartreuse3&quot;, &quot;cyan2&quot;, 
-                               &quot;darkgoldenrod2&quot;, &quot;grey75&quot;, &quot;#DC6FE2&quot;, 
-                               &quot;#BF0A3D&quot;, &quot;#F4800C&quot;),
-                             c(&quot;Tumor&quot;, &quot;Tcell&quot;, &quot;Neutrophil&quot;, &quot;MacCD163&quot;,
-                               &quot;other&quot;, &quot;DC&quot;, &quot;Bcell&quot;, &quot;BnTcell&quot;))
+cur_df &lt;- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
 
-celltype &lt;- setNames(c(&quot;red3&quot;, &quot;goldenrod2&quot;, &quot;palevioletred1&quot;, 
-                       &quot;darkorchid&quot;, &quot;maroon4&quot;, &quot;darkorange4&quot;, 
-                       &quot;green4&quot;, &quot;darkgreen&quot;,
-                       &quot;green&quot;, &quot;blue1&quot;, &quot;yellow&quot;, 
-                       &quot;deepskyblue&quot;, &quot;tomato&quot;, &quot;sienna4&quot;, 
-                       &quot;black&quot;),
-                     c(&quot;Bcell&quot;, &quot;Plasma&quot;, &quot;CD4&quot;, &quot;CD8&quot;, &quot;Treg&quot;, &quot;BnTcell&quot;,
-                       &quot;DC&quot;, &quot;HLADR&quot;, &quot;MacCD163&quot;, &quot;Neutrophil&quot;, 
-                       &quot;NK&quot;, &quot;pDC&quot;, &quot;Mural&quot;, &quot;Tumor&quot;, &quot;undefined&quot;))
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score normalized&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cur_df &lt;- as.data.frame(cbind(t(assay(cur_sce, &quot;raw&quot;)), colData(cur_sce))) 
 
-color_vectors$celltype &lt;- celltype
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score raw&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Example 3</p>
+<p>This one is a correctly annotated mix of Neutrophils and CD15+
+Tumor.</p>
+<pre class="r"><code>cur_sce &lt;- sce[,sce$sample_id == &quot;IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_001&quot;]
 
-color_vectors$patient_id &lt;- patient_id
-color_vectors$ROIs &lt;- col_vec_ROIs
-color_vectors$Indication &lt;- col_vec_indication
-color_vectors$matched_celltype &lt;- matched_celltype
+cur_df &lt;- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
 
-# Save in metadata slot
-metadata(sce)$color_vectors &lt;- color_vectors</code></pre>
-</div>
-<div id="add-interaction-graph" class="section level2">
-<h2>Add interaction graph</h2>
-<p>Finally, we will add a 20µm expansion interaction graph to compare to
-mIF.</p>
-<pre class="r"><code>library(imcRtools)
-sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;,
-                         threshold = 20, name = &quot;expansion_20&quot;)
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score normalized&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cur_df &lt;- as.data.frame(cbind(t(assay(cur_sce, &quot;raw&quot;)), colData(cur_sce))) 
 
-sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;,
-                         threshold = 30, name = &quot;expansion_30&quot;)</code></pre>
-</div>
-<div id="save-sce-object" class="section level2">
-<h2>Save SCE object</h2>
-<p>Finally, for easy accessability, we will write the SCE object out.
-The object will be stored on the server so that everyone can work with
-it.</p>
-<pre class="r"><code>cur_dir &lt;- &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/&quot;
-if (!dir.exists(cur_dir)) dir.create(cur_dir)
-saveRDS(sce, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)</code></pre>
-</div>
-</div>
-<div id="read-in-image-data" class="section level1">
-<h1>Read in image data</h1>
-<p>Here, we read in the images and masks and save them on disk.</p>
-<pre class="r"><code>library(cytomapper)
-images &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/&quot;)
-masks &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/masks/&quot;,
-                    as.is = TRUE)
-
-channelNames(images) &lt;- rownames(sce)
-
-mcols(images) &lt;- mcols(masks) &lt;- DataFrame(image = names(images),
-                                           sample_id = sub(&quot;.tiff&quot;, &quot;&quot;, names(images)))
-
-saveRDS(images, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds&quot;)
-saveRDS(masks, &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds&quot;)</code></pre>
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle(&quot;Score raw&quot;)</code></pre>
+<p><img src="figure/02_rescue_neutrophils.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1069,24 +763,17 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] tools     stats4    stats     graphics  grDevices utils     datasets 
-[8] methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
- [1] cytomapper_1.11.2           EBImage_4.40.0             
- [3] RColorBrewer_1.1-3          dittoSeq_1.10.0            
- [5] imcRtools_1.4.2             SpatialExperiment_1.8.1    
- [7] lubridate_1.9.2             forcats_1.0.0              
- [9] stringr_1.5.0               dplyr_1.1.1                
-[11] purrr_1.0.1                 readr_2.1.4                
-[13] tidyr_1.3.0                 tibble_3.2.1               
-[15] ggplot2_3.4.1               tidyverse_2.0.0            
-[17] SingleCellExperiment_1.20.1 SummarizedExperiment_1.28.0
-[19] Biobase_2.58.0              GenomicRanges_1.50.2       
-[21] GenomeInfoDb_1.34.9         IRanges_2.32.0             
-[23] MatrixGenerics_1.10.0       matrixStats_0.63.0         
-[25] S4Vectors_0.36.2            BiocGenerics_0.44.0        
-[27] workflowr_1.7.0            
+ [1] imcRtools_1.4.2             SpatialExperiment_1.8.1    
+ [3] ggplot2_3.4.1               SingleCellExperiment_1.20.1
+ [5] SummarizedExperiment_1.28.0 Biobase_2.58.0             
+ [7] GenomicRanges_1.50.2        GenomeInfoDb_1.34.9        
+ [9] IRanges_2.32.0              S4Vectors_0.36.2           
+[11] BiocGenerics_0.44.0         MatrixGenerics_1.10.0      
+[13] matrixStats_0.63.0          workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
   [1] systemfonts_1.0.4         igraph_1.4.1             
@@ -1096,67 +783,71 @@ loaded via a namespace (and not attached):
   [9] magick_2.7.4              tiff_0.1-11              
  [11] fansi_1.0.4               magrittr_2.0.3           
  [13] tzdb_0.3.0                limma_3.54.2             
- [15] graphlayouts_0.8.4        svgPanZoom_0.3.4         
- [17] vroom_1.6.1               R.utils_2.12.2           
- [19] svglite_2.1.1             timechange_0.2.0         
+ [15] readr_2.1.4               graphlayouts_0.8.4       
+ [17] svgPanZoom_0.3.4          vroom_1.6.1              
+ [19] R.utils_2.12.2            svglite_2.1.1            
  [21] jpeg_0.1-10               colorspace_2.1-0         
  [23] ggrepel_0.9.3             xfun_0.38                
- [25] crayon_1.5.2              callr_3.7.3              
- [27] RCurl_1.98-1.10           jsonlite_1.8.4           
- [29] glue_1.6.2                polyclip_1.10-4          
- [31] gtable_0.3.3              nnls_1.4                 
- [33] zlibbioc_1.44.0           XVector_0.38.0           
- [35] DelayedArray_0.24.0       DropletUtils_1.18.1      
- [37] Rhdf5lib_1.20.0           HDF5Array_1.26.0         
- [39] abind_1.4-5               scales_1.2.1             
- [41] pheatmap_1.0.12           DBI_1.1.3                
- [43] edgeR_3.40.2              Rcpp_1.0.10              
- [45] viridisLite_0.4.1         xtable_1.8-4             
- [47] units_0.8-1               archive_1.1.5            
+ [25] dplyr_1.1.1               crayon_1.5.2             
+ [27] callr_3.7.3               RCurl_1.98-1.10          
+ [29] jsonlite_1.8.4            glue_1.6.2               
+ [31] polyclip_1.10-4           gtable_0.3.3             
+ [33] nnls_1.4                  zlibbioc_1.44.0          
+ [35] XVector_0.38.0            DelayedArray_0.24.0      
+ [37] DropletUtils_1.18.1       Rhdf5lib_1.20.0          
+ [39] HDF5Array_1.26.0          abind_1.4-5              
+ [41] scales_1.2.1              pheatmap_1.0.12          
+ [43] DBI_1.1.3                 edgeR_3.40.2             
+ [45] Rcpp_1.0.10               viridisLite_0.4.1        
+ [47] xtable_1.8-4              units_0.8-1              
  [49] dqrng_0.3.0               bit_4.0.5                
  [51] proxy_0.4-27              DT_0.27                  
  [53] htmlwidgets_1.6.2         httr_1.4.5               
- [55] ellipsis_0.3.2            pkgconfig_2.0.3          
- [57] R.methodsS3_1.8.2         farver_2.1.1             
- [59] scuttle_1.8.4             sass_0.4.5               
- [61] locfit_1.5-9.7            utf8_1.2.3               
- [63] tidyselect_1.2.0          rlang_1.1.0              
- [65] RTriangle_1.6-0.12        later_1.3.0              
- [67] munsell_0.5.0             cachem_1.0.7             
- [69] cli_3.6.1                 generics_0.1.3           
- [71] ggridges_0.5.4            evaluate_0.20            
- [73] fastmap_1.1.1             fftwtools_0.9-11         
- [75] yaml_2.3.7                bit64_4.0.5              
- [77] processx_3.8.0            knitr_1.42               
- [79] fs_1.6.1                  tidygraph_1.2.3          
- [81] ggraph_2.1.0              sparseMatrixStats_1.10.0 
- [83] whisker_0.4.1             mime_0.12                
- [85] R.oo_1.25.0               concaveman_1.1.0         
- [87] compiler_4.2.2            rstudioapi_0.14          
- [89] beeswarm_0.4.0            png_0.1-8                
- [91] e1071_1.7-13              tweenr_2.0.2.9000        
- [93] bslib_0.4.2               stringi_1.7.12           
- [95] ps_1.7.3                  lattice_0.20-45          
- [97] Matrix_1.5-3              classInt_0.4-9           
- [99] vctrs_0.6.1               pillar_1.9.0             
-[101] lifecycle_1.0.3           rhdf5filters_1.10.1      
-[103] jquerylib_0.1.4           BiocNeighbors_1.16.0     
-[105] cowplot_1.1.1             data.table_1.14.8        
-[107] bitops_1.0-7              raster_3.6-20            
-[109] httpuv_1.6.9              R6_2.5.1                 
-[111] promises_1.2.0.1          KernSmooth_2.23-20       
-[113] gridExtra_2.3             vipor_0.4.5              
-[115] codetools_0.2-18          MASS_7.3-58.3            
-[117] rhdf5_2.42.0              rprojroot_2.0.3          
-[119] rjson_0.2.21              withr_2.5.0              
-[121] GenomeInfoDbData_1.2.9    parallel_4.2.2           
-[123] hms_1.1.3                 terra_1.7-18             
-[125] grid_4.2.2                beachmat_2.14.0          
-[127] class_7.3-20              rmarkdown_2.21           
-[129] DelayedMatrixStats_1.20.0 distances_0.1.9          
-[131] git2r_0.31.0              sf_1.0-12                
-[133] getPass_0.2-2             ggforce_0.4.1            
-[135] shiny_1.7.4               ggbeeswarm_0.7.1         </code></pre>
+ [55] RColorBrewer_1.1-3        ellipsis_0.3.2           
+ [57] pkgconfig_2.0.3           R.methodsS3_1.8.2        
+ [59] farver_2.1.1              scuttle_1.8.4            
+ [61] sass_0.4.5                locfit_1.5-9.7           
+ [63] utf8_1.2.3                labeling_0.4.2           
+ [65] tidyselect_1.2.0          rlang_1.1.0              
+ [67] RTriangle_1.6-0.12        later_1.3.0              
+ [69] munsell_0.5.0             tools_4.2.2              
+ [71] cachem_1.0.7              cli_3.6.1                
+ [73] generics_0.1.3            evaluate_0.20            
+ [75] stringr_1.5.0             fastmap_1.1.1            
+ [77] fftwtools_0.9-11          yaml_2.3.7               
+ [79] bit64_4.0.5               processx_3.8.0           
+ [81] knitr_1.42                fs_1.6.1                 
+ [83] tidygraph_1.2.3           purrr_1.0.1              
+ [85] ggraph_2.1.0              sparseMatrixStats_1.10.0 
+ [87] whisker_0.4.1             mime_0.12                
+ [89] R.oo_1.25.0               concaveman_1.1.0         
+ [91] compiler_4.2.2            rstudioapi_0.14          
+ [93] beeswarm_0.4.0            png_0.1-8                
+ [95] e1071_1.7-13              tibble_3.2.1             
+ [97] tweenr_2.0.2.9000         bslib_0.4.2              
+ [99] stringi_1.7.12            highr_0.10               
+[101] ps_1.7.3                  cytomapper_1.11.2        
+[103] lattice_0.20-45           Matrix_1.5-3             
+[105] classInt_0.4-9            vctrs_0.6.1              
+[107] pillar_1.9.0              lifecycle_1.0.3          
+[109] rhdf5filters_1.10.1       jquerylib_0.1.4          
+[111] BiocNeighbors_1.16.0      data.table_1.14.8        
+[113] bitops_1.0-7              raster_3.6-20            
+[115] httpuv_1.6.9              R6_2.5.1                 
+[117] promises_1.2.0.1          KernSmooth_2.23-20       
+[119] gridExtra_2.3             vipor_0.4.5              
+[121] codetools_0.2-18          MASS_7.3-58.3            
+[123] rhdf5_2.42.0              rprojroot_2.0.3          
+[125] rjson_0.2.21              withr_2.5.0              
+[127] GenomeInfoDbData_1.2.9    hms_1.1.3                
+[129] parallel_4.2.2            EBImage_4.40.0           
+[131] terra_1.7-18              grid_4.2.2               
+[133] beachmat_2.14.0           class_7.3-20             
+[135] tidyr_1.3.0               rmarkdown_2.21           
+[137] DelayedMatrixStats_1.20.0 distances_0.1.9          
+[139] git2r_0.31.0              sf_1.0-12                
+[141] getPass_0.2-2             ggforce_0.4.1            
+[143] shiny_1.7.4               ggbeeswarm_0.7.1         </code></pre>
 </div>
 </div>
 

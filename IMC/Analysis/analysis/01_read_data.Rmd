@@ -52,14 +52,15 @@ These will be added to the cell-level metadata.
 
 ```{r clean-meta}
 meta <- read.csv("data/sample_metadata.csv")
+meta$patient_id <- as.character(meta$patient_id)
 
-cell_meta <- merge(colData(sce), meta, 
-                   by = "patient_id", sort = FALSE)
+cell_meta <- left_join(as.data.frame(colData(sce)), meta, 
+                   by = "patient_id")
 
 all.equal(paste(cell_meta$image, cell_meta$ObjectNumber), 
           paste(sce$image, sce$ObjectNumber))
 
-colData(sce) <- cell_meta
+colData(sce) <- as(cell_meta, "DataFrame")
 
 sce$ROI <- sub("_", "", str_extract(sce$image, "_00[1-9]"))
 ```

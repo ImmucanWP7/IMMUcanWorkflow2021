@@ -16,10 +16,108 @@ In this script, we will try to rescue some of the neutrophil annotations.
 
 ## Read in the data
 
-```{r define-colors}
+```{r load-data, message=FALSE}
 library(SingleCellExperiment)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
 ```
 
+## Observe the distribution of CD15 and CK
+
+```{r, message=FALSE}
+library(ggplot2)
+library(imcRtools)
+
+cur_sce <- sce[,sce$matched_celltype %in% c("Tumor", "Tumor_CD15", "Neutrophil")]
+
+cur_df <- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score normalized")
+
+cur_df <- as.data.frame(cbind(t(assay(cur_sce, "raw")), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score raw")
+```
+
+## Visualize image with neutrophil issue
+
+```{r}
+cur_sce <- sce[,sce$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_005"]
+
+cur_df <- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score normalized")
+
+cur_df <- as.data.frame(cbind(t(assay(cur_sce, "raw")), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score raw")
+
+plotSpatial(cur_sce, node_color_by = "celltype", img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"))
+```
+
+## Compare against image with real CD15 Tumor expression
+
+Example 1
+
+```{r}
+cur_sce <- sce[,sce$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001"]
+
+cur_df <- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score normalized")
+
+cur_df <- as.data.frame(cbind(t(assay(cur_sce, "raw")), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score raw")
+```
+
+Example 2
+
+```{r}
+cur_sce <- sce[,sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005"]
+
+cur_df <- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score normalized")
+
+cur_df <- as.data.frame(cbind(t(assay(cur_sce, "raw")), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score raw")
+```
+
+Example 3
+
+This one is a correctly annotated mix of Neutrophils and CD15+ Tumor.
+
+```{r}
+cur_sce <- sce[,sce$sample_id == "IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_001"]
+
+cur_df <- as.data.frame(cbind(t(counts(cur_sce)), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score normalized")
+
+cur_df <- as.data.frame(cbind(t(assay(cur_sce, "raw")), colData(cur_sce))) 
+
+ggplot(cur_df) + 
+  geom_point(aes(CD15, CK, color = celltype)) +
+  ggtitle("Score raw")
+```
 
