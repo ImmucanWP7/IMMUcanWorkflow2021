@@ -366,7 +366,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -377,8 +377,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -387,13 +387,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-04-03
+<strong>Last updated:</strong> 2023-04-27
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -416,21 +416,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -521,15 +518,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treed077ceb81a9f1d5ff3a9c9cadddf59b1df2231c7targetblankd077ceba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec5834d2eb33e5d84c258f48ef1f62f340d0ad6d1targetblankc5834d2a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/d077ceb81a9f1d5ff3a9c9cadddf59b1df2231c7" target="_blank">d077ceb</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c5834d2eb33e5d84c258f48ef1f62f340d0ad6d1" target="_blank">c5834d2</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treed077ceb81a9f1d5ff3a9c9cadddf59b1df2231c7targetblankd077ceba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treec5834d2eb33e5d84c258f48ef1f62f340d0ad6d1targetblankc5834d2a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +536,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/d077ceb81a9f1d5ff3a9c9cadddf59b1df2231c7" target="_blank">d077ceb</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/c5834d2eb33e5d84c258f48ef1f62f340d0ad6d1" target="_blank">c5834d2</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,6 +558,7 @@ Ignored files:
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    IMC/Analysis/analysis/figure/
     Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
     Ignored:    comparisons/code/.DS_Store
@@ -571,15 +569,35 @@ Ignored files:
     Ignored:    mIF/Analysis/docs/.DS_Store
     Ignored:    mIF/Processing/.DS_Store
 
-Untracked files:
-    Untracked:  mIF/Analysis/docs/02_rescue_neutrophils.html
-    Untracked:  mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/
-    Untracked:  mIF/Analysis/docs/site_libs/header-attrs-2.21/
-
 Unstaged changes:
-    Modified:   IMC/Analysis/analysis/01_read_data.Rmd
+    Modified:   IMC/Analysis/analysis/04_sample_correction.Rmd
     Modified:   IMC/Analysis/analysis/05_predict_celltypes.Rmd
-    Modified:   mIF/Analysis/analysis/02_rescue_neutrophils.Rmd
+    Modified:   comparisons/analysis/03_spatial_comparison.Rmd
+    Modified:   comparisons/code/napari_comparison.ipynb
+    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
+    Deleted:    mIF/Analysis/docs/02_rescue_neutrophils.html
+    Deleted:    mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png
+    Deleted:    mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/cell-numbers-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/cell-size-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/dimred-viz-expression-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/dimred-viz-patient-indication-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/dimred-viz-patient-indication-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/dimred-viz-patient-indication-3.png
+    Deleted:    mIF/Analysis/docs/figure/02_quality_control.Rmd/expression-differences-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-1-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-1-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-2-3.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-3-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-3-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-4-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-4-2.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-5-1.png
+    Deleted:    mIF/Analysis/docs/figure/02_rescue_neutrophils.Rmd/unnamed-chunk-5-2.png
+    Deleted:    mIF/Analysis/docs/figure/zzz_read_data.Rmd/buildSpatialGraph-1.png
+    Deleted:    mIF/Analysis/docs/index.html
 
 </code></pre>
 <p>
@@ -626,6 +644,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c5834d2eb33e5d84c258f48ef1f62f340d0ad6d1/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">c5834d2</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-04-03
+</td>
+<td>
+Recompiled with new classifier
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/c5834d2eb33e5d84c258f48ef1f62f340d0ad6d1/IMC/Analysis/docs/01_read_data.html" target="_blank">c5834d2</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-04-03
+</td>
+<td>
+Recompiled with new classifier
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1057,7 +1109,7 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.2 (2022-10-31)
+<pre><code>R version 4.2.3 (2023-03-15)
 Platform: x86_64-apple-darwin17.0 (64-bit)
 Running under: macOS Big Sur ... 10.16
 
@@ -1075,7 +1127,7 @@ attached base packages:
 other attached packages:
  [1] cytomapper_1.11.2           EBImage_4.40.0             
  [3] RColorBrewer_1.1-3          dittoSeq_1.10.0            
- [5] imcRtools_1.4.2             SpatialExperiment_1.8.1    
+ [5] imcRtools_1.5.5             SpatialExperiment_1.8.1    
  [7] lubridate_1.9.2             forcats_1.0.0              
  [9] stringr_1.5.0               dplyr_1.1.1                
 [11] purrr_1.0.1                 readr_2.1.4                
@@ -1132,7 +1184,7 @@ loaded via a namespace (and not attached):
  [81] ggraph_2.1.0              sparseMatrixStats_1.10.0 
  [83] whisker_0.4.1             mime_0.12                
  [85] R.oo_1.25.0               concaveman_1.1.0         
- [87] compiler_4.2.2            rstudioapi_0.14          
+ [87] compiler_4.2.3            rstudioapi_0.14          
  [89] beeswarm_0.4.0            png_0.1-8                
  [91] e1071_1.7-13              tweenr_2.0.2.9000        
  [93] bslib_0.4.2               stringi_1.7.12           
@@ -1146,13 +1198,13 @@ loaded via a namespace (and not attached):
 [109] httpuv_1.6.9              R6_2.5.1                 
 [111] promises_1.2.0.1          KernSmooth_2.23-20       
 [113] gridExtra_2.3             vipor_0.4.5              
-[115] codetools_0.2-18          MASS_7.3-58.3            
+[115] codetools_0.2-19          MASS_7.3-58.3            
 [117] rhdf5_2.42.0              rprojroot_2.0.3          
 [119] rjson_0.2.21              withr_2.5.0              
-[121] GenomeInfoDbData_1.2.9    parallel_4.2.2           
+[121] GenomeInfoDbData_1.2.9    parallel_4.2.3           
 [123] hms_1.1.3                 terra_1.7-18             
-[125] grid_4.2.2                beachmat_2.14.0          
-[127] class_7.3-20              rmarkdown_2.21           
+[125] grid_4.2.3                beachmat_2.14.0          
+[127] class_7.3-21              rmarkdown_2.21           
 [129] DelayedMatrixStats_1.20.0 distances_0.1.9          
 [131] git2r_0.31.0              sf_1.0-12                
 [133] getPass_0.2-2             ggforce_0.4.1            

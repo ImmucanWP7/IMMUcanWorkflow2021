@@ -32,13 +32,14 @@ sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC
 images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
 masks <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
 ```
+
 ## Prediction based on external pre-trained classifier
 
 Here, we will use a pre-trained classifier to predict cell types.
 We will first adjust the data to match to the classifier
 
 ```{r, message=FALSE}
-rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/cell_classification/classifier_v2/rf_images_DCfix.rds")
+rffit <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/cell_classification/classifier_v3/rf_images_DCfix.rds")
 
 sce$Indication <- sce$indication
 
@@ -151,6 +152,21 @@ dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
                                      indication = metadata(sce)$color_vectors$Indication),
             heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
             breaks = seq(-3, 3, length.out = 101))
+```
+
+## Define TLS
+
+```{r, fig.width=20, fig.height=20}
+library(imcRtools)
+
+sce <- patchDetection(sce, patch_cells = sce$celltype %in% c("Bcell", "BnTcell"), 
+                      colPairName = "neighborhood", min_patch_size = 25, 
+                      expand_by = 10, img_id = "sample_id", name = "CD20_patches")
+
+plotSpatial(sce, img_id = "sample_id", node_color_by = "celltype", node_size_fix = 0.5) + 
+  scale_color_manual(values = metadata(sce)$color_vectors$celltype)
+
+plotSpatial(sce, img_id = "sample_id", node_color_by = "CD20_patches", node_size_fix = 0.5) 
 ```
 
 ### Write out example images

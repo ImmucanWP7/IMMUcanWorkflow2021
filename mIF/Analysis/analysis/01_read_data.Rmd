@@ -86,6 +86,20 @@ assay(sce, "exprs") <- log(counts(sce))
 
 # Add phenotype labels
 cur_key <- as.data.frame(read_csv("~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv"))
+cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c+CD20+CD163+","celltype"] <- "MacCD163"
+cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c+CD20+CD163+","celltype"] <- "MacCD163"
+cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c-CD20+CD163+","celltype"] <- "MacCD163"
+cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c-CD20+CD163+","celltype"] <- "MacCD163"
+cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c-CD20+CD163-","celltype"] <- "Tumor_CD15"
+cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c-CD20+CD163-","celltype"] <- "Tumor"
+
+cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c+CD20+CD163+","celltype"] <- "T"
+cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c+CD20+CD163+","celltype"] <- "T"
+cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
+cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
+cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
+cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
+
 
 rownames(cur_key) <- cur_key$phenotype
 
@@ -156,7 +170,7 @@ cur_sces <- lapply(cur_sces, function(x){
 sce <- do.call("cbind", cur_sces)
 
 # Transform counts
-assay(sce, "exprs") <- log(counts(sce))
+assay(sce, "exprs") <- asinh(counts(sce))
 
 metadata(sce)$color_vectors <- color_vectors
 ```

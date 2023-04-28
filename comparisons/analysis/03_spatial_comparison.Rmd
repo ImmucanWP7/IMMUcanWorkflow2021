@@ -94,3 +94,44 @@ ggplot(as.data.frame(merged)) +
   theme_classic(base_size = 20) + xlab("Interactions in IMC") + ylab("Interactions in mIF") +
   facet_grid(from_label.x~to_label.x, scales = "free") 
 ```
+
+## Interaction testing
+
+IMC
+
+```{r}
+library(BiocParallel)
+out <- testInteractions(sce_IMC, 
+                        group_by = "sample_id", 
+                        label = "matched_celltype", 
+                        colPairName = "expansion_20", 
+                        BPPARAM = SerialParam(RNGseed = 1234))
+
+library(scales)
+
+out %>% as_tibble() %>%
+    group_by(from_label, to_label) %>%
+    summarize(sum_sigval = sum(sigval, na.rm = TRUE)) %>%
+    ggplot() +
+        geom_tile(aes(from_label, to_label, fill = sum_sigval)) +
+        scale_fill_gradient2(low = muted("blue"), mid = "white", high = muted("red")) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+IF
+
+```{r}
+out2 <- testInteractions(sce_IF, 
+                        group_by = "sample_id", 
+                        label = "matched_celltype", 
+                        colPairName = "expansion_40", 
+                        BPPARAM = SerialParam(RNGseed = 1234))
+
+out2 %>% as_tibble() %>%
+    group_by(from_label, to_label) %>%
+    summarize(sum_sigval = sum(sigval, na.rm = TRUE)) %>%
+    ggplot() +
+        geom_tile(aes(from_label, to_label, fill = sum_sigval)) +
+        scale_fill_gradient2(low = muted("blue"), mid = "white", high = muted("red")) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
