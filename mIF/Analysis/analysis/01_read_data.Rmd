@@ -49,33 +49,43 @@ cur_table <- read_csv("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKF
 # Read in data
 cur_sces <- lapply(seq_along(cur_files), function(x){
   cur_data <- read.csv(cur_files[x], sep = "\t")
+  cur_data_2 <- read.csv(cur_files_2[x], sep = "\t")
+  
+  stopifnot(all.equal(cur_data$cell.ID, cur_data_2$cell.ID))
+  
+  cur_data <- cbind(cur_data, cur_data_2[,c("cell.area", "TLS.ID")])
+  
   cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
   cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  
   rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
                                                          simplify = TRUE)[,1]
   cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
                                                 raw = cur_raw))
+  
   colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
   colData(cur_sce)$Lausanne_id <- str_split(str_split(cur_files[x], "/", simplify = TRUE)[,11], "_#_", simplify = TRUE)[,1]
   colData(cur_sce)$Lausanne_id <- unlist(lapply(str_split(colData(cur_sce)$Lausanne_id, "-"), function(y){paste(y[1:3], collapse = "-")}))
   colData(cur_sce)$sample_id <- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id), cur_table$mIF)])
   colData(cur_sce)$patient_id <- as.character(colData(cur_sce)$sample_id)
   
-  # Secondary data
-  cur_data_2 <- read.csv(cur_files_2[x], sep = "\t")
-  
-  stopifnot(all.equal(cur_sce$cell.ID, cur_data_2$cell.ID))
-  
-  cur_cd <- cbind(colData(cur_sce), cur_data_2[,c("cell.area", "TLS.ID")])
-  
-  colData(cur_sce) <- cur_cd
-  
   return(cur_sce)
 })
 
-cur_colnames <- Reduce(intersect, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- unique(cur_colnames)
 cur_sces <- lapply(cur_sces, function(x){
-  colData(x) <- colData(x)[,cur_colnames]
+  
+  cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
+  colnames(cur_cd) <- cur_colnames
+  
+  cur_cd[colnames(colData(x))] <- colData(x)
+  
+  stopifnot(all.equal(cur_cd$cell.ID, x$cell.ID))
+  
+  colData(x) <- cur_cd
   return(x)
 })
 
@@ -99,7 +109,6 @@ cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
 cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
 cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
 cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
-
 
 rownames(cur_key) <- cur_key$phenotype
 
@@ -135,8 +144,12 @@ cur_files <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lau
 
 cur_sces <- lapply(cur_files, function(x){
   cur_data <- read.csv(x, sep = "\t")
+  
   cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
   cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  
   rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
                                                          simplify = TRUE)[,1]
   cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
@@ -155,22 +168,31 @@ cur_sces <- lapply(cur_files, function(x){
   stopifnot(all.equal(cur_sce$phenotype, cur_df$phenotype))
   stopifnot(all.equal(cur_sce$cell.ID, cur_df$cell.ID))
   
-  # Transfer cell area and TLS id
-  colData(cur_sce) <- cbind(colData(cur_sce), cur_df[,c("cell.area", "TLS.ID")])
+  # Transfer more information
+  colData(cur_sce) <- cbind(colData(cur_sce), cur_df[,c("cell.area", "TLS.ID", "Lausanne_id")])
   
   return(cur_sce)
 })
 
-cur_colnames <- Reduce(intersect, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- unique(cur_colnames)
 cur_sces <- lapply(cur_sces, function(x){
-  colData(x) <- colData(x)[,cur_colnames]
+  
+  cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
+  colnames(cur_cd) <- cur_colnames
+  
+  cur_cd[colnames(colData(x))] <- colData(x)
+  
+  stopifnot(all.equal(cur_cd$cell.ID, x$cell.ID))
+  
+  colData(x) <- cur_cd
   return(x)
 })
 
 sce <- do.call("cbind", cur_sces)
 
 # Transform counts
-assay(sce, "exprs") <- asinh(counts(sce))
+assay(sce, "exprs") <- log(counts(sce))
 
 metadata(sce)$color_vectors <- color_vectors
 ```
@@ -191,7 +213,7 @@ sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 
 ### Add interaction graph
 
-Finally, we will add a 20µm expansion interaction graph.
+Finally, we will add a 20µm and 30µm expansion interaction graph.
 
 ```{r buildSpatialGraph, message=FALSE, fig.height=12, fig.width=12}
 library(imcRtools)
@@ -224,8 +246,44 @@ saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/R
 
 ### Read images
 
+Here, we read in the single-channel images and create multi-channel images.
+
 ```{r, message=FALSE}
+library(EBImage)
+library(tiff)
 library(cytomapper)
+
+cur_path <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+if (!dir.exists(cur_path)) dir.create(cur_path)
+
+cur_folders <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+                          full.names = TRUE)
+
+for (i in seq_along(cur_folders)) {
+    if (length(list.files(cur_folders[i], pattern = "ROI_image.*.rds")) == 0) {
+        stop("Missing images.")
+    }
+    
+    if (!all.equal(list.files(cur_folders[i], pattern = "ROI_image.*.rds"),
+                   c("ROI_image_autofluorescence.rds", "ROI_image_CD11c.rds", "ROI_image_CD15.rds", 
+          "ROI_image_CD163.rds", "ROI_image_CD20.rds", "ROI_image_CD3.rds", 
+          "ROI_image_CK.rds", "ROI_image_DAPI.rds"))) {
+        stop("Wrong channel order")
+    }
+    
+    cur_channels <- lapply(list.files(cur_folders[i], 
+                                     pattern = "ROI_image.*.rds",
+                                     full.names = TRUE),
+                          function(x) {
+                              return(readRDS(x))
+                          })
+    
+    cur_channels <- abind(cur_channels, along = 3)
+    
+    writeImage(as.array(cur_channels)/(2^16 - 1), paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+                                    basename(cur_folders[i]), ".tiff"),
+               bits.per.sample = 16)
+}
 
 images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", as.is = TRUE)
 
@@ -236,5 +294,4 @@ mcols(images) <- DataFrame(image = names(images),
 
 saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 ```
-
 
