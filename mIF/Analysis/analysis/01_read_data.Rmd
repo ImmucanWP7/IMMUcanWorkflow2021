@@ -23,13 +23,18 @@ library(RColorBrewer)
 
 color_vectors <- list()
 matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tcell", "Neutrophil", "MacCD163",
-                               "other", "DC", "Bcell", "BnTcell"))
+                             c("Tumor", "T", "Neutrophil", "MacCD163",
+                               "other", "DC", "B", "BnT"))
 patient_id <- setNames(brewer.pal(10, "Set3"),
                        c("10082495", "10067433", "10074349", "10075572", "10068868", 
                          "10073140", "10075371", "10061074", "10071582", "10074832"))
-color_vectors$matched_celltype <- matched_celltype
+
+col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
+                        BCC = "#3F85A7", RCC = "#C81F43")
+
 color_vectors$patient_id <- patient_id
+color_vectors$Indication <- col_vec_indication
+color_vectors$matched_celltype <- matched_celltype
 ```
 
 ## Read whole slide data
@@ -115,9 +120,6 @@ rownames(cur_key) <- cur_key$phenotype
 sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
-sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
-sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
-sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
 sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 
 sce$indication <- sce$Lausanne_id
@@ -193,6 +195,11 @@ sce <- do.call("cbind", cur_sces)
 
 # Transform counts
 assay(sce, "exprs") <- log(counts(sce))
+
+col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
+names(col_vec_ROIs) <- unique(sce$ROI)
+
+color_vectors$ROIs <- col_vec_ROIs
 
 metadata(sce)$color_vectors <- color_vectors
 ```

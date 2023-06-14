@@ -375,7 +375,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-06-13
+<strong>Last updated:</strong> 2023-06-14
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -509,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree9a600178d9c4577de6eccf001afee6ef6c33fbc4targetblank9a60017a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/9a600178d9c4577de6eccf001afee6ef6c33fbc4" target="_blank">9a60017</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree9a600178d9c4577de6eccf001afee6ef6c33fbc4targetblank9a60017a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/9a600178d9c4577de6eccf001afee6ef6c33fbc4" target="_blank">9a60017</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -549,6 +549,7 @@ Ignored files:
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    IMC/Analysis/analysis/figure/
     Ignored:    IMC/Analysis/docs/.DS_Store
     Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
@@ -559,8 +560,13 @@ Ignored files:
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
 
+Untracked files:
+    Untracked:  IMC/Analysis/docs/site_libs/header-attrs-2.22/
+    Untracked:  IMC/Analysis/docs/site_libs/jqueryui-1.13.2/
+
 Unstaged changes:
-    Modified:   IMC/Analysis/analysis/05_predict_celltypes.Rmd
+    Modified:   IMC/Analysis/docs/01_read_data.html
+    Modified:   IMC/Analysis/docs/site_libs/navigation-1.1/codefolding.js
     Modified:   mIF/Analysis/analysis/01_read_data.Rmd
 
 </code></pre>
@@ -608,6 +614,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/5dc7901fbbcf8246ffefd31ae50f63f29f597136/mIF/Analysis/analysis/01_read_data.Rmd" target="_blank">5dc7901</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Recompiled script
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/5dc7901fbbcf8246ffefd31ae50f63f29f597136/mIF/Analysis/docs/01_read_data.html" target="_blank">5dc7901</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Recompiled script
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -947,13 +987,18 @@ IFQuant.</p>
 
 color_vectors &lt;- list()
 matched_celltype &lt;- setNames(c(&quot;coral3&quot;, &quot;chartreuse3&quot;, &quot;cyan2&quot;, &quot;darkgoldenrod2&quot;, &quot;grey75&quot;, &quot;#DC6FE2&quot;, &quot;#BF0A3D&quot;, &quot;#F4800C&quot;),
-                             c(&quot;Tumor&quot;, &quot;Tcell&quot;, &quot;Neutrophil&quot;, &quot;MacCD163&quot;,
-                               &quot;other&quot;, &quot;DC&quot;, &quot;Bcell&quot;, &quot;BnTcell&quot;))
+                             c(&quot;Tumor&quot;, &quot;T&quot;, &quot;Neutrophil&quot;, &quot;MacCD163&quot;,
+                               &quot;other&quot;, &quot;DC&quot;, &quot;B&quot;, &quot;BnT&quot;))
 patient_id &lt;- setNames(brewer.pal(10, &quot;Set3&quot;),
                        c(&quot;10082495&quot;, &quot;10067433&quot;, &quot;10074349&quot;, &quot;10075572&quot;, &quot;10068868&quot;, 
                          &quot;10073140&quot;, &quot;10075371&quot;, &quot;10061074&quot;, &quot;10071582&quot;, &quot;10074832&quot;))
-color_vectors$matched_celltype &lt;- matched_celltype
-color_vectors$patient_id &lt;- patient_id</code></pre>
+
+col_vec_indication &lt;- c(CRC = &quot;#5B1C55&quot;, SCCHN = &quot;#39BEB4&quot;, NSCLC = &quot;#F79C1D&quot;, 
+                        BCC = &quot;#3F85A7&quot;, RCC = &quot;#C81F43&quot;)
+
+color_vectors$patient_id &lt;- patient_id
+color_vectors$Indication &lt;- col_vec_indication
+color_vectors$matched_celltype &lt;- matched_celltype</code></pre>
 </div>
 <div id="read-whole-slide-data" class="section level2">
 <h2>Read whole slide data</h2>
@@ -1036,9 +1081,6 @@ rownames(cur_key) &lt;- cur_key$phenotype
 sce$celltype &lt;- cur_key[sce$phenotype,2]
 sce$matched_celltype &lt;- sce$celltype
 sce$matched_celltype[grepl(&quot;Tumor&quot;, sce$matched_celltype)] &lt;- &quot;Tumor&quot;
-sce$matched_celltype[sce$matched_celltype == &quot;T&quot;] &lt;- &quot;Tcell&quot;
-sce$matched_celltype[sce$matched_celltype == &quot;B&quot;] &lt;- &quot;Bcell&quot;
-sce$matched_celltype[sce$matched_celltype == &quot;BnT&quot;] &lt;- &quot;BnTcell&quot;
 sce$matched_celltype[sce$matched_celltype == &quot;Stromal_cell&quot;] &lt;- &quot;other&quot;
 
 sce$indication &lt;- sce$Lausanne_id
@@ -1113,6 +1155,11 @@ sce &lt;- do.call(&quot;cbind&quot;, cur_sces)
 # Transform counts
 assay(sce, &quot;exprs&quot;) &lt;- log(counts(sce))
 
+col_vec_ROIs &lt;- colorRampPalette(c(&quot;dark green&quot;, &quot;white&quot;, &quot;dark red&quot;))(length(unique(sce$ROI)))
+names(col_vec_ROIs) &lt;- unique(sce$ROI)
+
+color_vectors$ROIs &lt;- col_vec_ROIs
+
 metadata(sce)$color_vectors &lt;- color_vectors</code></pre>
 <div id="cell-type-annotation" class="section level3">
 <h3>Cell type annotation</h3>
@@ -1163,6 +1210,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/5dc7901fbbcf8246ffefd31ae50f63f29f597136/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png" target="_blank">5dc7901</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/de85ab77a796e708e49dc09472e2ff22fd5c4fed/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png" target="_blank">de85ab7</a>
@@ -1226,6 +1284,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/5dc7901fbbcf8246ffefd31ae50f63f29f597136/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png" target="_blank">5dc7901</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/de85ab77a796e708e49dc09472e2ff22fd5c4fed/mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png" target="_blank">de85ab7</a>
