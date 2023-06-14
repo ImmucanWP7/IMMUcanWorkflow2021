@@ -41,14 +41,14 @@ no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
   summarize(count = n())
 
 combined_df <- merge(no_IMC, no_mIF, by="sample_id", sort=FALSE)
-combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
 
 ggplot(combined_df) + 
   geom_point(aes(count.x, count.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
   theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
-  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+  coord_fixed()
 
 # With patient as covariate
 ggplot(combined_df) + 
@@ -57,71 +57,82 @@ ggplot(combined_df) +
   geom_smooth(aes(count.x, count.y, color = patient_id), method='lm', formula= y~x,
               fullrange=FALSE, se= FALSE) + 
   theme_minimal() + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
-  xlim(c(1000, 4500)) + ylim(c(1000, 4500))
+  coord_fixed()
 ```
 
 ## Cell type fractions
 
 Next, we will compare the cell type fractions between the technologies.
 
-```{r celltype-fractions, fig.width=10, fig.height=10}
+```{r celltype-fractions, fig.width=12, fig.height=16}
 # Match cell types
 cur_mIF <- colData(sce_mIF)
-mIF_celltypes <- cur_mIF$celltype
-mIF_celltypes[grepl("Tumor", mIF_celltypes)] <- "Tumor"
-mIF_celltypes[is.na(mIF_celltypes)] <- "Tcell"
-cur_mIF$celltype <- factor(mIF_celltypes)
-
 cur_IMC <- colData(sce_IMC)
-IMC_celltypes <- cur_IMC$celltypes
-IMC_celltypes[IMC_celltypes %in% c("CD38", "HLADR", "Stroma", "pDC", "NK_cell")] <- "other"
-IMC_celltypes[IMC_celltypes %in% c("Treg", "CD4", "CD8")] <- "Tcell"
-IMC_celltypes[IMC_celltypes %in% c("BnCD4", "BnCD8")] <- "BnTcell"
-IMC_celltypes[IMC_celltypes == "B_cell"] <- "Bcell"
-cur_IMC$celltype <- factor(IMC_celltypes)
+
+cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
+cur_mIF$matched_celltype <- as.factor(cur_mIF$matched_celltype)
+cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
+cur_IMC$matched_celltype <- as.factor(cur_IMC$matched_celltype)
 
 frac_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, celltype, .drop = FALSE) %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
 frac_mIF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, celltype, .drop = FALSE) %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
-combined_df <- merge(frac_IMC, frac_mIF, by=c("sample_id", "celltype"), sort=FALSE)
-combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+combined_df <- merge(frac_IMC, frac_mIF, by=c("sample_id", "matched_celltype"), sort=FALSE)
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+combined_df$ROI <- sub("_", "", str_extract(combined_df$sample_id, "_00[1-9]"))
 
 ggplot(combined_df) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
   theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
-  facet_wrap(.~celltype, scales = "fixed") 
+  facet_wrap(.~matched_celltype, scales = "fixed") 
+
+ggplot(combined_df) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(frac.x, frac.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") +
+  facet_wrap(.~matched_celltype, scales = "free") 
 
 ggplot(combined_df) + 
   geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
-  facet_wrap(.~celltype, scales = "free") 
+  facet_wrap(.~matched_celltype, scales = "free") +
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id)
+
+ggplot(combined_df) + 
+  geom_smooth(aes(frac.x, frac.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = ROI)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  theme_classic(base_size = 20) + xlab("Fraction cell types in IMC") + ylab("Fraction cell types in mIF") + 
+  facet_wrap(.~matched_celltype, scales = "free") +
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id))
 ```
 
 We will also now compute the correlation coefficients.
 
 ```{r correlation}
 combined_df %>%
-  group_by(celltype) %>%
+  group_by(matched_celltype) %>%
   mutate(cor_all = cor(frac.x, frac.y)) %>%
   ungroup() %>%
-  group_by(celltype, patient_id) %>%
+  group_by(matched_celltype, patient_id) %>%
   summarize(cor = cor(frac.x, frac.y),
             cor_all = mean(cor_all)) %>%
   ggplot() +
-    geom_boxplot(aes(celltype, cor)) +
-    geom_point(aes(celltype, cor, color = patient_id)) +
-    geom_point(aes(celltype, cor_all), color = "dark red", size = 3) +
+    geom_boxplot(aes(matched_celltype, cor)) +
+    geom_point(aes(matched_celltype, cor, color = patient_id)) +
+    geom_point(aes(matched_celltype, cor_all), color = "dark red", size = 3) +
     theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
@@ -132,29 +143,29 @@ We will now compare the absolute number of detected cell types.
 
 ```{r, fig.width=10, fig.height=10}
 abs_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, celltype, .drop = FALSE) %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) 
 
 abs_mIF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, celltype, .drop = FALSE) %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) 
 
-combined_df <- merge(abs_IMC, abs_mIF, by=c("sample_id", "celltype"), sort=FALSE)
-combined_df$patient_id <- str_extract(combined_df$sample_id, "[0-9]{8}")
+combined_df <- merge(abs_IMC, abs_mIF, by=c("sample_id", "matched_celltype"), sort=FALSE)
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
 
 ggplot(combined_df) + 
   geom_point(aes(count.x, count.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
   theme_classic(base_size = 20) + xlab("Absolute cell types in IMC") + ylab("Absolute cell types in mIF") +
-  facet_wrap(.~celltype, scales = "fixed") 
+  facet_wrap(.~matched_celltype, scales = "fixed") 
 
 ggplot(combined_df) + 
   geom_smooth(aes(count.x, count.y, color = patient_id),  se = FALSE, method='lm', formula= y~x, fullrange=TRUE) + 
   geom_point(aes(count.x, count.y, color = patient_id)) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   theme_classic(base_size = 20) + xlab("Absolute cell types in IMC") + ylab("Absolute cell types in mIF") + 
-  facet_wrap(.~celltype, scales = "free") 
+  facet_wrap(.~matched_celltype, scales = "free") 
 ```
 
 ## Perform differential abundance analysis
@@ -167,28 +178,31 @@ library(edgeR)
 library(ggrepel)
 
 abundances_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, celltype) %>%
+  group_by(sample_id, matched_celltype) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = sample_id, 
               values_from = count, values_fill = 0) %>%
   as.data.frame()
-rownames(abundances_IMC) <- abundances_IMC$celltype
-abundances_IMC$celltype <- NULL
+rownames(abundances_IMC) <- abundances_IMC$matched_celltype
+abundances_IMC$matched_celltype <- NULL
 meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
-                       patient_id = str_extract(colnames(abundances_IMC), "[0-9]{8}"),
+                       patient_id = sub("-", "", str_extract(colnames(abundances_IMC), "[0-9]{8}-")),
                        modality = "IMC")
 
 abundances_IF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, celltype) %>%
+  group_by(sample_id, matched_celltype) %>%
   summarize(count = n()) %>%
   pivot_wider(names_from = sample_id, 
               values_from = count, values_fill = 0) %>%
   as.data.frame()
-rownames(abundances_IF) <- abundances_IF$celltype
-abundances_IF$celltype <- NULL
+rownames(abundances_IF) <- abundances_IF$matched_celltype
+abundances_IF$matched_celltype <- NULL
 meta_IF <- data.frame(sample_id = colnames(abundances_IF),
-                       patient_id = str_extract(colnames(abundances_IF), "[0-9]{8}"),
+                       patient_id = sub("-", "", str_extract(colnames(abundances_IMC), "[0-9]{8}-")),
                        modality = "IF")
+
+colnames(abundances_IMC) <- paste(abundances_IMC, "IMC")
+colnames(abundances_IF) <- paste(abundances_IF, "IF")
 
 combined_df <- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
 combined_meta <- rbind(meta_IMC, meta_IF)
@@ -196,7 +210,7 @@ combined_meta <- rbind(meta_IMC, meta_IF)
 # DA testing
 y.ab <- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)
 
-# Define the design matrix for the model: Add Patient ID to the model to account for matched design, add Location to account for different tumor regions, add tissue type as an additive factor
+# Define the design matrix for the model: Add modality to the model to account for matched design
 design <- model.matrix(~sample_id + modality, data = y.ab$samples)
 
 # Estimate NB and QL dispersion
@@ -207,7 +221,7 @@ fit.ab <- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
 summary(fit.ab$var.prior)
 plotQLDisp(fit.ab, cex=1)
 
-# Test for differential abundance of cell types in PT vs met tissue and plot
+# Test for differential abundance of cell types 
 res <- glmQLFTest(fit.ab, coef=colnames(fit.ab)[ncol(fit.ab)])
 summary(decideTests(res))
 DA <- topTags(res)$table
@@ -222,8 +236,8 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   theme_classic()
 
 # MA plot
-ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign)) +
-  geom_label_repel(aes(logCPM, logFC, label = celltype)) + 
+ggplot(DA) + geom_point(aes(logCPM, logFC, color = sign), size = 3) +
+  geom_label_repel(aes(logCPM, logFC, label = celltype), size = 5) + 
   geom_abline(intercept = 0, slope = 0, color = "dark red") +
   theme_classic(base_size = 20)
 ```
@@ -260,6 +274,7 @@ cur_IMC <-  lapply(unique(sce_IMC$sample_id), function(k){
 cur_IMC <- do.call(rbind, cur_IMC)
 
 cur_IF <- lapply(unique(sce_mIF$sample_id), function(k){
+  print(k)
   cur_sce_IF <- sce_mIF[,sce_mIF$sample_id == k]
   assay(cur_sce_IF, "scaled") <- (assay(cur_sce_IF, "exprs") - 
                                      rowMin(assay(cur_sce_IF, "exprs"))) / 
@@ -267,6 +282,7 @@ cur_IF <- lapply(unique(sce_mIF$sample_id), function(k){
                                      rowMin(assay(cur_sce_IF, "exprs")))
   
   cur_aggr_IF <- lapply(rownames(sce_mIF), function(x){
+    print(x)
     cur_marker_IF <- assay(cur_sce_IF, "scaled")[x,]
     cur_out <- aggregate(cur_marker_IF, by = list(ntile(cur_marker_IF, 100)), mean)
     cur_out$marker <- x
@@ -297,7 +313,7 @@ ggplot(combined_df) +
 
 We will next plot the location of celltypes on the images.
 
-```{r, image-viz}
+```{r, image-viz, eval=FALSE}
 library(cytomapper)
 images_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 images_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
@@ -331,13 +347,13 @@ for (i in unique(sce_IMC$sample_id)) {
     # Add points to IMC
     cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
     cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
-    pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/", i, ".pdf"))
+    pdf(file = paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/", i, ".pdf"))
     plot(cur_IMC$images[[1]])
     points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
            col = "white", 
            pch = 16, cex = 1.1)
     points(cur_sce_IMC$Pos_X, cur_sce_IMC$Pos_Y, 
-           col = metadata(cur_sce_IMC)$color_vectors$matched_celltype[cur_sce_IMC$matched_celltype], 
+           col = metadata(cur_sce_IMC)$colour_vectors$matched_celltype[cur_sce_IMC$matched_celltype], 
            pch = 16, cex = 0.9)
     plot(cur_mIF$images[[1]])
     points(cur_sce_mIF$nucleus.x, cur_sce_mIF$nucleus.y, 
@@ -351,7 +367,7 @@ for (i in unique(sce_IMC$sample_id)) {
 }
 
 # Write out legend
-pdf(file = paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/comparisons/images_celltypes/legend.pdf"))
+pdf(file = paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/images_celltypes/legend.pdf"))
 plot(1:8, y = rep(1, 8), col = metadata(sce_IMC)$color_vectors$matched_celltype, pch = 16, cex = 2)
 text(1:8, y = rep(0.8, 8), labels = names(metadata(sce_IMC)$color_vectors$matched_celltype))
 text(2, y = 1.2, labels = "Celltypes")
@@ -359,4 +375,19 @@ plot(1:6, y = rep(1, 6), col = c("red", "green", "blue", "cyan", "magenta", "yel
 text(1:6, y = rep(0.8, 6), labels = c("Ecad", "CD3", "CD20", "CD163", "CD15", "CD11c"))
 text(2, y = 1.2, labels = "Marker expression")
 dev.off()
+```
+
+## Save out data
+
+For cell type comparison I will now write out the x/y cooridnates and cell labels
+for the IMC and mIF data.
+
+```{r}
+for (i in unique(sce_IMC$sample_id)) {
+    cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
+    cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
+   
+    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells//", i, ".tsv"))   
+}
 ```

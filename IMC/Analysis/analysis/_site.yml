@@ -1,14 +1,20 @@
-name: "IMMUcanWorkflow2022"
+name: "IMMUcanWorkflow2022 - IMC analysis"
 output_dir: ../docs
 navbar:
-  title: "IMMUcanWorkflow2022"
+  title: "IMMUcanWorkflow2022 - IMC analysis"
   left:
   - text: Home
     href: index.html
-  - text: About
-    href: about.html
-  - text: License
-    href: license.html
+  - text: Read data
+    href: 01_read_data.html
+  - text: Spillover correction
+    href: 02_spillover_correction.html
+  - text: Quality control
+    href: 03_quality_control.html
+  - text: Sample correction
+    href: 04_sample_correction.html
+  - text: Celltype prediction
+    href: 05_predict_celltypes.html
 output:
   workflowr::wflow_html:
     toc: yes

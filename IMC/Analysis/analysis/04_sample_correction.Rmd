@@ -26,6 +26,7 @@ library(dittoSeq)
 library(scater)
 library(viridis)
 library(DT)
+library(BiocSingular)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```
@@ -72,19 +73,18 @@ We can now visualize the patient IDs and expression on the UMAPs.
 
 ```{r dimred-viz-patient-indication, message=FALSE}
 dittoDimPlot(sce, var = "patient_id", reduction.use = "UMAP_fastMNN", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$PatientIds) +
+    scale_color_manual(values = metadata(sce)$color_vectors$patient_id) +
     ggtitle("Patient ID on UMAP")
 
 dittoDimPlot(sce, var = "indication", reduction.use = "UMAP_fastMNN", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$Indication) +
+    scale_color_manual(values = metadata(sce)$color_vectors$Indication) +
     ggtitle("Patient ID on UMAP")
 ```
 
 ```{r dimred-viz-expression, fig.height=12, fig.width=12}
 multi_dittoDimPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel], 
                    reduction.use = "UMAP_fastMNN", 
-                   assay = "exprs", size = 0.2) +
-    scale_color_viridis() 
+                   assay = "exprs", size = 0.2, color.panel = viridis()) 
 ```
 
 ## Save object

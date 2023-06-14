@@ -52,14 +52,15 @@ These will be added to the cell-level metadata.
 
 ```{r clean-meta}
 meta <- read.csv("data/sample_metadata.csv")
+meta$patient_id <- as.character(meta$patient_id)
 
-cell_meta <- merge(colData(sce), meta, 
-                   by = "patient_id", sort = FALSE)
+cell_meta <- left_join(as.data.frame(colData(sce)), meta, 
+                   by = "patient_id")
 
 all.equal(paste(cell_meta$image, cell_meta$ObjectNumber), 
           paste(sce$image, sce$ObjectNumber))
 
-colData(sce) <- cell_meta
+colData(sce) <- as(cell_meta, "DataFrame")
 
 sce$ROI <- sub("_", "", str_extract(sce$image, "_00[1-9]"))
 ```
@@ -72,10 +73,11 @@ Primarily, we will define colors for 1. the samples, 2. the ROI, 3. the indicati
 ```{r generate-colour-vectors}
 library(dittoSeq)
 library(RColorBrewer)
-colour_vectors <- list()
+color_vectors <- list()
 
-col_vec_patientIds <- dittoColors(reps = 3)[seq_len(length(unique(sce$patient_id)))]
-names(col_vec_patientIds) <- unique(sce$patient_id)
+patient_id <- setNames(brewer.pal(10, "Set3"),
+                       c("10082495", "10067433", "10074349", "10075572", "10068868", 
+                         "10073140", "10075371", "10061074", "10071582", "10074832"))
 
 col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
 names(col_vec_ROIs) <- unique(sce$ROI)
@@ -83,17 +85,31 @@ names(col_vec_ROIs) <- unique(sce$ROI)
 col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
                         BCC = "#3F85A7", RCC = "#C81F43")
 
-matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tcell", "Neutrophil", "Macrophage",
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", 
+                               "darkgoldenrod2", "grey75", "#DC6FE2", 
+                               "#BF0A3D", "#F4800C"),
+                             c("Tumor", "Tcell", "Neutrophil", "MacCD163",
                                "other", "DC", "Bcell", "BnTcell"))
 
-colour_vectors$PatientIds <- col_vec_patientIds
-colour_vectors$ROIs <- col_vec_ROIs
-colour_vectors$Indication <- col_vec_indication
-colour_vectors$matched_celltype <- matched_celltype
+celltype <- setNames(c("red3", "goldenrod2", "palevioletred1", 
+                       "darkorchid", "maroon4", "darkorange4", 
+                       "green4", "darkgreen",
+                       "green", "blue1", "yellow", 
+                       "deepskyblue", "tomato", "sienna4", 
+                       "black"),
+                     c("Bcell", "Plasma", "CD4", "CD8", "Treg", "BnTcell",
+                       "DC", "HLADR", "MacCD163", "Neutrophil", 
+                       "NK", "pDC", "Mural", "Tumor", "undefined"))
+
+color_vectors$celltype <- celltype
+
+color_vectors$patient_id <- patient_id
+color_vectors$ROIs <- col_vec_ROIs
+color_vectors$Indication <- col_vec_indication
+color_vectors$matched_celltype <- matched_celltype
 
 # Save in metadata slot
-metadata(sce)$colour_vectors <- colour_vectors
+metadata(sce)$color_vectors <- color_vectors
 ```
 
 ## Add interaction graph
@@ -104,6 +120,9 @@ Finally, we will add a 20µm expansion interaction graph to compare to mIF.
 library(imcRtools)
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
                          threshold = 20, name = "expansion_20")
+
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
+                         threshold = 30, name = "expansion_30")
 ```
 
 ## Save SCE object
@@ -112,7 +131,8 @@ Finally, for easy accessability, we will write the SCE object out.
 The object will be stored on the server so that everyone can work with it.
 
 ```{r save-RDS, warning=FALSE}
-dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/")
+cur_dir <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/"
+if (!dir.exists(cur_dir)) dir.create(cur_dir)
 saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```
 
@@ -121,15 +141,9 @@ saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/R
 Here, we read in the images and masks and save them on disk.
 
 ```{r read-images, message = FALSE, warning=FALSE}
-dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/")
-dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/images")
-dir.create("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks")
-
 library(cytomapper)
-images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/", on_disk = TRUE, 
-                     h5FilesPath = "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/images")
-masks <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/masks/", on_disk = TRUE, 
-                     h5FilesPath = "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/h5/masks",
+images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/")
+masks <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/masks/",
                     as.is = TRUE)
 
 channelNames(images) <- rownames(sce)

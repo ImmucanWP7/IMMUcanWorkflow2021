@@ -1,0 +1,48 @@
+---
+title: "Figure 1"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+Code to generate the plots of Figure 1.
+
+## Read data
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+library(imcRtools)
+
+sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+
+sce_imc
+```
+
+### Overview stats
+
+```{r}
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, celltype) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = celltype, group = indication), 
+           position = "stack", stat = "identity") +
+  scale_fill_manual(values = metadata(sce_imc)$color_vectors$celltype,
+                    name = "Cell types") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  theme_classic(base_size = 20) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Patients") +
+  ylab("Cell type count")
+
+p
+
+if (!dir.exists("output/Figure_3")) dir.create("output/Figure_3")
+
+ggsave("output/Figure_3/Figure_3.pdf", p)
+```
+

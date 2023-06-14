@@ -42,7 +42,7 @@ colData(sce) %>%
   ggplot() +
     geom_bar(aes(patient_id, count, fill = ROI), 
              position = "stack", stat = "identity") +
-    scale_fill_manual(values = metadata(sce)$colour_vectors$ROIs) + 
+    scale_fill_manual(values = metadata(sce)$color_vectors$ROIs) + 
     theme_minimal(base_size = 15) + theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Numeric output
@@ -59,7 +59,7 @@ We will now observe the distribution of cell sizes across all images.
 
 ```{r cell-size, message=FALSE, fig.height=10, fig.width=10}
 dittoPlot(sce, var = "area", group.by = "image",  
-          plots = "ridgeplot", color.panel = metadata(sce)$colour_vectors$ROIs) 
+          plots = "ridgeplot", color.panel = metadata(sce)$color_vectors$ROIs) 
 
 summary(sce$area)
 ```
@@ -81,7 +81,7 @@ We will now visualize the expression differences between patients.
 multi_dittoPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel],
                group.by = "patient_id", plots = c("ridgeplot"), 
                assay = "exprs", 
-               color.panel = metadata(sce)$colour_vectors$PatientId)
+               color.panel = metadata(sce)$color_vectors$patient_id)
 ```
 
 We also compute a tSNE and UMAP of all cells to visualize potential sample effects.
@@ -96,11 +96,11 @@ We can now visualize the patient IDs and expression on the UMAPs.
 
 ```{r dimred-viz-patient-indication, message=FALSE}
 dittoDimPlot(sce, var = "patient_id", reduction.use = "UMAP", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$PatientIds) +
+    scale_color_manual(values = metadata(sce)$color_vectors$patient_id) +
     ggtitle("Patient ID on UMAP")
 
 dittoDimPlot(sce, var = "indication", reduction.use = "UMAP", size = 0.2) + 
-    scale_color_manual(values = metadata(sce)$colour_vectors$Indication) +
+    scale_color_manual(values = metadata(sce)$color_vectors$Indication) +
     ggtitle("Patient ID on UMAP")
 ```
 
