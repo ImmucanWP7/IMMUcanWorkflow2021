@@ -111,7 +111,7 @@ metadata(sce)$color_vectors <- color_vectors
 
 ## Add interaction graph
 
-Finally, we will add a 20µm expansion interaction graph to compare to mIF.
+Finally, we will add a 20µm and 30µm expansion interaction graph to compare to mIF.
 
 ```{r buildSpatialGraph, message=FALSE}
 library(imcRtools)
