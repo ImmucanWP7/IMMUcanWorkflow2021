@@ -70,11 +70,14 @@ sce$ROI <- sub("_", "", str_extract(sce$image, "_00[1-9]"))
 At this point we want to generate color vectors that we can reproducibly and consistently use throughout the analysis.
 Primarily, we will define colors for 1. the samples, 2. the ROI, 3. the indication.
 
-```{r generate-colour-vectors}
+```{r generate-colour-vectors, message=TRUE}
 library(dittoSeq)
 library(RColorBrewer)
 color_vectors <- list()
 
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "T", "Neutrophil", "MacCD163",
+                               "other", "DC", "B", "BnT"))
 patient_id <- setNames(brewer.pal(10, "Set3"),
                        c("10082495", "10067433", "10074349", "10075572", "10068868", 
                          "10073140", "10075371", "10061074", "10071582", "10074832"))
@@ -85,19 +88,13 @@ names(col_vec_ROIs) <- unique(sce$ROI)
 col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
                         BCC = "#3F85A7", RCC = "#C81F43")
 
-matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", 
-                               "darkgoldenrod2", "grey75", "#DC6FE2", 
-                               "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tcell", "Neutrophil", "MacCD163",
-                               "other", "DC", "Bcell", "BnTcell"))
-
 celltype <- setNames(c("red3", "goldenrod2", "palevioletred1", 
                        "darkorchid", "maroon4", "darkorange4", 
                        "green4", "darkgreen",
                        "green", "blue1", "yellow", 
                        "deepskyblue", "tomato", "sienna4", 
                        "black"),
-                     c("Bcell", "Plasma", "CD4", "CD8", "Treg", "BnTcell",
+                     c("B", "plasma", "CD4", "CD8", "Treg", "BnT",
                        "DC", "HLADR", "MacCD163", "Neutrophil", 
                        "NK", "pDC", "Mural", "Tumor", "undefined"))
 

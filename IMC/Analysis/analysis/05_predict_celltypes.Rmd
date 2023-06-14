@@ -73,11 +73,7 @@ cell_labels.prob <- predict.train(rffit,
               newdata = cur_mat, 
               type = "prob")
 
-cell_labels.class[cell_labels.class == "plasma"] <- "Plasma"
-cell_labels.class[cell_labels.class == "B"] <- "Bcell"
-cell_labels.class[cell_labels.class == "BnT"] <- "BnTcell"
-
-colnames(cell_labels.prob) <- c("Bcell", "BnTcell", "CD4", "CD8", "DC", 
+colnames(cell_labels.prob) <- c("Bcell", "BnT", "CD4", "CD8", "DC", 
                                 "HLADR", "MacCD163", "Mural", 
                                 "Neutrophil", "NK", "pDC", "Plasma", "Treg", "Tumor")
 
@@ -183,12 +179,12 @@ cell_types <- cell_types[cell_types != "unlabelled"]
 markers <- vector(mode = "list", length = length(cell_types))
 names(markers) <- cell_types
 
-markers[["Bcell"]] <- c("CD20", "CD3")
+markers[["B"]] <- c("CD20", "CD3")
 markers[["Plasma"]] <- c("CD38")
 markers[["CD4"]] <- c("CD4", "CD8a", "CD3")
 markers[["CD8"]] <- c("CD4", "CD8a", "CD3")
 markers[["Treg"]] <- c("CD4", "CD8a", "FOXP3")
-markers[["BnTcell"]] <- c("CD20", "CD3")
+markers[["BnT"]] <- c("CD20", "CD3")
 markers[["DC"]] <- c("CD11c", "CD68")
 markers[["MacCD163"]] <- c("CD11c", "CD163")
 markers[["HLADR"]] <- c("HLADR", "CD11c")
@@ -264,7 +260,7 @@ To compare to mIF data, we will need to harmonize the cell types.
 ```{r matched-celltypes}
 matched_celltype <- sce$celltype
 matched_celltype[matched_celltype %in% c("Plasma", "HLADR", "Mural", "pDC", "NK", "undefined")] <- "other"
-matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "Tcell"
+matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "T"
 matched_celltype[matched_celltype == "TumorKi67"] <- "Tumor"
 sce$matched_celltype <- matched_celltype
 ```

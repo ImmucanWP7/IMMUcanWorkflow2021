@@ -205,9 +205,6 @@ We will now annotate the cells based on the celltype annotation key.
 sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
-sce$matched_celltype[sce$matched_celltype == "T"] <- "Tcell"
-sce$matched_celltype[sce$matched_celltype == "B"] <- "Bcell"
-sce$matched_celltype[sce$matched_celltype == "BnT"] <- "BnTcell"
 sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 ```
 
