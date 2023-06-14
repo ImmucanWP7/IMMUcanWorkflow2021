@@ -12,14 +12,6 @@ rm /mnt/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/img/IMMUcan_Batc
 
 steinbock segment deepcell --minmax
 
-steinbock segment deepcell --minmax --type nuclear -o masks_nucleus
-cp NuclearExpansion.cppipe /mnt/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC
-steinbock apps cellprofiler -p NuclearExpansion.cppipe -i masks_nucleus -c -r
-
 steinbock measure intensities --masks masks -o intensities
 steinbock measure regionprops --masks masks -o regionprops
 steinbock measure neighbors --type expansion --dmax 4 --masks masks -o neighbors
-
-steinbock measure intensities --masks masks_expanded -o intensities_expansion
-steinbock measure regionprops --masks masks_expanded -o regionprops_expansion
-steinbock measure neighbors --type expansion --dmax 4 --masks masks_expanded -o neighbors_expansion
