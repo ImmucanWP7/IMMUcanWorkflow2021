@@ -75,10 +75,10 @@ sce <- compCytof(sce, sm,
 
 library(dittoSeq)
 library(patchwork)
-before <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+before <- dittoScatterPlot(sce, x.var = "CD15", y.var = "CD45RA",
                            assay.x = "exprs", assay.y = "exprs") +
     ggtitle("Before compensation")
-after <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+after <- dittoScatterPlot(sce, x.var = "CD15", y.var = "CD45RA",
                           assay.x = "compexprs", assay.y = "compexprs") +
     ggtitle("After compensation")
 before + after
@@ -98,7 +98,7 @@ channelNames(images) <- rowData(sce)$channel_name
 library(BiocParallel)
 adapted_sm <- adaptSpillmat(sm, rowData(sce)$channel_name, 
                             isotope_list = isotope_list)
-images_comp <- compImage(images, adapted_sm, BPPARAM = MulticoreParam(),
+images_comp <- compImage(images, adapted_sm, BPPARAM = MulticoreParam(workers = 4),
                          overwrite = TRUE)
 channelNames(images_comp) <- rownames(sce)
 saveRDS(images_comp, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
