@@ -83,6 +83,14 @@ after <- dittoScatterPlot(sce, x.var = "CD15", y.var = "CD45RA",
     ggtitle("After compensation")
 before + after
 
+before <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+                           assay.x = "exprs", assay.y = "exprs") +
+    ggtitle("Before compensation")
+after <- dittoScatterPlot(sce, x.var = "Ecad", y.var = "CD303",
+                          assay.x = "compexprs", assay.y = "compexprs") +
+    ggtitle("After compensation")
+before + after
+
 assay(sce, "counts") <- assay(sce, "compcounts") 
 assay(sce, "exprs") <- assay(sce, "compexprs") 
 assay(sce, "compcounts") <- assay(sce, "compexprs") <- NULL
@@ -98,9 +106,12 @@ channelNames(images) <- rowData(sce)$channel_name
 library(BiocParallel)
 adapted_sm <- adaptSpillmat(sm, rowData(sce)$channel_name, 
                             isotope_list = isotope_list)
-images_comp <- compImage(images, adapted_sm, BPPARAM = MulticoreParam(workers = 4),
-                         overwrite = TRUE)
+
+images_comp <- compImage(images, adapted_sm, 
+                         BPPARAM = MulticoreParam(workers = 4))
+
 channelNames(images_comp) <- rownames(sce)
+
 saveRDS(images_comp, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
 ```
 
@@ -108,6 +119,10 @@ And we'll save the tiffs to disk:
 
 ```{r}
 library(tiff)
+
+cur_dir <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/comp_img/"
+if (!dir.exists(cur_dir)) dir.create(cur_dir)
+
 lapply(names(images_comp), function(x){
   writeImage(as.array(images_comp[[x]])/(2^16 - 1), 
              paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/comp_img/", x, ".tiff"),

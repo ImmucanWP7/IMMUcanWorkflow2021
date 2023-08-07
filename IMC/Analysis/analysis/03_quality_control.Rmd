@@ -25,6 +25,8 @@ library(tidyverse)
 library(dittoSeq)
 library(scater)
 library(viridis)
+library(DT)
+library(cowplot)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```
@@ -50,7 +52,7 @@ colData(sce) %>%
   as_tibble() %>%
   group_by(patient_id, ROI) %>%
   summarize(count = n()) %>%
-  summary()
+  DT::datatable()
 ```
 
 ## Cell size
@@ -67,10 +69,10 @@ summary(sce$area)
 We will now filter cells based on size.
 
 ```{r filter-cells}
-sum(sce$area < 5)
+sum(sce$area <= 7)
 sum(sce$area > 400)
 
-sce <- sce[,sce$area >= 5 & sce$area <= 400]
+sce <- sce[,sce$area > 7]
 ```
 
 ## Expression differences
@@ -88,13 +90,12 @@ We also compute a tSNE and UMAP of all cells to visualize potential sample effec
 
 ```{r dimred}
 set.seed(220321)
-sce <- runTSNE(sce, subset_row = rowData(sce)$use_channel, exprs_values = "exprs")
 sce <- runUMAP(sce, subset_row = rowData(sce)$use_channel, exprs_values = "exprs")
 ```
 
 We can now visualize the patient IDs and expression on the UMAPs.
 
-```{r dimred-viz-patient-indication, message=FALSE}
+```{r dimred-viz-patient-indication, message=FALSE, fig.width = 10, fig.height = 10}
 dittoDimPlot(sce, var = "patient_id", reduction.use = "UMAP", size = 0.2) + 
     scale_color_manual(values = metadata(sce)$color_vectors$patient_id) +
     ggtitle("Patient ID on UMAP")
@@ -104,11 +105,14 @@ dittoDimPlot(sce, var = "indication", reduction.use = "UMAP", size = 0.2) +
     ggtitle("Patient ID on UMAP")
 ```
 
-```{r dimred-viz-expression, fig.height=12, fig.width=12}
-multi_dittoDimPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel], 
-                   reduction.use = "UMAP", 
-                   assay = "exprs", size = 0.2) +
-    scale_color_viridis() 
+```{r dimred-viz-expression, fig.height=12, fig.width=20}
+p.list <- list()
+for(i in rownames(sce)){
+  p.list[[i]] <- plotUMAP(sce, colour_by = i, by_exprs_values = "exprs", 
+                          point_size = 0.25, point_alpha = 1) 
+}
+
+plot_grid(plotlist = p.list, ncol = 7)
 ```
 
 ## Save object

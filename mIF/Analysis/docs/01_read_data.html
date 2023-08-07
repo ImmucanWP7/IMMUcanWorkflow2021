@@ -13,7 +13,7 @@
 
 <title>Read IFQuant data</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -375,7 +375,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-06-14
+<strong>Last updated:</strong> 2023-08-01
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -509,15 +509,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -527,7 +527,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -560,14 +560,9 @@ Ignored files:
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
 
-Untracked files:
-    Untracked:  IMC/Analysis/docs/site_libs/header-attrs-2.22/
-    Untracked:  IMC/Analysis/docs/site_libs/jqueryui-1.13.2/
-
 Unstaged changes:
-    Modified:   IMC/Analysis/docs/01_read_data.html
-    Modified:   IMC/Analysis/docs/site_libs/navigation-1.1/codefolding.js
     Modified:   mIF/Analysis/analysis/01_read_data.Rmd
+    Modified:   mIF/Analysis/analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -614,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/246dd8327f68849b12c7b273a3ff81c79c25b8a3/mIF/Analysis/analysis/01_read_data.Rmd" target="_blank">246dd83</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Fixed color vectors
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/246dd8327f68849b12c7b273a3ff81c79c25b8a3/mIF/Analysis/docs/01_read_data.html" target="_blank">246dd83</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Fixed color vectors
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -986,7 +1015,8 @@ IFQuant.</p>
 <pre class="r"><code>library(RColorBrewer)
 
 color_vectors &lt;- list()
-matched_celltype &lt;- setNames(c(&quot;coral3&quot;, &quot;chartreuse3&quot;, &quot;cyan2&quot;, &quot;darkgoldenrod2&quot;, &quot;grey75&quot;, &quot;#DC6FE2&quot;, &quot;#BF0A3D&quot;, &quot;#F4800C&quot;),
+matched_celltype &lt;- setNames(c(&quot;coral3&quot;, &quot;chartreuse3&quot;, &quot;cyan2&quot;, &quot;darkgoldenrod2&quot;, 
+                               &quot;grey75&quot;, &quot;#DC6FE2&quot;, &quot;#BF0A3D&quot;, &quot;#F4800C&quot;),
                              c(&quot;Tumor&quot;, &quot;T&quot;, &quot;Neutrophil&quot;, &quot;MacCD163&quot;,
                                &quot;other&quot;, &quot;DC&quot;, &quot;B&quot;, &quot;BnT&quot;))
 patient_id &lt;- setNames(brewer.pal(10, &quot;Set3&quot;),
@@ -1003,8 +1033,10 @@ color_vectors$matched_celltype &lt;- matched_celltype</code></pre>
 <div id="read-whole-slide-data" class="section level2">
 <h2>Read whole slide data</h2>
 <p>First, we will start with reading in the whole slide data.</p>
-<pre class="r"><code>library(SingleCellExperiment)
-library(tidyverse)
+<pre class="r"><code>library(SingleCellExperiment)</code></pre>
+<pre><code>Warning: package &#39;IRanges&#39; was built under R version 4.3.1</code></pre>
+<pre><code>Warning: package &#39;GenomeInfoDb&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code>library(tidyverse)
 
 cur_files &lt;- list.files(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/&quot;, pattern = &quot;cells_properties_&quot;, full.names = TRUE)
 cur_files_2 &lt;- list.files(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/&quot;, pattern = &quot;cells_properties2_&quot;, full.names = TRUE)
@@ -1024,7 +1056,8 @@ cur_sces &lt;- lapply(seq_along(cur_files), function(x){
   cur_counts &lt;- t(cur_data[,grepl(&quot;score.normalized&quot;, colnames(cur_data))])
   cur_raw &lt;- t(cur_data[,grepl(&quot;score$&quot;, colnames(cur_data))])
   
-  stopifnot(all.equal(str_split(rownames(cur_raw), &quot;\\.&quot;, simplify = TRUE), str_split(rownames(cur_counts), &quot;\\.&quot;, simplify = TRUE)[,1:2]))
+  stopifnot(all.equal(str_split(rownames(cur_raw), &quot;\\.&quot;, simplify = TRUE), 
+                      str_split(rownames(cur_counts), &quot;\\.&quot;, simplify = TRUE)[,1:2]))
   
   rownames(cur_counts) &lt;- rownames(cur_raw) &lt;- str_split(rownames(cur_raw), &quot;\\.&quot;, 
                                                          simplify = TRUE)[,1]
@@ -1032,9 +1065,11 @@ cur_sces &lt;- lapply(seq_along(cur_files), function(x){
                                                 raw = cur_raw))
   
   colData(cur_sce) &lt;- DataFrame(cur_data[,!grepl(&quot;score&quot;, colnames(cur_data))])
-  colData(cur_sce)$Lausanne_id &lt;- str_split(str_split(cur_files[x], &quot;/&quot;, simplify = TRUE)[,11], &quot;_#_&quot;, simplify = TRUE)[,1]
-  colData(cur_sce)$Lausanne_id &lt;- unlist(lapply(str_split(colData(cur_sce)$Lausanne_id, &quot;-&quot;), function(y){paste(y[1:3], collapse = &quot;-&quot;)}))
-  colData(cur_sce)$sample_id &lt;- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id), cur_table$mIF)])
+  
+  colData(cur_sce)$Lausanne_id &lt;- str_extract(cur_files[x], &quot;IMMU-[A-Z0-9]*-[0-9]{4}&quot;)
+  
+  colData(cur_sce)$sample_id &lt;- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id),
+                                                                 cur_table$mIF)])
   colData(cur_sce)$patient_id &lt;- as.character(colData(cur_sce)$sample_id)
   
   return(cur_sce)
@@ -1042,6 +1077,7 @@ cur_sces &lt;- lapply(seq_along(cur_files), function(x){
 
 cur_colnames &lt;- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
 cur_colnames &lt;- unique(cur_colnames)
+
 cur_sces &lt;- lapply(cur_sces, function(x){
   
   cur_cd &lt;- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
@@ -1062,26 +1098,11 @@ assay(sce, &quot;exprs&quot;) &lt;- log(counts(sce))
 
 # Add phenotype labels
 cur_key &lt;- as.data.frame(read_csv(&quot;~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv&quot;))
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3-CD11c+CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;MacCD163&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3-CD11c+CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;MacCD163&quot;
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3-CD11c-CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;MacCD163&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3-CD11c-CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;MacCD163&quot;
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3-CD11c-CD20+CD163-&quot;,&quot;celltype&quot;] &lt;- &quot;Tumor_CD15&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3-CD11c-CD20+CD163-&quot;,&quot;celltype&quot;] &lt;- &quot;Tumor&quot;
-
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3+CD11c+CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3+CD11c+CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3+CD11c-CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3+CD11c-CD20+CD163+&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-cur_key[cur_key$phenotype == &quot;CD15+CK+CD3+CD11c-CD20+CD163-&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-cur_key[cur_key$phenotype == &quot;CD15-CK+CD3+CD11c-CD20+CD163-&quot;,&quot;celltype&quot;] &lt;- &quot;T&quot;
-
 rownames(cur_key) &lt;- cur_key$phenotype
 
 sce$celltype &lt;- cur_key[sce$phenotype,2]
 sce$matched_celltype &lt;- sce$celltype
 sce$matched_celltype[grepl(&quot;Tumor&quot;, sce$matched_celltype)] &lt;- &quot;Tumor&quot;
-sce$matched_celltype[sce$matched_celltype == &quot;Stromal_cell&quot;] &lt;- &quot;other&quot;
 
 sce$indication &lt;- sce$Lausanne_id
 sce$indication[grepl(&quot;BC&quot;, sce$indication)] &lt;- &quot;BCC&quot;
@@ -1109,7 +1130,8 @@ cur_sces &lt;- lapply(cur_files, function(x){
   cur_counts &lt;- t(cur_data[,grepl(&quot;score.normalized&quot;, colnames(cur_data))])
   cur_raw &lt;- t(cur_data[,grepl(&quot;score$&quot;, colnames(cur_data))])
   
-  stopifnot(all.equal(str_split(rownames(cur_raw), &quot;\\.&quot;, simplify = TRUE), str_split(rownames(cur_counts), &quot;\\.&quot;, simplify = TRUE)[,1:2]))
+  stopifnot(all.equal(str_split(rownames(cur_raw), &quot;\\.&quot;, simplify = TRUE), 
+                      str_split(rownames(cur_counts), &quot;\\.&quot;, simplify = TRUE)[,1:2]))
   
   rownames(cur_counts) &lt;- rownames(cur_raw) &lt;- str_split(rownames(cur_raw), &quot;\\.&quot;, 
                                                          simplify = TRUE)[,1]
@@ -1137,6 +1159,7 @@ cur_sces &lt;- lapply(cur_files, function(x){
 
 cur_colnames &lt;- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
 cur_colnames &lt;- unique(cur_colnames)
+
 cur_sces &lt;- lapply(cur_sces, function(x){
   
   cur_cd &lt;- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
@@ -1167,14 +1190,14 @@ metadata(sce)$color_vectors &lt;- color_vectors</code></pre>
 key.</p>
 <pre class="r"><code>sce$celltype &lt;- cur_key[sce$phenotype,2]
 sce$matched_celltype &lt;- sce$celltype
-sce$matched_celltype[grepl(&quot;Tumor&quot;, sce$matched_celltype)] &lt;- &quot;Tumor&quot;
-sce$matched_celltype[sce$matched_celltype == &quot;Stromal_cell&quot;] &lt;- &quot;other&quot;</code></pre>
+sce$matched_celltype[grepl(&quot;Tumor&quot;, sce$matched_celltype)] &lt;- &quot;Tumor&quot;</code></pre>
 </div>
 <div id="add-interaction-graph" class="section level3">
 <h3>Add interaction graph</h3>
 <p>Finally, we will add a 20µm and 30µm expansion interaction graph.</p>
-<pre class="r"><code>library(imcRtools)
-# 30µm expansion graph
+<pre class="r"><code>library(imcRtools)</code></pre>
+<pre><code>Warning: package &#39;imcRtools&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code># 30µm expansion graph
 sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;, 
                          coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;),
                          threshold = 60, name = &quot;expansion_60&quot;)
@@ -1332,6 +1355,16 @@ nilseling
 </table>
 </div>
 </div>
+<pre class="r"><code>plotSpatial(sce[,sce$sample_id == &quot;IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001&quot;], 
+            img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;), 
+            draw_edges = TRUE, colPairName = &quot;expansion_60&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotSpatial(sce[,sce$sample_id == &quot;IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001&quot;], 
+            img_id = &quot;sample_id&quot;, coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;), 
+            draw_edges = TRUE, colPairName = &quot;expansion_40&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-4.png" width="1152" style="display: block; margin: auto;" /></p>
 </div>
 <div id="save-object" class="section level3">
 <h3>Save object</h3>
@@ -1347,6 +1380,7 @@ library(tiff)
 library(cytomapper)
 
 cur_path &lt;- &quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/&quot;
+
 if (!dir.exists(cur_path)) dir.create(cur_path)
 
 cur_folders &lt;- list.files(&quot;/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/&quot;,
@@ -1358,9 +1392,10 @@ for (i in seq_along(cur_folders)) {
     }
     
     if (!all.equal(list.files(cur_folders[i], pattern = &quot;ROI_image.*.rds&quot;),
-                   c(&quot;ROI_image_autofluorescence.rds&quot;, &quot;ROI_image_CD11c.rds&quot;, &quot;ROI_image_CD15.rds&quot;, 
-          &quot;ROI_image_CD163.rds&quot;, &quot;ROI_image_CD20.rds&quot;, &quot;ROI_image_CD3.rds&quot;, 
-          &quot;ROI_image_CK.rds&quot;, &quot;ROI_image_DAPI.rds&quot;))) {
+                   c(&quot;ROI_image_autofluorescence.rds&quot;, &quot;ROI_image_CD11c.rds&quot;, 
+                     &quot;ROI_image_CD15.rds&quot;, &quot;ROI_image_CD163.rds&quot;, 
+                     &quot;ROI_image_CD20.rds&quot;, &quot;ROI_image_CD3.rds&quot;, 
+                     &quot;ROI_image_CK.rds&quot;, &quot;ROI_image_DAPI.rds&quot;))) {
         stop(&quot;Wrong channel order&quot;)
     }
     
@@ -1373,12 +1408,14 @@ for (i in seq_along(cur_folders)) {
     
     cur_channels &lt;- abind(cur_channels, along = 3)
     
-    writeImage(as.array(cur_channels)/(2^16 - 1), paste0(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/&quot;,
-                                    basename(cur_folders[i]), &quot;.tiff&quot;),
+    writeImage(as.array(cur_channels)/(2^16 - 1),
+               paste0(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/&quot;,
+                      basename(cur_folders[i]), &quot;.tiff&quot;),
                bits.per.sample = 16)
 }
 
-images &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/&quot;, as.is = TRUE)
+images &lt;- loadImages(&quot;/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/&quot;, 
+                     as.is = TRUE)
 
 channelNames(images) &lt;- c(&quot;af&quot;, &quot;CD11c&quot;, &quot;CD15&quot;, &quot;CD163&quot;, &quot;CD20&quot;, &quot;CD3&quot;, &quot;CK&quot;, &quot;DAPI&quot;)
 
@@ -1415,17 +1452,17 @@ attached base packages:
 
 other attached packages:
  [1] cytomapper_1.12.0           tiff_0.1-11                
- [3] EBImage_4.42.0              imcRtools_1.6.1            
+ [3] EBImage_4.42.0              imcRtools_1.6.3            
  [5] SpatialExperiment_1.10.0    lubridate_1.9.2            
  [7] forcats_1.0.0               stringr_1.5.0              
  [9] dplyr_1.1.2                 purrr_1.0.1                
 [11] readr_2.1.4                 tidyr_1.3.0                
 [13] tibble_3.2.1                ggplot2_3.4.2              
 [15] tidyverse_2.0.0             SingleCellExperiment_1.22.0
-[17] SummarizedExperiment_1.30.1 Biobase_2.60.0             
-[19] GenomicRanges_1.52.0        GenomeInfoDb_1.36.0        
-[21] IRanges_2.34.0              S4Vectors_0.38.1           
-[23] BiocGenerics_0.46.0         MatrixGenerics_1.12.0      
+[17] SummarizedExperiment_1.30.2 Biobase_2.60.0             
+[19] GenomicRanges_1.52.0        GenomeInfoDb_1.36.1        
+[21] IRanges_2.34.1              S4Vectors_0.38.1           
+[23] BiocGenerics_0.46.0         MatrixGenerics_1.12.2      
 [25] matrixStats_1.0.0           RColorBrewer_1.1-3         
 [27] workflowr_1.7.0            
 
@@ -1433,71 +1470,71 @@ loaded via a namespace (and not attached):
   [1] later_1.3.1               bitops_1.0-7             
   [3] R.oo_1.25.0               svgPanZoom_0.3.4         
   [5] polyclip_1.10-4           lifecycle_1.0.3          
-  [7] sf_1.0-13                 edgeR_3.42.4             
-  [9] rprojroot_2.0.3           processx_3.8.1           
+  [7] sf_1.0-14                 edgeR_3.42.4             
+  [9] rprojroot_2.0.3           processx_3.8.2           
  [11] lattice_0.21-8            vroom_1.6.3              
  [13] MASS_7.3-60               magrittr_2.0.3           
- [15] limma_3.56.1              sass_0.4.6               
- [17] rmarkdown_2.22            jquerylib_0.1.4          
+ [15] limma_3.56.2              sass_0.4.7               
+ [17] rmarkdown_2.23            jquerylib_0.1.4          
  [19] yaml_2.3.7                httpuv_1.6.11            
- [21] sp_1.6-1                  DBI_1.1.3                
+ [21] sp_2.0-0                  DBI_1.1.3                
  [23] abind_1.4-5               zlibbioc_1.46.0          
  [25] R.utils_2.12.2            ggraph_2.1.0             
  [27] RCurl_1.98-1.12           tweenr_2.0.2             
  [29] git2r_0.32.0              GenomeInfoDbData_1.2.10  
  [31] ggrepel_0.9.3             RTriangle_1.6-0.12       
- [33] terra_1.7-29              pheatmap_1.0.12          
+ [33] terra_1.7-39              pheatmap_1.0.12          
  [35] units_0.8-2               dqrng_0.3.0              
- [37] svglite_2.1.1             DelayedMatrixStats_1.22.0
+ [37] svglite_2.1.1             DelayedMatrixStats_1.22.1
  [39] codetools_0.2-19          DropletUtils_1.20.0      
- [41] DelayedArray_0.26.3       DT_0.28                  
+ [41] DelayedArray_0.26.6       DT_0.28                  
  [43] scuttle_1.10.1            ggforce_0.4.1            
- [45] tidyselect_1.2.0          raster_3.6-20            
- [47] farver_2.1.1              viridis_0.6.3            
- [49] jsonlite_1.8.5            BiocNeighbors_1.18.0     
+ [45] tidyselect_1.2.0          raster_3.6-23            
+ [47] farver_2.1.1              viridis_0.6.4            
+ [49] jsonlite_1.8.7            BiocNeighbors_1.18.0     
  [51] e1071_1.7-13              ellipsis_0.3.2           
  [53] tidygraph_1.2.3           systemfonts_1.0.4        
- [55] tools_4.3.0               Rcpp_1.0.10              
+ [55] tools_4.3.0               Rcpp_1.0.11              
  [57] glue_1.6.2                gridExtra_2.3            
  [59] xfun_0.39                 HDF5Array_1.28.1         
  [61] shinydashboard_0.7.2      withr_2.5.0              
  [63] fastmap_1.1.1             rhdf5filters_1.12.1      
  [65] fansi_1.0.4               callr_3.7.3              
- [67] digest_0.6.31             timechange_0.2.0         
+ [67] digest_0.6.33             timechange_0.2.0         
  [69] R6_2.5.1                  mime_0.12                
  [71] colorspace_2.1-0          jpeg_0.1-10              
  [73] R.methodsS3_1.8.2         utf8_1.2.3               
  [75] generics_0.1.3            data.table_1.14.8        
  [77] class_7.3-22              graphlayouts_1.0.0       
  [79] httr_1.4.6                htmlwidgets_1.6.2        
- [81] S4Arrays_1.0.4            whisker_0.4.1            
+ [81] S4Arrays_1.0.5            whisker_0.4.1            
  [83] pkgconfig_2.0.3           gtable_0.3.3             
  [85] XVector_0.40.0            htmltools_0.5.5          
  [87] fftwtools_0.9-11          scales_1.2.1             
  [89] png_0.1-8                 knitr_1.43               
- [91] rstudioapi_0.14           tzdb_0.4.0               
+ [91] rstudioapi_0.15.0         tzdb_0.4.0               
  [93] rjson_0.2.21              proxy_0.4-27             
  [95] cachem_1.0.8              rhdf5_2.44.0             
- [97] KernSmooth_2.23-21        parallel_4.3.0           
+ [97] KernSmooth_2.23-22        parallel_4.3.0           
  [99] vipor_0.4.5               concaveman_1.1.0         
 [101] pillar_1.9.0              grid_4.3.0               
-[103] vctrs_0.6.2               promises_1.2.0.1         
+[103] vctrs_0.6.3               promises_1.2.0.1         
 [105] distances_0.1.9           beachmat_2.16.0          
 [107] xtable_1.8-4              archive_1.1.5            
 [109] beeswarm_0.4.0            evaluate_0.21            
 [111] magick_2.7.4              cli_3.6.1                
-[113] locfit_1.5-9.7            compiler_4.3.0           
+[113] locfit_1.5-9.8            compiler_4.3.0           
 [115] rlang_1.1.1               crayon_1.5.2             
 [117] labeling_0.4.2            classInt_0.4-9           
 [119] ps_1.7.5                  getPass_0.2-2            
-[121] fs_1.6.2                  ggbeeswarm_0.7.2         
+[121] fs_1.6.3                  ggbeeswarm_0.7.2         
 [123] stringi_1.7.12            viridisLite_0.4.2        
 [125] BiocParallel_1.34.2       nnls_1.4                 
-[127] munsell_0.5.0             Matrix_1.5-4             
-[129] hms_1.1.3                 sparseMatrixStats_1.12.0 
+[127] munsell_0.5.0             Matrix_1.6-0             
+[129] hms_1.1.3                 sparseMatrixStats_1.12.2 
 [131] bit64_4.0.5               Rhdf5lib_1.22.0          
-[133] shiny_1.7.4               highr_0.10               
-[135] igraph_1.4.3              bslib_0.4.2              
+[133] shiny_1.7.4.1             highr_0.10               
+[135] igraph_1.5.0.1            bslib_0.5.0              
 [137] bit_4.0.5                </code></pre>
 </div>
 </div>

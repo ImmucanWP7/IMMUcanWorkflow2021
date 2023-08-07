@@ -13,7 +13,7 @@
 
 <title>Reading in the data</title>
 
-<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.23/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -366,7 +366,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -377,8 +377,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -387,13 +387,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-06-14
+<strong>Last updated:</strong> 2023-08-07
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -416,18 +416,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -518,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5dc7901fbbcf8246ffefd31ae50f63f29f597136targetblank5dc7901a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -536,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5dc7901fbbcf8246ffefd31ae50f63f29f597136" target="_blank">5dc7901</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,6 +561,7 @@ Ignored files:
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
+    Ignored:    IMC/Analysis/analysis/figure/
     Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
     Ignored:    comparisons/analysis/figure/
@@ -568,8 +572,19 @@ Ignored files:
     Ignored:    mIF/Analysis/analysis/.DS_Store
     Ignored:    mIF/Analysis/docs/.DS_Store
 
+Untracked files:
+    Untracked:  mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-3.png
+    Untracked:  mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-4.png
+    Untracked:  mIF/Analysis/docs/site_libs/header-attrs-2.23/
+
 Unstaged changes:
+    Modified:   IMC/Analysis/analysis/01_read_data.Rmd
+    Modified:   IMC/Analysis/analysis/02_spillover_correction.Rmd
+    Modified:   IMC/Analysis/analysis/03_quality_control.Rmd
     Modified:   mIF/Analysis/analysis/01_read_data.Rmd
+    Modified:   mIF/Analysis/analysis/index.Rmd
+    Modified:   mIF/Analysis/docs/01_read_data.html
+    Modified:   mIF/Analysis/docs/index.html
 
 </code></pre>
 <p>
@@ -616,6 +631,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/3351f091d4774100d1199283cf30d677f085316a/IMC/Analysis/analysis/01_read_data.Rmd" target="_blank">3351f09</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Adjustments for cell type definition
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/3351f091d4774100d1199283cf30d677f085316a/IMC/Analysis/docs/01_read_data.html" target="_blank">3351f09</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-06-14
+</td>
+<td>
+Adjustments for cell type definition
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -989,10 +1038,13 @@ framework.</p>
 <p>First, we will load the libraries needed for this part of the
 analysis.</p>
 <pre class="r"><code>library(S4Vectors)
-library(SingleCellExperiment)
-library(tidyverse)
-library(imcRtools)
-library(tools)</code></pre>
+library(SingleCellExperiment)</code></pre>
+<pre><code>Warning: package &#39;IRanges&#39; was built under R version 4.3.1</code></pre>
+<pre><code>Warning: package &#39;GenomeInfoDb&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(imcRtools)</code></pre>
+<pre><code>Warning: package &#39;imcRtools&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code>library(tools)</code></pre>
 </div>
 <div id="read-in-the-single-cell-data" class="section level1">
 <h1>Read in the single-cell data</h1>
@@ -1069,14 +1121,33 @@ metadata(sce)$color_vectors &lt;- color_vectors</code></pre>
 </div>
 <div id="add-interaction-graph" class="section level2">
 <h2>Add interaction graph</h2>
-<p>Finally, we will add a 20µm expansion interaction graph to compare to
-mIF.</p>
+<p>Finally, we will add a 20µm and 30µm expansion interaction graph to
+compare to mIF.</p>
 <pre class="r"><code>library(imcRtools)
 sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;,
                          threshold = 20, name = &quot;expansion_20&quot;)
 
 sce &lt;- buildSpatialGraph(sce, img_id = &quot;sample_id&quot;, type = &quot;expansion&quot;,
-                         threshold = 30, name = &quot;expansion_30&quot;)</code></pre>
+                         threshold = 30, name = &quot;expansion_30&quot;)
+
+plotSpatial(sce, img_id = &quot;sample_id&quot;, 
+            draw_edges = TRUE, colPairName = &quot;expansion_30&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotSpatial(sce, img_id = &quot;sample_id&quot;, 
+            draw_edges = TRUE, colPairName = &quot;expansion_20&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotSpatial(sce[,sce$sample_id == &quot;IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001&quot;], 
+            img_id = &quot;sample_id&quot;, 
+            draw_edges = TRUE, colPairName = &quot;expansion_30&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plotSpatial(sce[,sce$sample_id == &quot;IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001&quot;], 
+            img_id = &quot;sample_id&quot;, 
+            draw_edges = TRUE, colPairName = &quot;expansion_20&quot;, node_size_fix = 0.1,
+            nodes_first = TRUE)</code></pre>
+<p><img src="figure/01_read_data.Rmd/buildSpatialGraph-4.png" width="1152" style="display: block; margin: auto;" /></p>
 </div>
 <div id="save-sce-object" class="section level2">
 <h2>Save SCE object</h2>
@@ -1133,16 +1204,16 @@ attached base packages:
 other attached packages:
  [1] cytomapper_1.12.0           EBImage_4.42.0             
  [3] RColorBrewer_1.1-3          dittoSeq_1.12.0            
- [5] imcRtools_1.6.1             SpatialExperiment_1.10.0   
+ [5] imcRtools_1.6.3             SpatialExperiment_1.10.0   
  [7] lubridate_1.9.2             forcats_1.0.0              
  [9] stringr_1.5.0               dplyr_1.1.2                
 [11] purrr_1.0.1                 readr_2.1.4                
 [13] tidyr_1.3.0                 tibble_3.2.1               
 [15] ggplot2_3.4.2               tidyverse_2.0.0            
-[17] SingleCellExperiment_1.22.0 SummarizedExperiment_1.30.1
+[17] SingleCellExperiment_1.22.0 SummarizedExperiment_1.30.2
 [19] Biobase_2.60.0              GenomicRanges_1.52.0       
-[21] GenomeInfoDb_1.36.0         IRanges_2.34.0             
-[23] MatrixGenerics_1.12.0       matrixStats_1.0.0          
+[21] GenomeInfoDb_1.36.1         IRanges_2.34.1             
+[23] MatrixGenerics_1.12.2       matrixStats_1.0.0          
 [25] S4Vectors_0.38.1            BiocGenerics_0.46.0        
 [27] workflowr_1.7.0            
 
@@ -1150,72 +1221,73 @@ loaded via a namespace (and not attached):
   [1] later_1.3.1               bitops_1.0-7             
   [3] R.oo_1.25.0               svgPanZoom_0.3.4         
   [5] polyclip_1.10-4           lifecycle_1.0.3          
-  [7] sf_1.0-13                 edgeR_3.42.4             
+  [7] sf_1.0-14                 edgeR_3.42.4             
   [9] rprojroot_2.0.3           vroom_1.6.3              
- [11] processx_3.8.1            lattice_0.21-8           
+ [11] processx_3.8.2            lattice_0.21-8           
  [13] MASS_7.3-60               magrittr_2.0.3           
- [15] limma_3.56.1              sass_0.4.6               
- [17] rmarkdown_2.22            jquerylib_0.1.4          
+ [15] limma_3.56.2              sass_0.4.7               
+ [17] rmarkdown_2.23            jquerylib_0.1.4          
  [19] yaml_2.3.7                httpuv_1.6.11            
- [21] sp_1.6-1                  cowplot_1.1.1            
+ [21] sp_2.0-0                  cowplot_1.1.1            
  [23] DBI_1.1.3                 abind_1.4-5              
  [25] zlibbioc_1.46.0           R.utils_2.12.2           
  [27] ggraph_2.1.0              RCurl_1.98-1.12          
  [29] tweenr_2.0.2              git2r_0.32.0             
  [31] GenomeInfoDbData_1.2.10   ggrepel_0.9.3            
- [33] RTriangle_1.6-0.12        terra_1.7-29             
+ [33] RTriangle_1.6-0.12        terra_1.7-39             
  [35] pheatmap_1.0.12           units_0.8-2              
  [37] dqrng_0.3.0               svglite_2.1.1            
- [39] DelayedMatrixStats_1.22.0 codetools_0.2-19         
- [41] DropletUtils_1.20.0       DelayedArray_0.26.3      
+ [39] DelayedMatrixStats_1.22.1 codetools_0.2-19         
+ [41] DropletUtils_1.20.0       DelayedArray_0.26.6      
  [43] DT_0.28                   scuttle_1.10.1           
  [45] ggforce_0.4.1             tidyselect_1.2.0         
- [47] raster_3.6-20             farver_2.1.1             
- [49] viridis_0.6.3             jsonlite_1.8.5           
+ [47] raster_3.6-23             farver_2.1.1             
+ [49] viridis_0.6.4             jsonlite_1.8.7           
  [51] BiocNeighbors_1.18.0      e1071_1.7-13             
  [53] ellipsis_0.3.2            tidygraph_1.2.3          
  [55] ggridges_0.5.4            systemfonts_1.0.4        
- [57] Rcpp_1.0.10               glue_1.6.2               
+ [57] Rcpp_1.0.11               glue_1.6.2               
  [59] gridExtra_2.3             xfun_0.39                
  [61] HDF5Array_1.28.1          shinydashboard_0.7.2     
  [63] withr_2.5.0               fastmap_1.1.1            
  [65] rhdf5filters_1.12.1       fansi_1.0.4              
- [67] callr_3.7.3               digest_0.6.31            
+ [67] callr_3.7.3               digest_0.6.33            
  [69] timechange_0.2.0          R6_2.5.1                 
  [71] mime_0.12                 colorspace_2.1-0         
  [73] jpeg_0.1-10               R.methodsS3_1.8.2        
  [75] utf8_1.2.3                generics_0.1.3           
  [77] data.table_1.14.8         class_7.3-22             
  [79] graphlayouts_1.0.0        httr_1.4.6               
- [81] htmlwidgets_1.6.2         S4Arrays_1.0.4           
+ [81] htmlwidgets_1.6.2         S4Arrays_1.0.5           
  [83] whisker_0.4.1             pkgconfig_2.0.3          
  [85] gtable_0.3.3              XVector_0.40.0           
  [87] htmltools_0.5.5           fftwtools_0.9-11         
  [89] scales_1.2.1              png_0.1-8                
- [91] knitr_1.43                rstudioapi_0.14          
+ [91] knitr_1.43                rstudioapi_0.15.0        
  [93] tzdb_0.4.0                rjson_0.2.21             
  [95] proxy_0.4-27              cachem_1.0.8             
- [97] rhdf5_2.44.0              KernSmooth_2.23-21       
+ [97] rhdf5_2.44.0              KernSmooth_2.23-22       
  [99] parallel_4.3.0            vipor_0.4.5              
 [101] concaveman_1.1.0          pillar_1.9.0             
-[103] grid_4.3.0                vctrs_0.6.2              
+[103] grid_4.3.0                vctrs_0.6.3              
 [105] promises_1.2.0.1          distances_0.1.9          
 [107] beachmat_2.16.0           xtable_1.8-4             
 [109] archive_1.1.5             beeswarm_0.4.0           
 [111] evaluate_0.21             magick_2.7.4             
-[113] cli_3.6.1                 locfit_1.5-9.7           
+[113] cli_3.6.1                 locfit_1.5-9.8           
 [115] compiler_4.3.0            rlang_1.1.1              
-[117] crayon_1.5.2              classInt_0.4-9           
-[119] ps_1.7.5                  getPass_0.2-2            
-[121] fs_1.6.2                  ggbeeswarm_0.7.2         
-[123] stringi_1.7.12            viridisLite_0.4.2        
-[125] BiocParallel_1.34.2       nnls_1.4                 
-[127] munsell_0.5.0             tiff_0.1-11              
-[129] Matrix_1.5-4              hms_1.1.3                
-[131] bit64_4.0.5               sparseMatrixStats_1.12.0 
-[133] Rhdf5lib_1.22.0           shiny_1.7.4              
-[135] igraph_1.4.3              bslib_0.4.2              
-[137] bit_4.0.5                </code></pre>
+[117] crayon_1.5.2              labeling_0.4.2           
+[119] classInt_0.4-9            ps_1.7.5                 
+[121] getPass_0.2-2             fs_1.6.3                 
+[123] ggbeeswarm_0.7.2          stringi_1.7.12           
+[125] viridisLite_0.4.2         BiocParallel_1.34.2      
+[127] nnls_1.4                  munsell_0.5.0            
+[129] tiff_0.1-11               Matrix_1.6-0             
+[131] hms_1.1.3                 bit64_4.0.5              
+[133] sparseMatrixStats_1.12.2  Rhdf5lib_1.22.0          
+[135] shiny_1.7.4.1             highr_0.10               
+[137] igraph_1.5.0.1            bslib_0.5.0              
+[139] bit_4.0.5                </code></pre>
 </div>
 </div>
 

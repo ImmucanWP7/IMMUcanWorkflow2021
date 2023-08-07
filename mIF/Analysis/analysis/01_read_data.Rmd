@@ -22,7 +22,8 @@ These will be shared across all datasets.
 library(RColorBrewer)
 
 color_vectors <- list()
-matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", 
+                               "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
                              c("Tumor", "T", "Neutrophil", "MacCD163",
                                "other", "DC", "B", "BnT"))
 patient_id <- setNames(brewer.pal(10, "Set3"),
@@ -63,7 +64,8 @@ cur_sces <- lapply(seq_along(cur_files), function(x){
   cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
   cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
   
-  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), 
+                      str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
   
   rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
                                                          simplify = TRUE)[,1]
@@ -71,9 +73,11 @@ cur_sces <- lapply(seq_along(cur_files), function(x){
                                                 raw = cur_raw))
   
   colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
-  colData(cur_sce)$Lausanne_id <- str_split(str_split(cur_files[x], "/", simplify = TRUE)[,11], "_#_", simplify = TRUE)[,1]
-  colData(cur_sce)$Lausanne_id <- unlist(lapply(str_split(colData(cur_sce)$Lausanne_id, "-"), function(y){paste(y[1:3], collapse = "-")}))
-  colData(cur_sce)$sample_id <- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id), cur_table$mIF)])
+  
+  colData(cur_sce)$Lausanne_id <- str_extract(cur_files[x], "IMMU-[A-Z0-9]*-[0-9]{4}")
+  
+  colData(cur_sce)$sample_id <- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id),
+                                                                 cur_table$mIF)])
   colData(cur_sce)$patient_id <- as.character(colData(cur_sce)$sample_id)
   
   return(cur_sce)
@@ -81,6 +85,7 @@ cur_sces <- lapply(seq_along(cur_files), function(x){
 
 cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
 cur_colnames <- unique(cur_colnames)
+
 cur_sces <- lapply(cur_sces, function(x){
   
   cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
@@ -101,26 +106,11 @@ assay(sce, "exprs") <- log(counts(sce))
 
 # Add phenotype labels
 cur_key <- as.data.frame(read_csv("~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv"))
-cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c+CD20+CD163+","celltype"] <- "MacCD163"
-cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c+CD20+CD163+","celltype"] <- "MacCD163"
-cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c-CD20+CD163+","celltype"] <- "MacCD163"
-cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c-CD20+CD163+","celltype"] <- "MacCD163"
-cur_key[cur_key$phenotype == "CD15+CK+CD3-CD11c-CD20+CD163-","celltype"] <- "Tumor_CD15"
-cur_key[cur_key$phenotype == "CD15-CK+CD3-CD11c-CD20+CD163-","celltype"] <- "Tumor"
-
-cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c+CD20+CD163+","celltype"] <- "T"
-cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c+CD20+CD163+","celltype"] <- "T"
-cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
-cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163+","celltype"] <- "T"
-cur_key[cur_key$phenotype == "CD15+CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
-cur_key[cur_key$phenotype == "CD15-CK+CD3+CD11c-CD20+CD163-","celltype"] <- "T"
-
 rownames(cur_key) <- cur_key$phenotype
 
 sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
-sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 
 sce$indication <- sce$Lausanne_id
 sce$indication[grepl("BC", sce$indication)] <- "BCC"
@@ -150,7 +140,8 @@ cur_sces <- lapply(cur_files, function(x){
   cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
   cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
   
-  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), 
+                      str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
   
   rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
                                                          simplify = TRUE)[,1]
@@ -178,6 +169,7 @@ cur_sces <- lapply(cur_files, function(x){
 
 cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
 cur_colnames <- unique(cur_colnames)
+
 cur_sces <- lapply(cur_sces, function(x){
   
   cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
@@ -212,7 +204,6 @@ We will now annotate the cells based on the celltype annotation key.
 sce$celltype <- cur_key[sce$phenotype,2]
 sce$matched_celltype <- sce$celltype
 sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
-sce$matched_celltype[sce$matched_celltype == "Stromal_cell"] <- "other"
 ```
 
 ### Add interaction graph
@@ -238,6 +229,16 @@ plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"),
 plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
             draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
             nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
+            nodes_first = TRUE)
 ```
 
 ### Save object
@@ -258,6 +259,7 @@ library(tiff)
 library(cytomapper)
 
 cur_path <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+
 if (!dir.exists(cur_path)) dir.create(cur_path)
 
 cur_folders <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
@@ -269,9 +271,10 @@ for (i in seq_along(cur_folders)) {
     }
     
     if (!all.equal(list.files(cur_folders[i], pattern = "ROI_image.*.rds"),
-                   c("ROI_image_autofluorescence.rds", "ROI_image_CD11c.rds", "ROI_image_CD15.rds", 
-          "ROI_image_CD163.rds", "ROI_image_CD20.rds", "ROI_image_CD3.rds", 
-          "ROI_image_CK.rds", "ROI_image_DAPI.rds"))) {
+                   c("ROI_image_autofluorescence.rds", "ROI_image_CD11c.rds", 
+                     "ROI_image_CD15.rds", "ROI_image_CD163.rds", 
+                     "ROI_image_CD20.rds", "ROI_image_CD3.rds", 
+                     "ROI_image_CK.rds", "ROI_image_DAPI.rds"))) {
         stop("Wrong channel order")
     }
     
@@ -284,12 +287,14 @@ for (i in seq_along(cur_folders)) {
     
     cur_channels <- abind(cur_channels, along = 3)
     
-    writeImage(as.array(cur_channels)/(2^16 - 1), paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
-                                    basename(cur_folders[i]), ".tiff"),
+    writeImage(as.array(cur_channels)/(2^16 - 1),
+               paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+                      basename(cur_folders[i]), ".tiff"),
                bits.per.sample = 16)
 }
 
-images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", as.is = TRUE)
+images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
+                     as.is = TRUE)
 
 channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
 

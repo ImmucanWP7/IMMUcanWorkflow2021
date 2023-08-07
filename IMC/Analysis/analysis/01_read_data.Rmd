@@ -113,13 +113,31 @@ metadata(sce)$color_vectors <- color_vectors
 
 Finally, we will add a 20µm and 30µm expansion interaction graph to compare to mIF.
 
-```{r buildSpatialGraph, message=FALSE}
+```{r buildSpatialGraph, message=FALSE, fig.height=12, fig.width=12}
 library(imcRtools)
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
                          threshold = 20, name = "expansion_20")
 
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
                          threshold = 30, name = "expansion_30")
+
+plotSpatial(sce, img_id = "sample_id", 
+            draw_edges = TRUE, colPairName = "expansion_30", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce, img_id = "sample_id", 
+            draw_edges = TRUE, colPairName = "expansion_20", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", 
+            draw_edges = TRUE, colPairName = "expansion_30", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", 
+            draw_edges = TRUE, colPairName = "expansion_20", node_size_fix = 0.1,
+            nodes_first = TRUE)
 ```
 
 ## Save SCE object
