@@ -36,12 +36,14 @@ sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC
 Here, we will used the mutual nearest neighbour approach of the `batchelor`
 package to integrate cells from different patients.
 
-```{r fastMNN, message=FALSE}
+```{r fastMNN}
 set.seed(220321)
 out <- fastMNN(sce, batch = sce$patient_id,
                auto.merge = TRUE,
                subset.row = rowData(sce)$use_channel,
-               assay.type = "exprs")
+               assay.type = "exprs",
+               d = 30,
+               BSPARAM = ExactParam())
 
 # Transfer the correction results to the main spe object
 reducedDim(sce, "fastMNN") <- reducedDim(out, "corrected")
@@ -81,10 +83,14 @@ dittoDimPlot(sce, var = "indication", reduction.use = "UMAP_fastMNN", size = 0.2
     ggtitle("Patient ID on UMAP")
 ```
 
-```{r dimred-viz-expression, fig.height=12, fig.width=12}
-multi_dittoDimPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel], 
-                   reduction.use = "UMAP_fastMNN", 
-                   assay = "exprs", size = 0.2, color.panel = viridis()) 
+```{r dimred-viz-expression, fig.height=12, fig.width=20}
+p.list <- list()
+for(i in rownames(sce)){
+  p.list[[i]] <- plotReducedDim(sce, colour_by = i, by_exprs_values = "exprs", 
+                          point_size = 0.1, point_alpha = 1, dimred = "UMAP_fastMNN") 
+}
+
+plot_grid(plotlist = p.list, ncol = 7)
 ```
 
 ## Save object

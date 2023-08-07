@@ -109,7 +109,7 @@ dittoDimPlot(sce, var = "indication", reduction.use = "UMAP", size = 0.2) +
 p.list <- list()
 for(i in rownames(sce)){
   p.list[[i]] <- plotUMAP(sce, colour_by = i, by_exprs_values = "exprs", 
-                          point_size = 0.25, point_alpha = 1) 
+                          point_size = 0.1, point_alpha = 1) 
 }
 
 plot_grid(plotlist = p.list, ncol = 7)
