@@ -27,6 +27,7 @@ library(scater)
 library(viridis)
 library(DT)
 library(BiocSingular)
+library(cowplot)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```
@@ -97,6 +98,6 @@ plot_grid(plotlist = p.list, ncol = 7)
 
 Finally, we will save the modified `SingleCellExperiment` object.
 
-````{r save-RDS}
+```{r save-RDS}
 saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 ```

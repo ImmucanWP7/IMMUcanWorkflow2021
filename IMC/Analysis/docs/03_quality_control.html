@@ -374,7 +374,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -385,8 +385,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -399,9 +399,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -424,21 +424,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -529,15 +526,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48targetblank5daf24ea">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48" target="_blank">5daf24e</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021treeb9af0b5fee292b1dabb72662d6356c26660d7aaftargetblankb9af0b5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48targetblank5daf24ea"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +544,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/b9af0b5fee292b1dabb72662d6356c26660d7aaf" target="_blank">b9af0b5</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48" target="_blank">5daf24e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -578,20 +575,6 @@ Ignored files:
     Ignored:    mIF/Analysis/.Rproj.user/
     Ignored:    mIF/Analysis/analysis/.DS_Store
     Ignored:    mIF/Analysis/docs/.DS_Store
-
-Untracked files:
-    Untracked:  mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-3.png
-    Untracked:  mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-4.png
-    Untracked:  mIF/Analysis/docs/site_libs/header-attrs-2.23/
-
-Unstaged changes:
-    Modified:   IMC/Analysis/analysis/01_read_data.Rmd
-    Modified:   IMC/Analysis/analysis/02_spillover_correction.Rmd
-    Modified:   IMC/Analysis/analysis/03_quality_control.Rmd
-    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
-    Modified:   mIF/Analysis/analysis/index.Rmd
-    Modified:   mIF/Analysis/docs/01_read_data.html
-    Modified:   mIF/Analysis/docs/index.html
 
 </code></pre>
 <p>
@@ -638,6 +621,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6be185f4cb0b4e29160a8d97242438306cf04fbe/IMC/Analysis/analysis/03_quality_control.Rmd" target="_blank">6be185f</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+Smaller points in UMAP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/analysis/03_quality_control.Rmd" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+Current adjustments
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/03_quality_control.html" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+Current adjustments
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -988,6 +1022,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/figure/03_quality_control.Rmd/cell-size-1.png" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/03_quality_control.Rmd/cell-size-1.png" target="_blank">c81be89</a>
 </td>
 <td>
@@ -1125,6 +1170,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/figure/03_quality_control.Rmd/expression-differences-1.png" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/03_quality_control.Rmd/expression-differences-1.png" target="_blank">c81be89</a>
 </td>
 <td>
@@ -1215,6 +1271,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-1.png" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-1.png" target="_blank">c81be89</a>
 </td>
 <td>
@@ -1300,6 +1367,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-2.png" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-patient-indication-2.png" target="_blank">c81be89</a>
 </td>
 <td>
@@ -1360,11 +1438,11 @@ nilseling
 <pre class="r"><code>p.list &lt;- list()
 for(i in rownames(sce)){
   p.list[[i]] &lt;- plotUMAP(sce, colour_by = i, by_exprs_values = &quot;exprs&quot;, 
-                          point_size = 0.25, point_alpha = 1) 
+                          point_size = 0.1, point_alpha = 1) 
 }
 
 plot_grid(plotlist = p.list, ncol = 7)</code></pre>
-<p><img src="figure/03_quality_control.Rmd/dimred-viz-expression-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="figure/03_quality_control.Rmd/dimred-viz-expression-1.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-dimred-viz-expression-1">
 Past versions of dimred-viz-expression-1.png
@@ -1387,6 +1465,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/a536197c55da0a827d584bba6ef83963bf594ed5/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-expression-1.png" target="_blank">a536197</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/03_quality_control.Rmd/dimred-viz-expression-1.png" target="_blank">c81be89</a>
