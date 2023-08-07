@@ -26,7 +26,6 @@ library(scater)
 library(tidyverse)
 library(dittoSeq)
 library(viridis)
-library(doParallel)
 
 sce <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
@@ -72,10 +71,6 @@ names(cell_labels.class) <- rownames(cur_mat)
 cell_labels.prob <- predict.train(rffit, 
               newdata = cur_mat, 
               type = "prob")
-
-colnames(cell_labels.prob) <- c("Bcell", "BnT", "CD4", "CD8", "DC", 
-                                "HLADR", "MacCD163", "Mural", 
-                                "Neutrophil", "NK", "pDC", "Plasma", "Treg", "Tumor")
 
 # Distribution of maximum probabilities
 tibble(max_prob = rowMax(as.matrix(cell_labels.prob)),
@@ -150,12 +145,21 @@ dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
             breaks = seq(-3, 3, length.out = 101))
 ```
 
-## Define TLS
+## Define TLS and tumor patches
 
-```{r, fig.width=20, fig.height=20}
+```{r, message=FALSE, fig.width=20, fig.height=20}
 library(imcRtools)
 
-sce <- patchDetection(sce, patch_cells = sce$celltype %in% c("Bcell", "BnTcell"), 
+sce <- patchDetection(sce, patch_cells = sce$celltype == "Tumor", 
+                      colPairName = "neighborhood", min_patch_size = 25,
+                      img_id = "sample_id", name = "tumor_patches")
+
+sce <- minDistToCells(sce, x_cells = !is.na(sce$tumor_patches), img_id = "sample_id")
+
+sce$tumor_patches <- sce$distToCells <= 25
+sce$tumor_patches[is.na(sce$tumor_patches)] <- FALSE
+
+sce <- patchDetection(sce, patch_cells = sce$celltype %in% c("B", "BnT"), 
                       colPairName = "neighborhood", min_patch_size = 25, 
                       expand_by = 10, img_id = "sample_id", name = "CD20_patches")
 
@@ -163,6 +167,8 @@ plotSpatial(sce, img_id = "sample_id", node_color_by = "celltype", node_size_fix
   scale_color_manual(values = metadata(sce)$color_vectors$celltype)
 
 plotSpatial(sce, img_id = "sample_id", node_color_by = "CD20_patches", node_size_fix = 0.5) 
+
+plotSpatial(sce, img_id = "sample_id", node_color_by = "tumor_patches", node_size_fix = 0.5) 
 ```
 
 ### Write out example images
@@ -173,27 +179,33 @@ Here, we will outline the cells of each cell type onto of composite images.
 library(SingleCellExperiment)
 library(cytomapper)
 
-cell_types <- names(metadata(sce)$colour_vectors$cell_types)
-cell_types <- cell_types[cell_types != "unlabelled"]
+cell_types <- unique(sce$celltype)
 
 markers <- vector(mode = "list", length = length(cell_types))
 names(markers) <- cell_types
 
 markers[["B"]] <- c("CD20", "CD3")
-markers[["Plasma"]] <- c("CD38")
-markers[["CD4"]] <- c("CD4", "CD8a", "CD3")
-markers[["CD8"]] <- c("CD4", "CD8a", "CD3")
-markers[["Treg"]] <- c("CD4", "CD8a", "FOXP3")
 markers[["BnT"]] <- c("CD20", "CD3")
-markers[["DC"]] <- c("CD11c", "CD68")
-markers[["MacCD163"]] <- c("CD11c", "CD163")
-markers[["HLADR"]] <- c("HLADR", "CD11c")
+markers[["plasma"]] <- c("CD38")
+markers[["T_cell"]] <- c("CD3", "CD20")
+markers[["CD4"]] <- c("CD4", "CD8a", "FOXP3")
+markers[["CD8"]] <- c("CD4", "CD8a", "FOXP3")
+markers[["Treg"]] <- c("CD4", "CD8a", "FOXP3")
+markers[["DC"]] <- c("CD11c", "CD163", "CD68")
+markers[["MacCD163"]] <- c("CD11c", "CD163", "CD68")
+markers[["HLADR"]] <- c("CD11c", "CD163", "HLADR")
 markers[["Neutrophil"]] <- c("CD15", "MPO")
 markers[["NK"]] <- c("CD7", "CD3")
 markers[["pDC"]] <- c("CD303")
 markers[["Mural"]] <- c("SMA", "PDGFRb")
 markers[["Tumor"]] <- c("Ecad", "CarbonicAnhydrase")
 markers[["undefined"]] <- c("DNA1")
+
+patches <- vector(mode = "list", length = 2)
+names(patches) <- c("tumor_patches", "CD20_patches")
+
+patches[["tumor_patches"]] <- c("Ecad", "CarbonicAnhydrase")
+patches[["CD20_patches"]] <- c("CD20", "CD3")
 ```
 
 Normalize the images.
@@ -251,6 +263,50 @@ for(j in unique(sce$celltype)){
     }
 }
 
+
+for (j in c("tumor_patches", "CD20_patches")) {
+      
+      if (j == "tumor_patches") {
+        cur_sce <- sce[,sce[[j]]]
+      } else {
+        cur_sce <- sce[,!is.na(sce[[j]])]
+      }
+      
+      cur_markers <- patches[[j]]
+      
+      # when only few images are present and a certain celltypes does not exist an empty cur_sce object is created which cannot be processed.
+      if(dim(cur_sce)[2] == 0) {
+        next(j)
+      }
+      
+      cur_sce[[j]] <- 1
+      
+      if (length(cur_markers) == 1) {
+        plotPixels(image = images, 
+                   object = cur_sce, 
+                   mask = masks, 
+                   cell_id = "ObjectNumber",
+                   img_id = "sample_id", 
+                   colour_by = cur_markers, 
+                   outline_by = j,
+                   image_title = list(text = names(images),
+                                 cex = 1), 
+                   save_plot = list(filename = paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                            j, ".png")))
+      } else {
+        plotPixels(image = images, 
+                   object = cur_sce,
+                   mask = masks, 
+                   cell_id = "ObjectNumber",
+                   img_id = "sample_id", 
+                   colour_by = cur_markers, 
+                   outline_by = j,
+                   image_title = list(text = names(images),
+                                 cex = 1),
+                   save_plot = list(filename = paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                            j, ".png")))
+      }
+}
 ```
 
 ## Define matched cell types
@@ -259,7 +315,7 @@ To compare to mIF data, we will need to harmonize the cell types.
 
 ```{r matched-celltypes}
 matched_celltype <- sce$celltype
-matched_celltype[matched_celltype %in% c("Plasma", "HLADR", "Mural", "pDC", "NK", "undefined")] <- "other"
+matched_celltype[matched_celltype %in% c("plasma", "HLADR", "Mural", "pDC", "NK", "undefined")] <- "other"
 matched_celltype[matched_celltype %in% c("Treg", "CD4", "CD8")] <- "T"
 matched_celltype[matched_celltype == "TumorKi67"] <- "Tumor"
 sce$matched_celltype <- matched_celltype
