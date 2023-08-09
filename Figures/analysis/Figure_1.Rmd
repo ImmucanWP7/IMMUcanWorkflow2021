@@ -15,14 +15,42 @@ Code to generate the plots of Figure 1.
 library(SingleCellExperiment)
 library(tidyverse)
 library(imcRtools)
+library(cytomapper)
 
 sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
 
+images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+masks <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
+```
+
+## Show simple stats
+
+Number of cells.
+
+```{r}
 sce_imc
 sce_mIF
+```
 
-unique(sce_imc$celltypes)
+Number of cells per sample
+
+```{r}
+colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id) %>%
+  summarize(count = n()) %>%
+  arrange(count)
+
+colData(sce_mIF) %>%
+  as_tibble() %>%
+  group_by(patient_id) %>%
+  summarize(count = n()) %>%
+  arrange(count)
+```
+
+```{r}
+unique(sce_imc$celltype)
 unique(sce_mIF$celltype)
 ```
 
@@ -44,32 +72,104 @@ colData(sce_imc) %>%
 ```{r}
 if (!dir.exists("output/Figure_1/")) dir.create("output/Figure_1/")
 
-cur_sce <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001"]
+plotPixels(images[names(images) == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"], 
+           colour_by = c("Ecad", "CD20", "CD3", "CD38"),
+           bcg = list(Ecad = c(0, 15, 1),
+                      CD20 = c(0, 5, 1),
+                      CD3 = c(0, 10, 1),
+                      CD163 = c(0, 10, 1)),
+           colour = list(Ecad = c("black", "sienna4"),
+                        CD20 = c("black", "red3"),
+                        CD3 = c("black", "darkorchid"),
+                        CD163 = c("black", "green")),
+           image_title = NULL, 
+           legend = NULL,
+           save_plot = list(filename = "output/Figure_1/Figure_1B_1.png"))
 
-p <- plotSpatial(cur_sce, 
-            node_color_by = "external_celltypes",
+cur_sce <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
+
+(p <- plotSpatial(cur_sce, 
+            node_color_by = "celltype",
             img_id = "sample_id", node_size_fix = 2) +
-  scale_color_manual(values = metadata(sce_imc)$colour_vectors$cell_types) +
+  scale_color_manual(values = metadata(sce_imc)$color_vectors$celltype) +
   theme(axis.text = element_blank(),
         legend.position = "None") +
-  ggtitle("")
+  ggtitle(""))
 
-ggsave("output/Figure_1/Figure_1A_1.pdf", p)
+ggsave("output/Figure_1/Figure_1A_2.pdf", p)
 ```
 
 ### mIF Example image
 
-```{r}
-cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-BC2-0755"]
+```{r, fig.width=20, fig.height=20}
+celltype <- setNames(c("coral3", "sienna4", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "Tumor_CD15", "T", "Neutrophil", "MacCD163",
+                               "other", "DC", "B", "BnT"))
 
-p <- plotSpatial(cur_sce, 
-            node_color_by = "matched_celltype",
-            img_id = "sample_id", node_size_fix = 0.1,
+metadata(sce_mIF)$color_vectors$celltype <- celltype
+
+cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-NSCLC-0747"]
+
+(p <- plotSpatial(cur_sce, 
+            node_color_by = "celltype",
+            img_id = "sample_id", node_size_fix = 0.01,
             coords = c("nucleus.x", "nucleus.y")) +
-  scale_color_manual(values = metadata(sce_mIF)$color_vectors$matched_celltype) +
+  scale_color_manual(values = metadata(sce_mIF)$color_vectors$celltype) +
   theme(axis.text = element_blank(),
-        legend.position = "None") +
-  ggtitle("")
+        legend.position = "None",
+        panel.background = element_rect(fill = "black",
+                                colour = "black")) +
+  ggtitle(""))
 
-ggsave("output/Figure_1/Figure_1A_2.pdf", p, width = 12, height = 12)
+ggsave("output/Figure_1/Figure_1B_3.png", p)
+```
+
+Whole slide image. The original image was opened in QuPATH and saved as TIFF file 
+while downsampling the pixels with a factor of 5.
+
+
+```{r}
+library(terra)
+
+cur_img <- rast("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif")
+
+# Downscale 4 fold
+cur_img_small <- terra::aggregate(cur_img, fact = 4)
+
+# Save as CytoimageList object
+cur_CIL <- CytoImageList(EBImage::as.Image(as.array(t(cur_img_small))))
+
+channelNames(cur_CIL) <- c("DAPI", "CD15",  "CK", "CD3", "CD11c", "CD20", "CD163", "af")
+
+# One pixel is 0.4962um in the original resolution
+# The image was downsampled with a factor of 5 in QuPATH and with a factor of 4 
+# The image was resized 20 fold
+# We will calculate the exact scaling factor by using the original width/height
+
+# width 
+46080 / 2304
+
+# height
+44640 / 2232
+
+# The new pixel size is therefore: 
+20 * 0.4962
+
+# We will add a 2000um scale bar which is this many pixels
+2000 / 9.924
+
+plotPixels(cur_CIL, 
+           colour_by = c("CK", "CD20", "CD3", "CD163"),
+           bcg = list(CK = c(0, 5, 1),
+                      CD20 = c(0, 5, 1),
+                      CD3 = c(0, 5, 1),
+                      CD163 = c(0, 5, 1)),
+           colour = list(CK = c("black", "sienna4"),
+                        CD20 = c("black", "red3"),
+                        CD3 = c("black", "darkorchid"),
+                        CD163 = c("black", "green")),
+           image_title = NULL, 
+           legend = NULL,
+           scale_bar = list(length = 202, label = "", lwidth = 30, margin = c(100, 400)),
+           save_plot = list(filename = "output/Figure_1/Figure_1B_4.png"))
 ```
