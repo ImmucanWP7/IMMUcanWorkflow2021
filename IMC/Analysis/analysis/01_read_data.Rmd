@@ -75,7 +75,7 @@ library(dittoSeq)
 library(RColorBrewer)
 color_vectors <- list()
 
-matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+matched_celltype <- setNames(c("sienna4", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
                              c("Tumor", "T", "Neutrophil", "MacCD163",
                                "other", "DC", "B", "BnT"))
 patient_id <- setNames(brewer.pal(10, "Set3"),
@@ -88,15 +88,15 @@ names(col_vec_ROIs) <- unique(sce$ROI)
 col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
                         BCC = "#3F85A7", RCC = "#C81F43")
 
-celltype <- setNames(c("red3", "goldenrod2", "palevioletred1", 
-                       "darkorchid", "maroon4", "darkorange4", 
-                       "green4", "darkgreen",
-                       "green", "blue1", "yellow", 
-                       "deepskyblue", "tomato", "sienna4", 
-                       "black"),
-                     c("B", "plasma", "CD4", "CD8", "Treg", "BnT",
-                       "DC", "HLADR", "MacCD163", "Neutrophil", 
-                       "NK", "pDC", "Mural", "Tumor", "undefined"))
+celltype <- setNames(c("#BF0A3D", "goldenrod1", "palevioletred1",
+                           "darkorchid", "maroon3", "#F4800C",
+                           "green4", "darkgreen",
+                           "green3", "skyblue3", "yellow2",
+                           "deepskyblue", "tomato", "sienna4",
+                           "grey75"),
+                         c("B", "plasma", "CD4", "CD8", "Treg", "BnT",
+                           "DC", "HLADR", "MacCD163", "Neutrophil",
+                           "NK", "pDC", "Mural", "Tumor", "undefined"))
 
 color_vectors$celltype <- celltype
 

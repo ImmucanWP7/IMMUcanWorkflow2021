@@ -374,7 +374,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -385,8 +385,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -395,13 +395,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-08-07
+<strong>Last updated:</strong> 2023-08-10
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>Analysis/</code> <span
@@ -424,21 +424,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -529,15 +526,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48targetblank5daf24ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree21ddaa7e7a1afb9b93058f8a2b6d2268fe1dd510targetblank21ddaa7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48" target="_blank">5daf24e</a>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/21ddaa7e7a1afb9b93058f8a2b6d2268fe1dd510" target="_blank">21ddaa7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48targetblank5daf24ea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree21ddaa7e7a1afb9b93058f8a2b6d2268fe1dd510targetblank21ddaa7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +544,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/5daf24e1b3ce1c24efbb45225267a0f9ef1f1a48" target="_blank">5daf24e</a>.
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/21ddaa7e7a1afb9b93058f8a2b6d2268fe1dd510" target="_blank">21ddaa7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,10 +563,10 @@ Ignored files:
     Ignored:    Alignment/
     Ignored:    Figures/.Rproj.user/
     Ignored:    Figures/output/.DS_Store
+    Ignored:    Figures/output/Figure_1/
     Ignored:    IMC/.DS_Store
     Ignored:    IMC/Analysis/.DS_Store
     Ignored:    IMC/Analysis/.Rproj.user/
-    Ignored:    IMC/Analysis/analysis/figure/
     Ignored:    comparisons/.DS_Store
     Ignored:    comparisons/.Rproj.user/
     Ignored:    comparisons/analysis/figure/
@@ -581,7 +578,14 @@ Ignored files:
     Ignored:    mIF/Analysis/docs/.DS_Store
 
 Unstaged changes:
-    Modified:   IMC/Analysis/analysis/04_sample_correction.Rmd
+    Modified:   IMC/Analysis/analysis/01_read_data.Rmd
+    Modified:   mIF/Analysis/analysis/01_read_data.Rmd
+    Modified:   mIF/Analysis/docs/01_read_data.html
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-1.png
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-2.png
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-3.png
+    Modified:   mIF/Analysis/docs/figure/01_read_data.Rmd/buildSpatialGraph-4.png
+    Modified:   mIF/Analysis/docs/index.html
 
 </code></pre>
 <p>
@@ -628,6 +632,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6abc57b2190f65c659089879dca97d06ba3f55bf/IMC/Analysis/analysis/04_sample_correction.Rmd" target="_blank">6abc57b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+Recompiled workflow
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/ImmucanWP7/IMMUcanWorkflow2021/6abc57b2190f65c659089879dca97d06ba3f55bf/IMC/Analysis/docs/04_sample_correction.html" target="_blank">6abc57b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+Recompiled workflow
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -846,11 +884,13 @@ using batch effect correction methods developed for scRNAseq data.</p>
 <h2>Load data and libraries</h2>
 <p>First, we will load the data and libraries again.</p>
 <pre class="r"><code>library(batchelor)</code></pre>
+<pre><code>Warning: package &#39;MatrixGenerics&#39; was built under R version 4.3.1</code></pre>
 <pre><code>Warning: package &#39;IRanges&#39; was built under R version 4.3.1</code></pre>
 <pre><code>Warning: package &#39;GenomeInfoDb&#39; was built under R version 4.3.1</code></pre>
 <pre class="r"><code>library(dittoSeq)
-library(scater)
-library(viridis)
+library(scater)</code></pre>
+<pre><code>Warning: package &#39;scuttle&#39; was built under R version 4.3.1</code></pre>
+<pre class="r"><code>library(viridis)
 library(DT)
 library(BiocSingular)
 library(cowplot)
@@ -919,6 +959,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6abc57b2190f65c659089879dca97d06ba3f55bf/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-1.png" target="_blank">6abc57b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-1.png" target="_blank">c81be89</a>
@@ -1004,6 +1055,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6abc57b2190f65c659089879dca97d06ba3f55bf/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-2.png" target="_blank">6abc57b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-patient-indication-2.png" target="_blank">c81be89</a>
@@ -1093,6 +1155,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/6abc57b2190f65c659089879dca97d06ba3f55bf/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-expression-1.png" target="_blank">6abc57b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c81be89030d7f88b766df14ed106d2b6ae552774/IMC/Analysis/docs/figure/04_sample_correction.Rmd/dimred-viz-expression-1.png" target="_blank">c81be89</a>
@@ -1189,13 +1262,13 @@ other attached packages:
  [1] cowplot_1.1.1               BiocSingular_1.16.0        
  [3] DT_0.28                     viridis_0.6.4              
  [5] viridisLite_0.4.2           scater_1.28.0              
- [7] scuttle_1.10.1              dittoSeq_1.12.0            
+ [7] scuttle_1.10.2              dittoSeq_1.12.0            
  [9] ggplot2_3.4.2               batchelor_1.16.0           
 [11] SingleCellExperiment_1.22.0 SummarizedExperiment_1.30.2
 [13] Biobase_2.60.0              GenomicRanges_1.52.0       
 [15] GenomeInfoDb_1.36.1         IRanges_2.34.1             
 [17] S4Vectors_0.38.1            BiocGenerics_0.46.0        
-[19] MatrixGenerics_1.12.2       matrixStats_1.0.0          
+[19] MatrixGenerics_1.12.3       matrixStats_1.0.0          
 [21] workflowr_1.7.0            
 
 loaded via a namespace (and not attached):
@@ -1211,10 +1284,10 @@ loaded via a namespace (and not attached):
 [19] labeling_0.4.2            utf8_1.2.3               
 [21] promises_1.2.0.1          rmarkdown_2.23           
 [23] ps_1.7.5                  ggbeeswarm_0.7.2         
-[25] xfun_0.39                 zlibbioc_1.46.0          
+[25] xfun_0.40                 zlibbioc_1.46.0          
 [27] cachem_1.0.8              beachmat_2.16.0          
 [29] jsonlite_1.8.7            highr_0.10               
-[31] later_1.3.1               DelayedArray_0.26.6      
+[31] later_1.3.1               DelayedArray_0.26.7      
 [33] BiocParallel_1.34.2       irlba_2.3.5.1            
 [35] parallel_4.3.0            R6_2.5.1                 
 [37] bslib_0.5.0               stringi_1.7.12           

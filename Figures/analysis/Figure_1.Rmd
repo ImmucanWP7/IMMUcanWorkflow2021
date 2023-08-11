@@ -73,15 +73,15 @@ colData(sce_imc) %>%
 if (!dir.exists("output/Figure_1/")) dir.create("output/Figure_1/")
 
 plotPixels(images[names(images) == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"], 
-           colour_by = c("Ecad", "CD20", "CD3", "CD38"),
+           colour_by = c("Ecad", "CD20", "CD3", "CD163"),
            bcg = list(Ecad = c(0, 15, 1),
                       CD20 = c(0, 5, 1),
                       CD3 = c(0, 10, 1),
                       CD163 = c(0, 10, 1)),
            colour = list(Ecad = c("black", "sienna4"),
-                        CD20 = c("black", "red3"),
+                        CD20 = c("black", "#BF0A3D"),
                         CD3 = c("black", "darkorchid"),
-                        CD163 = c("black", "green")),
+                        CD163 = c("black", "green3")),
            image_title = NULL, 
            legend = NULL,
            save_plot = list(filename = "output/Figure_1/Figure_1B_1.png"))
@@ -102,12 +102,6 @@ ggsave("output/Figure_1/Figure_1A_2.pdf", p)
 ### mIF Example image
 
 ```{r, fig.width=20, fig.height=20}
-celltype <- setNames(c("coral3", "sienna4", "chartreuse3", "cyan2", "darkgoldenrod2", "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
-                             c("Tumor", "Tumor_CD15", "T", "Neutrophil", "MacCD163",
-                               "other", "DC", "B", "BnT"))
-
-metadata(sce_mIF)$color_vectors$celltype <- celltype
-
 cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-NSCLC-0747"]
 
 (p <- plotSpatial(cur_sce, 
@@ -126,7 +120,6 @@ ggsave("output/Figure_1/Figure_1B_3.png", p)
 
 Whole slide image. The original image was opened in QuPATH and saved as TIFF file 
 while downsampling the pixels with a factor of 5.
-
 
 ```{r}
 library(terra)
@@ -165,9 +158,9 @@ plotPixels(cur_CIL,
                       CD3 = c(0, 5, 1),
                       CD163 = c(0, 5, 1)),
            colour = list(CK = c("black", "sienna4"),
-                        CD20 = c("black", "red3"),
+                        CD20 = c("black", "#BF0A3D"),
                         CD3 = c("black", "darkorchid"),
-                        CD163 = c("black", "green")),
+                        CD163 = c("black", "green3")),
            image_title = NULL, 
            legend = NULL,
            scale_bar = list(length = 202, label = "", lwidth = 30, margin = c(100, 400)),

@@ -22,10 +22,13 @@ These will be shared across all datasets.
 library(RColorBrewer)
 
 color_vectors <- list()
-matched_celltype <- setNames(c("coral3", "chartreuse3", "cyan2", "darkgoldenrod2", 
-                               "grey75", "#DC6FE2", "#BF0A3D", "#F4800C"),
+matched_celltype <- setNames(c("sienna4", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
                              c("Tumor", "T", "Neutrophil", "MacCD163",
                                "other", "DC", "B", "BnT"))
+celltype <- setNames(c("sienna4", "tan3", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
+                        c("Tumor", "Tumor_CD15", "T", "Neutrophil", "MacCD163",
+                          "other", "DC", "B", "BnT"))
+
 patient_id <- setNames(brewer.pal(10, "Set3"),
                        c("10082495", "10067433", "10074349", "10075572", "10068868", 
                          "10073140", "10075371", "10061074", "10071582", "10074832"))
@@ -36,6 +39,7 @@ col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D",
 color_vectors$patient_id <- patient_id
 color_vectors$Indication <- col_vec_indication
 color_vectors$matched_celltype <- matched_celltype
+color_vectors$celltype <- celltype
 ```
 
 ## Read whole slide data
