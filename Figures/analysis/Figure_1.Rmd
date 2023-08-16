@@ -84,6 +84,7 @@ plotPixels(images[names(images) == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01
                         CD163 = c("black", "green3")),
            image_title = NULL, 
            legend = NULL,
+           scale_bar = list(length = 100, label = ""),
            save_plot = list(filename = "output/Figure_1/Figure_1B_1.png"))
 
 cur_sce <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
@@ -93,10 +94,12 @@ cur_sce <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-
             img_id = "sample_id", node_size_fix = 2) +
   scale_color_manual(values = metadata(sce_imc)$color_vectors$celltype) +
   theme(axis.text = element_blank(),
-        legend.position = "None") +
+        legend.position = "None",
+        panel.background = element_rect(fill = "black",
+                                colour = "black")) +
   ggtitle(""))
 
-ggsave("output/Figure_1/Figure_1A_2.pdf", p)
+ggsave("output/Figure_1/Figure_1A_2.pdf", p, width = 7, height = 7)
 ```
 
 ### mIF Example image
