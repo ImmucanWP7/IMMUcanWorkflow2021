@@ -15,10 +15,88 @@ Code to generate the plots of Figure 1.
 library(SingleCellExperiment)
 library(tidyverse)
 library(imcRtools)
+library(cytomapper)
+library(EBImage)
 
 sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
 
-sce_imc
+images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+masks <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
+```
+
+### IMC Example image
+
+```{r}
+if (!dir.exists("output/Figure_3/")) dir.create("output/Figure_3/")
+
+cur_img <- images$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
+cur_mask <- masks$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
+
+# Rotate to match immucan-roi orientation
+cur_img <- flop(flip(cur_img))
+cur_mask <- flop(flip(cur_mask))
+cur_CIL_img <- CytoImageList(cur_img)
+cur_CIL_mask <- CytoImageList(cur_mask)
+
+mcols(cur_CIL_mask)$sample_id <- "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"
+
+plotPixels(cur_CIL_img, 
+           colour_by = c("Ecad", "CD45RO", "CD45RA", "CD163"),
+           bcg = list(Ecad = c(0, 5, 1),
+                      CD45RO = c(0, 3, 1),
+                      CD45RA = c(0, 3, 1),
+                      CD163 = c(0, 10, 1)),
+           colour = list(Ecad = c("black", "orange"),
+                        CD45RO = c("black", "red"),
+                        CD45RA = c("black", "red"),
+                        CD163 = c("black", "green")),
+           image_title = NULL, 
+           legend = NULL,
+           scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+           save_plot = list(filename = "output/Figure_3/Figure_3_A.png"))
+
+set.seed(123)
+labels <- colorLabels(cur_CIL_mask[[1]])
+labels <- CytoImageList(labels)
+channelNames(labels) <- c("red", "green", "blue")
+
+plotPixels(labels, 
+           colour_by = c("red", "green", "blue"),
+           image_title = NULL,
+           legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+          save_plot = list(filename = "output/Figure_3/Figure_3_B_1.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "celltype",
+          colour = list(celltype = metadata(sce_imc)$color_vectors$celltype),
+          image_title = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+          save_plot = list(filename = "output/Figure_3/Figure_3_B_2.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "CD20_patches",
+          image_title = NULL,
+          legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10), colour = "black"),
+          save_plot = list(filename = "output/Figure_3/Figure_3_B_3.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "tumor_patches",
+          colour = list(tumor_patches = c(`TRUE` = "brown", `FALSE` = "white")),
+          image_title = NULL,
+          legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10), colour = "black"),
+          save_plot = list(filename = "output/Figure_3/Figure_3_B_4.png"))
 ```
 
 ### Overview stats
@@ -35,14 +113,13 @@ p <- colData(sce_imc) %>%
                     name = "Cell types") +
   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
   theme_classic(base_size = 20) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") +
   xlab("Patients") +
   ylab("Cell type count")
 
 p
 
-if (!dir.exists("output/Figure_3")) dir.create("output/Figure_3")
-
-ggsave("output/Figure_3/Figure_3.pdf", p)
+ggsave("output/Figure_3/Figure_3_C.pdf", p, width = 12, height = 8)
 ```
 
