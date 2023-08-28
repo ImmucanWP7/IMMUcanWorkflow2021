@@ -93,6 +93,7 @@ p_6 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "tissue.type",
 p_final <- plot_grid(p_1, p_2, p_3, p_4, p_5, p_6, nrow = 2, byrow = FALSE) 
 
 ggsave(filename = "output/Figure_4/Figure_4A.pdf", plot = p_final, width = 15, height = 10)
+ggsave(filename = "output/Figure_4/Figure_4A_legend.pdf", plot = p_1_with_legend)
 ```
 
 ## Cell phenotype correlation
@@ -225,9 +226,74 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
   theme(legend.position = "none") +
   ggtitle("Other cells") +
   coord_fixed())
-
-p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, nrow = 1) 
-
-ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40)
 ```
 
+## CD20 patch and tumor patch correlation
+
+```{r}
+cur_mIF <- colData(sce_mIF)
+cur_IMC <- colData(sce_IMC)
+
+cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
+cur_mIF$TLS.ID <- as.factor(!is.na(cur_mIF$TLS.ID))
+cur_mIF$tissue.type <- as.factor(cur_mIF$tissue.type == "tumor")
+cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
+cur_IMC$CD20_patches <- as.factor(!is.na(cur_IMC$CD20_patches))
+cur_IMC$tumor_patches <- as.factor(cur_IMC$tumor_patches)
+
+frac_IMC_TLS <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, CD20_patches, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_mIF_TLS <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, TLS.ID, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_IMC_tumor <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, tumor_patches, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+frac_mIF_tumor <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, tissue.type, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  mutate(frac = count/sum(count))
+
+combined_TLS <- left_join(frac_IMC_TLS, frac_mIF_TLS, by = join_by("sample_id", CD20_patches == TLS.ID))
+combined_TLS$patient_id <- sub("-", "", str_extract(combined_TLS$sample_id, "[0-9]{8}-"))
+
+combined_tumor <- left_join(frac_IMC_tumor, frac_mIF_tumor, by = join_by("sample_id", tumor_patches == tissue.type))
+combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, "[0-9]{8}-"))
+
+(p_TLS <- ggplot(combined_TLS) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 1)) + xlim(c(0, 1)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("CD20 patches") +
+  coord_fixed())
+
+(p_tumor <- ggplot(combined_tumor) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 1)) + xlim(c(0, 1)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("Tumor patches") +
+  coord_fixed())
+
+p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 8) 
+
+ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40, height = 15)
+```
