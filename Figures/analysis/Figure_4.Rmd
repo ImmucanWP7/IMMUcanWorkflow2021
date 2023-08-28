@@ -25,7 +25,74 @@ sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW
 ## Example images
 
 ```{r}
-cur_mIF <- sce_IMC[,sce_IMC$sample_id == ""]
+cur_IMC <- sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
+cur_mIF <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
+
+# Rescale to same x-y dimensions - one pixel in mIF is 0.4962µm
+cur_mIF$nucleus.x <- cur_mIF$nucleus.x * 0.4962
+cur_mIF$nucleus.y <- cur_mIF$nucleus.y * 0.4962
+cur_mIF$TLS.ID <- as.character(cur_mIF$TLS.ID)
+
+# Plot to match Figure 3
+p_1 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "bottom") +
+  ggtitle("")
+
+p_2 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "matched_celltype", coords = c("nucleus.x", "nucleus.y")) + 
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_3 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "CD20_patches") + 
+  scale_color_manual(values = c("234" = "#FB9A99", "239" = "#E31A1C")) +
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_4 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "TLS.ID", coords = c("nucleus.x", "nucleus.y")) + 
+  scale_color_manual(values = c("1" = "red")) +
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_5 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "tumor_patches") + 
+  scale_color_manual(values = c("TRUE" = "sienna", "FALSE" = "grey")) + 
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_6 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "tissue.type", coords = c("nucleus.x", "nucleus.y")) + 
+  scale_color_manual(values = c("tumor" = "sienna", "stroma" = "grey")) + 
+  xlim(c(600,0)) + ylim(c(0,600)) +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        legend.position = "none") +
+  ggtitle("")
+
+p_final <- plot_grid(p_1, p_2, p_3, p_4, p_5, p_6, nrow = 2, byrow = FALSE) 
+
+ggsave(filename = "output/Figure_4/Figure_4A.pdf", plot = p_final, width = 15, height = 10)
 ```
 
 ## Cell phenotype correlation
@@ -159,7 +226,7 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
   ggtitle("Other cells") +
   coord_fixed())
 
-p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, nrow = 1) + labs(caption = "test")
+p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, nrow = 1) 
 
 ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40)
 ```
