@@ -14,25 +14,18 @@ Code to generate the plots of Figure 4.
 ```{r, message=FALSE}
 library(SingleCellExperiment)
 library(tidyverse)
+library(ggpubr)
+library(cowplot)
 library(imcRtools)
-library(RColorBrewer)
 
-sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
-sce_mif <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
 
-sce_imc
-sce_mif
+## Example images
 
-sce_imc$matched_celltype <- sce_imc$external_matched_celltype
-
-sce_imc$matched_celltype[sce_imc$matched_celltype == "undefined"] <- "other"
-
-## Define color scale for the patients
-patient_color <- setNames(c("#BE1E2D", "#FF4B5B", "#F7941D", "#FFCA89", "#00A651", "#5FFF73", "#00AEEF", "#9BD7FF", "#2E3192", "#675BFF"),
-                          c("10067433", "10082495", "10075572", "10074349", "10068868", "10073140", "10075371", "10061074", "10074832", "10071582"))
-
-levels(sce_imc$patient_id) <- names(patient_color)
-levels(sce_mif$patient_id) <- names(patient_color)
+```{r}
+cur_mIF <- sce_IMC[,sce_IMC$sample_id == ""]
 ```
 
 ## Cell phenotype correlation
@@ -41,48 +34,133 @@ levels(sce_mif$patient_id) <- names(patient_color)
 if (!dir.exists("output/Figure_4/")) dir.create("output/Figure_4/")
 
 # Match cell types
-cur_mif <- colData(sce_mif)
-cur_imc <- colData(sce_imc)
+cur_mIF <- colData(sce_mIF)
+cur_IMC <- colData(sce_IMC)
 
-frac_imc <- cur_imc %>% as_tibble() %>%
+cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
+cur_mIF$matched_celltype <- as.factor(cur_mIF$matched_celltype)
+cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
+cur_IMC$matched_celltype <- as.factor(cur_IMC$matched_celltype)
+
+frac_IMC <- cur_IMC %>% as_tibble() %>%
   group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
-frac_mif <- cur_mif %>% as_tibble() %>%
+frac_mIF <- cur_mIF %>% as_tibble() %>%
   group_by(sample_id, matched_celltype, .drop = FALSE) %>%
   summarize(count = n()) %>%
   mutate(frac = count/sum(count))
 
-combined_df <- merge(frac_imc, frac_mif, by=c("sample_id", "matched_celltype"), sort=FALSE)
-combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+combined <- left_join(frac_IMC, frac_mIF, by=c("sample_id", "matched_celltype"))
+combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-"))
 
-cur_res <- combined_df %>%
-  group_by(matched_celltype) %>%
-  mutate(cor_all = cor(frac.x, frac.y)) %>%
-  ungroup() %>%
-  group_by(matched_celltype, patient_id) %>%
-  summarize(cor = cor(frac.x, frac.y),
-            cor_all = mean(cor_all)) %>%
-  ungroup() %>%
-  group_by(matched_celltype) %>%
-  mutate(cor_mean = mean(cor, na.rm = TRUE))
+(p_B <- ggplot(combined[combined$matched_celltype == "B",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.3)) + xlim(c(0, 0.3)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("B cells") +
+  coord_fixed())
 
-cur_res$patient_id <- factor(cur_res$patient_id, levels = names(patient_color))
+(p_BnT <- ggplot(combined[combined$matched_celltype == "BnT",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.4)) + xlim(c(0, 0.4)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("BnT cells") +
+  coord_fixed())
 
-p <- ggplot(cur_res) +
-    geom_abline(slope = 0, intercept = 0.5) +
-  geom_abline(slope = 0, intercept = 0.75) +
-    geom_boxplot(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor)) +
-    geom_point(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor, color = patient_id)) +
-    geom_point(aes(reorder(matched_celltype, cor_all, decreasing=TRUE), cor_all), color = "dark red", size = 3) +
-    theme_classic(base_size = 20) + 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_color_manual(values = patient_color, name = "Patient ID") + 
-  ylab("Cell phenotype correlation") +
-  xlab("") +
-  scale_y_continuous(breaks = seq(-1,1,0.25))
+(p_T <- ggplot(combined[combined$matched_celltype == "T",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.6)) + xlim(c(0, 0.6)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("T cells") +
+  coord_fixed())
 
-ggsave(filename = "output/Figure_4/Figure_4A.pdf", plot = p)
+(p_Mac <- ggplot(combined[combined$matched_celltype == "MacCD163",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.3)) + xlim(c(0, 0.3)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("Macrophages") +
+  coord_fixed())
+
+(p_DC <- ggplot(combined[combined$matched_celltype == "DC",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.2)) + xlim(c(0, 0.2)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("DC") +
+  coord_fixed())
+
+(p_Neutro <- ggplot(combined[combined$matched_celltype == "Neutrophil",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.2)) + xlim(c(0, 0.2)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("Neutrophils") +
+  coord_fixed())
+
+(p_Tumor <- ggplot(combined[combined$matched_celltype == "Tumor",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.8)) + xlim(c(0, 0.8)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("Tumor cells") +
+  coord_fixed())
+
+(p_other <- ggplot(combined[combined$matched_celltype == "other",]) +
+  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
+  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
+  geom_point(aes(frac.x, frac.y, color = patient_id)) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") + 
+  scale_color_manual(values = c(metadata(sce_IMC)$color_vectors$ROIs, metadata(sce_IMC)$color_vectors$patient_id)) +
+  ylim(c(0, 0.7)) + xlim(c(0, 0.7)) +
+  stat_regline_equation(aes(frac.x, frac.y, label = paste(..eq.label.., ..rr.label.., sep = "~~~~")), size = 5) +
+  theme(legend.position = "none") +
+  ggtitle("Other cells") +
+  coord_fixed())
+
+p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, nrow = 1) + labs(caption = "test")
+
+ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40)
 ```
 
