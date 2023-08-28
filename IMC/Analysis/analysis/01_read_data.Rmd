@@ -78,9 +78,8 @@ color_vectors <- list()
 matched_celltype <- setNames(c("sienna4", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
                              c("Tumor", "T", "Neutrophil", "MacCD163",
                                "other", "DC", "B", "BnT"))
-patient_id <- setNames(brewer.pal(10, "Set3"),
-                       c("10082495", "10067433", "10074349", "10075572", "10068868", 
-                         "10073140", "10075371", "10061074", "10071582", "10074832"))
+patient_id <- setNames(c("#BE1E2D", "#FF4B5B", "#F7941D", "#FFCA89", "#00A651", "#5FFF73", "#00AEEF", "#9BD7FF", "#2E3192", "#675BFF"),
+                          c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10075572", "10082495"))
 
 col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
 names(col_vec_ROIs) <- unique(sce$ROI)
