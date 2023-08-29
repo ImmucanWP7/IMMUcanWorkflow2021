@@ -267,7 +267,7 @@ combined_TLS$patient_id <- sub("-", "", str_extract(combined_TLS$sample_id, "[0-
 combined_tumor <- left_join(frac_IMC_tumor, frac_mIF_tumor, by = join_by("sample_id", tumor_patches == tissue.type))
 combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, "[0-9]{8}-"))
 
-(p_TLS <- ggplot(combined_TLS) +
+(p_TLS <- ggplot(combined_TLS[combined_TLS$CD20_patches == TRUE,]) +
   stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
   geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
@@ -280,7 +280,7 @@ combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, 
   ggtitle("CD20 patches") +
   coord_fixed())
 
-(p_tumor <- ggplot(combined_tumor) +
+(p_tumor <- ggplot(combined_tumor[combined_tumor$tumor_patches == TRUE,]) +
   stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line") + 
   geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE) + 
   geom_point(aes(frac.x, frac.y, color = patient_id)) + 
@@ -293,9 +293,9 @@ combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, 
   ggtitle("Tumor patches") +
   coord_fixed())
 
-p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 8) 
+p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 5) 
 
-ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40, height = 15)
+ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 30, height = 15)
 ```
 
 ## Differential abundance testing
