@@ -297,3 +297,98 @@ p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p
 
 ggsave(filename = "output/Figure_4/Figure_4B_1.pdf", plot = p_final, width = 40, height = 15)
 ```
+
+## Differential abundance testing
+
+```{r, message=FALSE}
+library(edgeR)
+library(ggrepel)
+
+cur_mIF <- colData(sce_mIF)
+cur_IMC <- colData(sce_IMC)
+
+# Count cell types for IMC
+abundances_IMC <- cur_IMC %>% as_tibble() %>%
+  group_by(sample_id, matched_celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+
+rownames(abundances_IMC) <- abundances_IMC$matched_celltype
+abundances_IMC$matched_celltype <- NULL
+
+# Metdata fir IMC
+meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
+                       patient_id = sub("-", "", str_extract(colnames(abundances_IMC), "[0-9]{8}-")),
+                       modality = "IMC")
+
+# Count cell types for mIF
+abundances_IF <- cur_mIF %>% as_tibble() %>%
+  group_by(sample_id, matched_celltype) %>%
+  summarize(count = n()) %>%
+  pivot_wider(names_from = sample_id, 
+              values_from = count, values_fill = 0) %>%
+  as.data.frame()
+
+rownames(abundances_IF) <- abundances_IF$matched_celltype
+abundances_IF$matched_celltype <- NULL
+
+# Metadata for mIF
+meta_IF <- data.frame(sample_id = colnames(abundances_IF),
+                      patient_id = sub("-", "", str_extract(colnames(abundances_IF), "[0-9]{8}-")),
+                      modality = "mIF")
+
+colnames(abundances_IMC) <- paste(colnames(abundances_IMC), "IMC")
+colnames(abundances_IF) <- paste(colnames(abundances_IF), "mIF")
+
+combined_df <- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
+combined_meta <- rbind(meta_IMC, meta_IF)
+
+# DA testing
+y.ab <- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)
+
+# Define the design matrix for the model: Add modality to the model to account for matched design
+design <- model.matrix(~sample_id + modality, data = y.ab$samples)
+
+# Estimate NB and QL dispersion
+y.ab <- estimateDisp(y.ab, design, trend="none")
+summary(y.ab$common.dispersion)
+
+plotBCV(y.ab, cex=1)
+
+fit.ab <- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
+
+summary(fit.ab$var.prior)
+summary(fit.ab$df.prior)
+
+plotQLDisp(fit.ab, cex=1)
+
+# Test for differential abundance of cell types 
+res <- glmQLFTest(fit.ab, coef=ncol(design))
+
+summary(decideTests(res))
+DA <- topTags(res)$table
+
+DA$celltype <- rownames(DA)
+DA$sign <- DA$FDR<0.05
+DA
+
+# Volcano plot
+ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
+  geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
+  theme_classic()
+
+# MA plot
+(p <- ggplot(DA) + geom_abline(intercept = 0, slope = 0, color = "dark red", lwd = 3) +
+  geom_point(aes(logCPM, logFC), size = 7) +
+  geom_point(aes(logCPM, logFC, color = sign), size = 5) +
+  geom_label_repel(aes(logCPM, logFC, label = celltype), size = 5) + 
+  scale_color_manual(values = c("TRUE" = "dark green", "FALSE" = "white"), 
+                     name = "Significance") + 
+  ylab(c("log2 Fold Change")) + xlab("log2 CPM") +
+  ylim(c(-1.5, 1.5)) +
+  theme_classic(base_size = 20))
+
+ggsave(filename = "output/Figure_4/Figure_4B_2.pdf", plot = p, width = 10, height = 7)
+```
