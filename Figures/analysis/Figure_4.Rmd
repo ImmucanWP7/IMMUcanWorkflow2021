@@ -420,3 +420,70 @@ p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p
 
 ggsave(filename = "output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, height = 15)
 ```
+
+## Differential connectivity analysis
+
+```{r prepare-data}
+# Prepare mIF data
+cur_mIF <- sce_mIF
+colData(cur_mIF) <- colData(cur_mIF)[,c("sample_id", "patient_id", "nucleus.x", "nucleus.y", "matched_celltype")]
+cur_mIF$Pos_X <- cur_mIF$nucleus.x
+cur_mIF$Pos_Y <- cur_mIF$nucleus.y
+
+cur_mIF$Pos_X <- cur_mIF$Pos_X * 0.4962
+cur_mIF$Pos_Y <- cur_mIF$Pos_Y * 0.4962
+
+cur_mIF$nucleus.x <- NULL
+cur_mIF$nucleus.y <- NULL
+
+rowData(cur_mIF) <- NULL
+assays(cur_mIF) <- list()
+metadata(cur_mIF) <- list()
+
+rownames(cur_mIF) <- NULL
+
+colPairs(cur_mIF) <- NULL
+cur_mIF$modality <- "mIF"
+
+# Prepare IMC data
+cur_IMC <- sce_IMC
+colData(cur_IMC) <- colData(cur_IMC)[,c("sample_id", "patient_id", "matched_celltype", "Pos_X", "Pos_Y")]
+
+rowData(cur_IMC) <- NULL
+assays(cur_IMC) <- list()
+metadata(cur_IMC) <- list()
+
+rownames(cur_IMC) <- NULL
+reducedDims(cur_IMC) <- NULL
+colPairs(cur_IMC) <- NULL
+cur_IMC$modality <- "IMC"
+
+# Merge data
+all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
+all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
+```
+
+Run `spicyR`
+
+```{r}
+library(spicyR)
+
+spicyTest <- spicy(
+  all_sce,
+  condition = "modality",
+  subject = "sample_id",
+  spatialCoords = c("Pos_X", "Pos_Y"),
+  window = "square",
+  cellType = "matched_celltype",
+  imageID = "sample_id_global",
+  Rs = c(20, 50, 100)
+)
+
+(p <- signifPlot(
+  spicyTest,
+  breaks = c(-2, 2, 1),
+  cutoff = 0.01
+)) 
+
+ggsave(filename = "output/Figure_4/Figure_4E.pdf", plot = p, width = 7, height = 5)
+```
