@@ -421,7 +421,9 @@ p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p
 ggsave(filename = "output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, height = 15)
 ```
 
-## Differential connectivity analysis
+# Spatial comparison
+
+## Margin of data
 
 ```{r prepare-data}
 # Prepare mIF data
@@ -462,6 +464,125 @@ cur_IMC$modality <- "IMC"
 all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
 all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ```
+
+## Lcross based comparison
+
+```{r laod-libraries, message=FALSE}
+library(sf)
+library(spatstat)
+```
+
+```{r Lcross}
+# Example image
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_004"]
+cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
+
+plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = FALSE)
+
+# Create multipoint pattern
+cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y, 
+               xrange = c(0, max(cur_sce$Pos_X)), yrange = c(0, max(cur_sce$Pos_Y)),
+               marks = factor(cur_sce$modality, levels = c("IMC", "mIF")))
+
+plot(cur_ppp)
+
+cur_L <- Lcross(cur_ppp, "IMC", "mIF")
+
+plot(cur_L)
+
+cur_L_inhom <- Lcross.inhom(cur_ppp, "IMC", "mIF")
+
+plot(cur_L_inhom)
+
+cur_env <- envelope(cur_ppp, Lcross, i = "IMC", j = "mIF")
+
+plot(cur_env)
+
+cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF")
+
+cur_env_inhom <- envelope(cur_ppp, Lcross.inhom, i = "IMC", j = "mIF")
+
+plot(cur_env_inhom)
+
+cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
+```
+
+
+```{r automatic}
+set.seed(12345)
+out <- lapply(unique(all_sce$sample_id), function(x){
+  cur_sce <- all_sce[,all_sce$sample_id == x]
+  cur_out <- lapply(unique(cur_sce$matched_celltype), function(y){
+    cur_sce_2 <- cur_sce[,cur_sce$matched_celltype == y]
+    
+    if (sum(cur_sce_2$modality == "IMC") < 10 | sum(cur_sce_2$modality == "mIF") < 10) {
+      return(NULL)
+    }
+    
+    cur_ppp <- ppp(x = cur_sce_2$Pos_X, y = cur_sce_2$Pos_Y, 
+               xrange = c(0, max(cur_sce_2$Pos_X)), yrange = c(0, max(cur_sce_2$Pos_Y)),
+               marks = factor(cur_sce_2$modality, levels = c("IMC", "mIF")))
+    
+    cur_L <- Lcross(cur_ppp, i = "IMC", j = "mIF")
+    cur_L_inhom <- Lcross.inhom(cur_ppp, i = "IMC", j = "mIF")
+    
+    cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF")
+    cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF")
+    
+    return(list(test = cur_test, test_inhom = cur_test_inhom, 
+                L = cur_L, L_inhom = cur_L_inhom))
+  })
+  
+  names(cur_out) <- unique(cur_sce$matched_celltype)
+  
+  return(cur_out)
+})
+
+names(out) <- unique(all_sce$sample_id)
+```
+
+```{r}
+test <- lapply(out, function(x){
+  lapply(x, function(y){
+    lapply(y, function(z){
+          if (is(z, "fv")) {
+      return(sum(z$iso - z$theo))
+    } else {
+      return(NULL)
+    }
+    })
+  })
+})
+
+test <- unlist(test)
+
+test2 <- lapply(out, function(x){
+  lapply(x, function(y){
+    lapply(y, function(z){
+          if (is(z, "htest")) {
+      return(z$p.value)
+    } else {
+      return(NULL)
+    }
+    })
+  })
+})
+
+test2 <- unlist(test2)
+
+test <- as.data.frame(test)
+test$sample_id <- str_split(rownames(test), "\\.", simplify = TRUE)[,1]
+test$celltype <- str_split(rownames(test), "\\.", simplify = TRUE)[,2]
+test$type <- str_split(rownames(test), "\\.", simplify = TRUE)[,3]
+
+test$p.value <- test2
+
+test[test$type == "L",]
+
+test[test$p.value != 0.01 & test$type == "L",]
+```
+
+## Differential connectivity analysis
 
 Run `spicyR`
 
