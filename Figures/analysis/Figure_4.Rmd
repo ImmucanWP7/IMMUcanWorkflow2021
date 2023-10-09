@@ -423,7 +423,7 @@ ggsave(filename = "output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, h
 
 # Spatial comparison
 
-## Margin of data
+## Mergin of data
 
 ```{r prepare-data}
 # Prepare mIF data
@@ -474,7 +474,7 @@ library(spatstat)
 
 ```{r Lcross}
 # Example image
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_004"]
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_007"]
 cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
 
 plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = FALSE)
@@ -486,7 +486,10 @@ cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y,
 
 plot(cur_ppp)
 
-cur_L <- Lcross(cur_ppp, "IMC", "mIF")
+miplot(cur_ppp)
+#plot(frypoints(cur_ppp))
+
+cur_L <- Lcross(cur_ppp, "IMC", "mIF", rmax = 300)
 
 plot(cur_L)
 
@@ -494,17 +497,35 @@ cur_L_inhom <- Lcross.inhom(cur_ppp, "IMC", "mIF")
 
 plot(cur_L_inhom)
 
-cur_env <- envelope(cur_ppp, Lcross, i = "IMC", j = "mIF")
+cur_env <- envelope(cur_ppp, Lcross, i = "mIF", j = "IMC", fix.n = TRUE, fix.marks = TRUE, rmax = 300)
 
 plot(cur_env)
 
-cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF")
+cur_env <- envelope(cur_ppp, Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
+
+plot(cur_env)
+
+cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+cur_test <- dclf.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
+
+cur_test <- mad.sigtrace(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+plot(cur_test)
+
+cur_test <- mad.progress(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+plot(cur_test)
 
 cur_env_inhom <- envelope(cur_ppp, Lcross.inhom, i = "IMC", j = "mIF")
 
 plot(cur_env_inhom)
 
 cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
+
+
+# TODO set fix.n and fix.marks to TRUE in the functions below
 ```
 
 
@@ -542,31 +563,30 @@ names(out) <- unique(all_sce$sample_id)
 ```
 
 ```{r}
-test <- lapply(out, function(x){
-  lapply(x, function(y){
-    lapply(y, function(z){
-          if (is(z, "fv")) {
-      return(sum(z$iso - z$theo))
-    } else {
-      return(NULL)
-    }
-    })
-  })
-})
+cur_summary <- unlist(unlist(out, recursive = FALSE), recursive = FALSE)
 
-test <- unlist(test)
+cur_p <- lapply(cur_summary[grepl("test$", names(cur_summary))],
+                   function(x){
+                     return(x$p.value)
+                   })
 
-test2 <- lapply(out, function(x){
-  lapply(x, function(y){
-    lapply(y, function(z){
-          if (is(z, "htest")) {
-      return(z$p.value)
-    } else {
-      return(NULL)
-    }
-    })
-  })
-})
+cur_p_inhom <- lapply(cur_summary[grepl("test_inhom$", names(cur_summary))],
+                   function(x){
+                     return(x$p.value)
+                   })
+
+cur_area <- lapply(cur_summary[grepl("L$", names(cur_summary))],
+                   function(x){
+                     return(sum(x$iso - x$theo))
+                   })
+
+cur_area_inhom <- lapply(cur_summary[grepl("L_inhom$", names(cur_summary))],
+                   function(x){
+                     return(sum(x$iso - x$theo))
+                   })
+
+# Check that names match
+
 
 test2 <- unlist(test2)
 
