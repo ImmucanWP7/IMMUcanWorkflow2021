@@ -1,0 +1,324 @@
+---
+title: "Read IFQuant data"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+```
+
+In this script, we will read in the mIF data that was processed by IFQuant.
+
+## Define color vectors
+
+These will be shared across all datasets.
+
+```{r define-colors}
+library(RColorBrewer)
+
+color_vectors <- list()
+matched_celltype <- setNames(c("sienna4", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "T", "Neutrophil", "MacCD163",
+                               "other", "DC", "B", "BnT"))
+celltype <- setNames(c("sienna4", "tan3", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
+                        c("Tumor", "Tumor_CD15", "T", "Neutrophil", "MacCD163",
+                          "other", "DC", "B", "BnT"))
+
+patient_id <- setNames(c("#BE1E2D", "#FF4B5B", "#F7941D", "#FFCA89", "#00A651", "#5FFF73", "#00AEEF", "#9BD7FF", "#2E3192", "#675BFF"),
+                          c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10075572", "10082495"))
+
+col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
+                        BCC = "#3F85A7", RCC = "#C81F43")
+
+color_vectors$patient_id <- patient_id
+color_vectors$Indication <- col_vec_indication
+color_vectors$matched_celltype <- matched_celltype
+color_vectors$celltype <- celltype
+```
+
+## Read whole slide data
+
+First, we will start with reading in the whole slide data.
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+
+cur_files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties_", full.names = TRUE)
+cur_files_2 <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties2_", full.names = TRUE)
+
+# Map between Lausanne and Zurich IDs
+cur_table <- read_csv("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
+
+# Read in data
+cur_sces <- lapply(seq_along(cur_files), function(x){
+  cur_data <- read.csv(cur_files[x], sep = "\t")
+  cur_data_2 <- read.csv(cur_files_2[x], sep = "\t")
+  
+  stopifnot(all.equal(cur_data$cell.ID, cur_data_2$cell.ID))
+  
+  cur_data <- cbind(cur_data, cur_data_2[,c("cell.area", "TLS.ID")])
+  
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), 
+                      str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  
+  rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
+                                                         simplify = TRUE)[,1]
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+  
+  colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
+  
+  colData(cur_sce)$Lausanne_id <- str_extract(cur_files[x], "IMMU-[A-Z0-9]*-[0-9]{4}")
+  
+  colData(cur_sce)$sample_id <- as.character(cur_table$IMC[match(unique(colData(cur_sce)$Lausanne_id),
+                                                                 cur_table$mIF)])
+  colData(cur_sce)$patient_id <- as.character(colData(cur_sce)$sample_id)
+  
+  return(cur_sce)
+})
+
+cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- unique(cur_colnames)
+
+cur_sces <- lapply(cur_sces, function(x){
+  
+  cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
+  colnames(cur_cd) <- cur_colnames
+  
+  cur_cd[colnames(colData(x))] <- colData(x)
+  
+  stopifnot(all.equal(cur_cd$cell.ID, x$cell.ID))
+  
+  colData(x) <- cur_cd
+  return(x)
+})
+
+sce <- do.call("cbind", cur_sces)
+
+# Transform counts
+assay(sce, "exprs") <- log(counts(sce))
+
+# Add phenotype labels
+cur_key <- as.data.frame(read_csv("~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv"))
+rownames(cur_key) <- cur_key$phenotype
+
+sce$celltype <- cur_key[sce$phenotype,2]
+sce$matched_celltype <- sce$celltype
+sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+
+sce$indication <- sce$Lausanne_id
+sce$indication[grepl("BC", sce$indication)] <- "BCC"
+sce$indication[grepl("CRC", sce$indication)] <- "CRC"
+sce$indication[grepl("NSCLC", sce$indication)] <- "NSCLC"
+sce$indication[grepl("RCC", sce$indication)] <- "RCC"
+sce$indication[grepl("SCCHN", sce$indication)] <- "SCCHN"
+
+metadata(sce)$color_vectors <- color_vectors
+
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+```
+
+## Read matched ROI information
+
+We will read in the tsv files that contain cells from the same region as 
+the IMC acquisition and store them in `SingleCellExperiment` objects.
+
+```{r load-data, message=FALSE}
+cur_files <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+                        recursive = TRUE, 
+                        pattern = "cells_properties_ROI_coordinates.tsv.gz", full.names = TRUE)
+
+cur_sces <- lapply(cur_files, function(x){
+  cur_data <- read.csv(x, sep = "\t")
+  
+  cur_counts <- t(cur_data[,grepl("score.normalized", colnames(cur_data))])
+  cur_raw <- t(cur_data[,grepl("score$", colnames(cur_data))])
+  
+  stopifnot(all.equal(str_split(rownames(cur_raw), "\\.", simplify = TRUE), 
+                      str_split(rownames(cur_counts), "\\.", simplify = TRUE)[,1:2]))
+  
+  rownames(cur_counts) <- rownames(cur_raw) <- str_split(rownames(cur_raw), "\\.", 
+                                                         simplify = TRUE)[,1]
+  cur_sce <- SingleCellExperiment(assays = list(counts = cur_counts,
+                                                raw = cur_raw))
+  colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
+  
+  colData(cur_sce)$sample_id <- str_extract(x, "IMMUcan_[2|B].*00[1-9]{1}")
+  colData(cur_sce)$patient_id <- sub("-", "", str_extract(cur_sce$sample_id, "[0-9]{8}-"))
+  colData(cur_sce)$ROI <- str_extract(cur_sce$sample_id, "00[1-9]{1}$")
+  
+  # Add additional information from whole slide
+  cur_sce_2 <- sce[,sce$patient_id == unique(cur_sce$patient_id)]
+  cur_df <- colData(cur_sce_2)[match(cur_sce$cell.ID, cur_sce_2$cell.ID),]
+  
+  # Sanity check that phenotypes and cell IDs match
+  stopifnot(all.equal(cur_sce$phenotype, cur_df$phenotype))
+  stopifnot(all.equal(cur_sce$cell.ID, cur_df$cell.ID))
+  
+  # Transfer more information
+  colData(cur_sce) <- cbind(colData(cur_sce), cur_df[,c("cell.area", "TLS.ID", "Lausanne_id")])
+  
+  return(cur_sce)
+})
+
+cur_colnames <- Reduce(c, lapply(cur_sces, function(x){colnames(colData(x))}))
+cur_colnames <- unique(cur_colnames)
+
+cur_sces <- lapply(cur_sces, function(x){
+  
+  cur_cd <- DataFrame(matrix(NA, nrow = ncol(x), ncol = length(cur_colnames)))
+  colnames(cur_cd) <- cur_colnames
+  
+  cur_cd[colnames(colData(x))] <- colData(x)
+  
+  stopifnot(all.equal(cur_cd$cell.ID, x$cell.ID))
+  
+  colData(x) <- cur_cd
+  return(x)
+})
+
+sce <- do.call("cbind", cur_sces)
+
+# Transform counts
+assay(sce, "exprs") <- log(counts(sce))
+
+col_vec_ROIs <- colorRampPalette(c("dark green", "white", "dark red"))(length(unique(sce$ROI)))
+names(col_vec_ROIs) <- unique(sce$ROI)
+
+color_vectors$ROIs <- col_vec_ROIs
+
+metadata(sce)$color_vectors <- color_vectors
+```
+
+### Cell type annotation
+
+We will now annotate the cells based on the celltype annotation key.
+
+```{r cell-type-annotation, message=FALSE}
+sce$celltype <- cur_key[sce$phenotype,2]
+sce$matched_celltype <- sce$celltype
+sce$matched_celltype[grepl("Tumor", sce$matched_celltype)] <- "Tumor"
+```
+
+### Add interaction graph
+
+Finally, we will add a 20µm and 30µm expansion interaction graph.
+
+```{r buildSpatialGraph, message=FALSE, fig.height=12, fig.width=12}
+library(imcRtools)
+# 30µm expansion graph
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
+                         coords = c("nucleus.x", "nucleus.y"),
+                         threshold = 60, name = "expansion_60")
+
+# 20µm expansion graph
+sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
+                         coords = c("nucleus.x", "nucleus.y"),
+                         threshold = 40, name = "expansion_40")
+
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
+            nodes_first = TRUE)
+
+plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
+            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
+            nodes_first = TRUE)
+```
+
+### Save object
+
+Finally, we will save the generated object
+
+```{r}
+saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+```
+
+### Read images
+
+Here, we read in the single-channel images and create multi-channel images.
+
+```{r, message=FALSE}
+library(EBImage)
+library(tiff)
+library(cytomapper)
+
+cur_path <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+
+if (!dir.exists(cur_path)) dir.create(cur_path)
+
+cur_folders <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+                          full.names = TRUE)
+
+for (i in seq_along(cur_folders)) {
+    if (length(list.files(cur_folders[i], pattern = "ROI_image.*.rds")) == 0) {
+        stop("Missing images.")
+    }
+    
+    if (!all.equal(list.files(cur_folders[i], pattern = "ROI_image.*.rds"),
+                   c("ROI_image_autofluorescence.rds", "ROI_image_CD11c.rds", 
+                     "ROI_image_CD15.rds", "ROI_image_CD163.rds", 
+                     "ROI_image_CD20.rds", "ROI_image_CD3.rds", 
+                     "ROI_image_CK.rds", "ROI_image_DAPI.rds"))) {
+        stop("Wrong channel order")
+    }
+    
+    cur_channels <- lapply(list.files(cur_folders[i], 
+                                     pattern = "ROI_image.*.rds",
+                                     full.names = TRUE),
+                          function(x) {
+                              return(readRDS(x))
+                          })
+    
+    cur_channels <- abind(cur_channels, along = 3)
+    
+    writeImage(as.array(cur_channels)/(2^16 - 1),
+               paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+                      basename(cur_folders[i]), ".tiff"),
+               bits.per.sample = 16)
+}
+
+images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
+                     as.is = TRUE)
+
+channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
+
+mcols(images) <- DataFrame(image = names(images),
+                          sample_id = sub(".tiff", "", names(images)))
+
+saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
+```
+
+# TODO Save out data
+
+For cell type comparison I will now write out the x/y cooridnates and cell labels
+for the IMC and mIF data.
+
+```{r}
+for (i in unique(sce_IMC$sample_id)) {
+    cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
+    cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
+   
+    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells//", i, ".tsv"))   
+}
+```
+

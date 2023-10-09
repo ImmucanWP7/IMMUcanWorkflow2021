@@ -1,0 +1,45 @@
+name: "IMMUcan Workflow"
+output_dir: ../docs
+navbar:
+  title: "IMMUcan Workflow"
+  left:
+  - text: Home
+    href: index.html
+    icon: fa-home
+    - text: "mIF preprocessing"
+      menu:
+        - text: Read data
+          href: 01.1_IF_read_data.html
+    - text: "IMC preprocessing"
+      menu:
+        - text: Read data
+          href: 02.1_IMC_read_data.html
+        - text: Spillover correction
+          href: 02.2_IMC_spillover_correction.html
+        - text: Sample correction
+          href: 02.3_IMC_sample_correction.html
+        - text: Quality control
+          href: 02.4_IMC_quality_control.html
+        - text: Predict celltypes
+          href: 02.5_IMC_predict_celltypes.html
+        - text: Generate composite images
+          href: 02.6_IMC_composites.html
+    - text: "Main Figures"
+      menu:
+        - text: Figure 1
+          href: 03.1_Figure_1.html
+        - text: Figure 2
+          href: 03.2_Figure_2.html
+        - text: Figure 3
+          href: 03.3_Figure_3.html
+        - text: Figure 4
+          href: 03.4_Figure_4.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/ImmucanWP7/IMMUcanWorkflow2021
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: cosmo
+    highlight: textmate
