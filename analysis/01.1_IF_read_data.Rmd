@@ -49,11 +49,13 @@ First, we will start with reading in the whole slide data.
 library(SingleCellExperiment)
 library(tidyverse)
 
-cur_files <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties_", full.names = TRUE)
-cur_files_2 <- list.files("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", pattern = "cells_properties2_", full.names = TRUE)
+cur_files <- list.files("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+                        pattern = "cells_properties_", full.names = TRUE)
+cur_files_2 <- list.files("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+                          pattern = "cells_properties2_", full.names = TRUE)
 
 # Map between Lausanne and Zurich IDs
-cur_table <- read_csv("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
+cur_table <- read_csv("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
 
 # Read in data
 cur_sces <- lapply(seq_along(cur_files), function(x){
@@ -124,7 +126,7 @@ sce$indication[grepl("SCCHN", sce$indication)] <- "SCCHN"
 
 metadata(sce)$color_vectors <- color_vectors
 
-saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
 ```
 
 ## Read matched ROI information
@@ -244,12 +246,26 @@ plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-
             nodes_first = TRUE)
 ```
 
+### Visualize celltypes, TLS and Tumor regions
+
+```{r visualize-results, message=FALSE, fig.height=12, fig.width=12}
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            node_color_by = "celltype", node_size_fix = 0.1) + 
+  scale_color_manual(values = celltype)
+
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            node_color_by = "TLS.ID", node_size_fix = 0.1) 
+
+plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
+            node_color_by = "tissue.type", node_size_fix = 0.1) 
+```
+
 ### Save object
 
 Finally, we will save the generated object
 
 ```{r}
-saveRDS(sce, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
 ```
 
 ### Read images
@@ -261,7 +277,7 @@ library(EBImage)
 library(tiff)
 library(cytomapper)
 
-cur_path <- "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+cur_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
 
 if (!dir.exists(cur_path)) dir.create(cur_path)
 
@@ -291,12 +307,12 @@ for (i in seq_along(cur_folders)) {
     cur_channels <- abind(cur_channels, along = 3)
     
     writeImage(as.array(cur_channels)/(2^16 - 1),
-               paste0("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+               paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
                       basename(cur_folders[i]), ".tiff"),
                bits.per.sample = 16)
 }
 
-images <- loadImages("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
+images <- loadImages("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
                      as.is = TRUE)
 
 channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
@@ -304,21 +320,19 @@ channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "
 mcols(images) <- DataFrame(image = names(images),
                           sample_id = sub(".tiff", "", names(images)))
 
-saveRDS(images, "/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
+saveRDS(images, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 ```
 
-# TODO Save out data
+# Save out data
 
-For cell type comparison I will now write out the x/y cooridnates and cell labels
-for the IMC and mIF data.
+For cell type comparison I will now write out the x/y coordinates and cell labels
+for the mIF data.
 
 ```{r}
-for (i in unique(sce_IMC$sample_id)) {
-    cur_sce_IMC <- sce_IMC[,sce_IMC$sample_id == i]
-    cur_sce_mIF <- sce_mIF[,sce_mIF$sample_id == i]
+for (i in unique(sce$sample_id)) {
+    cur_sce_mIF <- sce[,sce$sample_id == i]
    
-    write_tsv(as.data.frame(colData(cur_sce_IMC)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/", i, ".tsv"))   
-    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells//", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells/", i, ".tsv"))   
 }
 ```
 
