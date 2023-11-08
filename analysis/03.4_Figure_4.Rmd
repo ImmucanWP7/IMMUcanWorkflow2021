@@ -18,8 +18,10 @@ library(ggpubr)
 library(cowplot)
 library(imcRtools)
 
-sce_IMC <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
-sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
+
+sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
+sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
 ```
 
 ## Example images
@@ -474,8 +476,8 @@ library(spatstat)
 
 ```{r Lcross}
 # Example image
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_007"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_004"]
+cur_sce <- cur_sce[,cur_sce$matched_celltype == "B"]
 
 plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = FALSE)
 
@@ -489,7 +491,7 @@ plot(cur_ppp)
 miplot(cur_ppp)
 #plot(frypoints(cur_ppp))
 
-cur_L <- Lcross(cur_ppp, "IMC", "mIF", rmax = 300)
+cur_L <- Lcross(cur_ppp, "IMC", "mIF")
 
 plot(cur_L)
 
@@ -497,7 +499,7 @@ cur_L_inhom <- Lcross.inhom(cur_ppp, "IMC", "mIF")
 
 plot(cur_L_inhom)
 
-cur_env <- envelope(cur_ppp, Lcross, i = "mIF", j = "IMC", fix.n = TRUE, fix.marks = TRUE, rmax = 300)
+cur_env <- envelope(cur_ppp, Lcross, i = "mIF", j = "IMC", fix.n = TRUE, fix.marks = TRUE)
 
 plot(cur_env)
 
@@ -586,20 +588,23 @@ cur_area_inhom <- lapply(cur_summary[grepl("L_inhom$", names(cur_summary))],
                    })
 
 # Check that names match
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_p_inhom), "\\.", simplify = TRUE)[,1])
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area), "\\.", simplify = TRUE)[,1])
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area_inhom), "\\.", simplify = TRUE)[,1])
 
+final <- data.frame(p = unlist(cur_p),
+                    p_inhom = unlist(cur_p_inhom),
+                    area = unlist(cur_area),
+                    area_inhom = unlist(cur_area_inhom),
+                    sample_id = sub("_", "", str_extract(names(cur_p), "_[0-9]{8}")),
+                    celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
 
-test2 <- unlist(test2)
-
-test <- as.data.frame(test)
-test$sample_id <- str_split(rownames(test), "\\.", simplify = TRUE)[,1]
-test$celltype <- str_split(rownames(test), "\\.", simplify = TRUE)[,2]
-test$type <- str_split(rownames(test), "\\.", simplify = TRUE)[,3]
-
-test$p.value <- test2
-
-test[test$type == "L",]
-
-test[test$p.value != 0.01 & test$type == "L",]
+set.seed(123)
+ggplot(final) + 
+  geom_boxplot(aes(celltype, area), outlier.shape = NA) +
+  geom_jitter(aes(celltype, area, color = p <= 0.01 & area > 0)) +
+  geom_abline(slope = 0, intercept = 0, color = "dark red", linewidth = 1) +
+  theme_classic()
 ```
 
 ## Differential connectivity analysis
