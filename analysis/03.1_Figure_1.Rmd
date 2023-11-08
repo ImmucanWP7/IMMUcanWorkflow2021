@@ -17,11 +17,11 @@ library(tidyverse)
 library(imcRtools)
 library(cytomapper)
 
-sce_imc <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
-sce_mIF <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+sce_imc <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce_mIF <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
 
-images <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
-masks <- readRDS("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
+images <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
+masks <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
 ```
 
 ## Show simple stats
@@ -127,7 +127,7 @@ while downsampling the pixels with a factor of 5.
 ```{r}
 library(terra)
 
-cur_img <- rast("/Volumes/immucan_volume/processed_data/Panel_1/2022_WORKFLOW/mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif")
+cur_img <- rast("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif")
 
 # Downscale 4 fold
 cur_img_small <- terra::aggregate(cur_img, fact = 4)
