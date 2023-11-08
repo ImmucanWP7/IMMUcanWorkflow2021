@@ -476,10 +476,10 @@ library(spatstat)
 
 ```{r Lcross}
 # Example image
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_004"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "B"]
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_Batch20210921_10082495-SPECT-VAR-TIS-01-IMC-01_004"]
+cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
 
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = FALSE)
+plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
 
 # Create multipoint pattern
 cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y, 
@@ -600,11 +600,19 @@ final <- data.frame(p = unlist(cur_p),
                     celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
 
 set.seed(123)
-ggplot(final) + 
+p <- ggplot(final) + 
   geom_boxplot(aes(celltype, area), outlier.shape = NA) +
   geom_jitter(aes(celltype, area, color = p <= 0.01 & area > 0)) +
   geom_abline(slope = 0, intercept = 0, color = "dark red", linewidth = 1) +
-  theme_classic()
+  scale_color_manual(values = c(`TRUE` = "dark blue", `FALSE` = "red"), name = "Significant and larger than 0") +
+  theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("") + ylab("Area under L curve")
+
+p
+
+ggsave(filename = "output/Figure_4/Figure_4D.pdf", plot = p, width = 12, height = 7)
+
+final[final$p > 0.01 | final$area < 0,]
 ```
 
 ## Differential connectivity analysis
@@ -622,14 +630,70 @@ spicyTest <- spicy(
   window = "square",
   cellType = "matched_celltype",
   imageID = "sample_id_global",
-  Rs = c(20, 50, 100)
+  Rs = c(20, 50, 100, 150)
 )
 
 (p <- signifPlot(
   spicyTest,
+  fdr = TRUE,
   breaks = c(-2, 2, 1),
-  cutoff = 0.01
+  cutoff = 0.1
 )) 
 
+topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
+
+spicyBoxPlot(results = spicyTest,
+             from = "T",
+             to = "T")
+
+spicyBoxPlot(results = spicyTest,
+             from = "MacCD163",
+             to = "MacCD163")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Neutrophil",
+             to = "other")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Neutrophil",
+             to = "other")
+
+spicyBoxPlot(results = spicyTest,
+             from = "MacCD163",
+             to = "Tumor")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Tumor",
+             to = "MacCD163")
+
+spicyBoxPlot(results = spicyTest,
+             from = "T",
+             to = "Tumor")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Tumor",
+             to = "T")
+
 ggsave(filename = "output/Figure_4/Figure_4E.pdf", plot = p, width = 7, height = 5)
+```
+
+Find example images:
+
+```{r}
+test1 <- spicyTest$dataframe[spicyTest$dataframe$modality == "IMC",]
+test2 <- spicyTest$dataframe[spicyTest$dataframe$modality == "mIF",]
+
+all.equal(sub("_IMC$", "", test1$imageID), sub("_mIF$", "", test2$imageID))
+
+final <- test1[,grepl("__", colnames(test1))] - test2[,grepl("__", colnames(test2))]
+
+test1[order(final[,"T__T"], decreasing = TRUE),c("imageID", "T__T")]
+
+test1[order(final[,"Neutrophil__other"], decreasing = FALSE),c("imageID", "T__T")]
+
+test1[order(final[,"MacCD163__MacCD163"], decreasing = TRUE),c("imageID", "T__T")]
+
+test1[order(final[,"MacCD163__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
+
+test1[order(final[,"T__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
 ```
