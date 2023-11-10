@@ -68,6 +68,19 @@ all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
 all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ```
 
+## Visualize celltypes between mIF and IMC
+
+```{r}
+if (!dir.exists("output/Figure_4/")) dir.create("output/Figure_4/")
+
+p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
+            node_color_by = "matched_celltype", 
+            ncols = 4, img_id = "sample_id") + 
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$celltype)
+
+ggsave(filename = "", plot = p)
+```
+
 ## Lcross based comparison
 
 ```{r laod-libraries, message=FALSE}

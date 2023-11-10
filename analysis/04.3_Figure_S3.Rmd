@@ -1,0 +1,69 @@
+---
+title: "Figure 1"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+Code to generate the plots of Figure 1.
+
+## Read data
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+library(imcRtools)
+
+mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
+
+sce_imc <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
+```
+
+### Overview stats
+
+```{r}
+if (!dir.exists("output/Figure_S3/")) dir.create("output/Figure_S3/")
+
+sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
+
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, CD20_patch_logical) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
+           position = "stack", stat = "identity") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+  theme_classic(base_size = 25) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") +
+  xlab("Patients") +
+  ylab("CD20 patch cell count")
+
+p
+
+ggsave("output/Figure_3/Figure_S3_A.pdf", p, width = 12, height = 8)
+
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, tumor_patches) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
+           position = "stack", stat = "identity") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+  theme_classic(base_size = 25) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") +
+  xlab("Patients") +
+  ylab("CD20 patch cell count")
+
+p
+
+ggsave("output/Figure_3/Figure_S3_B.pdf", p, width = 12, height = 8)
+```
+

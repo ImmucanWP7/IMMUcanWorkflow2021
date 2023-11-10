@@ -637,6 +637,7 @@ spicyTest <- spicy(
   spicyTest,
   fdr = TRUE,
   breaks = c(-2, 2, 1),
+  comparisonGroup = "mIF",
   cutoff = 0.1
 )) 
 
