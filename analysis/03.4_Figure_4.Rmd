@@ -118,31 +118,15 @@ cur_mIF <- colData(sce_mIF)
 cur_IMC <- colData(sce_IMC)
 
 # Count cell types for IMC
-abundances_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, matched_celltype) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = sample_id, 
-              values_from = count, values_fill = 0) %>%
-  as.data.frame()
+abundances_IMC <- unclass(table(cur_IMC$matched_celltype, cur_IMC$sample_id))
 
-rownames(abundances_IMC) <- abundances_IMC$matched_celltype
-abundances_IMC$matched_celltype <- NULL
-
-# Metdata fir IMC
+# Metdata for IMC
 meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
                        patient_id = sub("-", "", str_extract(colnames(abundances_IMC), "[0-9]{8}-")),
                        modality = "IMC")
 
 # Count cell types for mIF
-abundances_IF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, matched_celltype) %>%
-  summarize(count = n()) %>%
-  pivot_wider(names_from = sample_id, 
-              values_from = count, values_fill = 0) %>%
-  as.data.frame()
-
-rownames(abundances_IF) <- abundances_IF$matched_celltype
-abundances_IF$matched_celltype <- NULL
+abundances_IF <- unclass(table(cur_mIF$matched_celltype, cur_mIF$sample_id))
 
 # Metadata for mIF
 meta_IF <- data.frame(sample_id = colnames(abundances_IF),
@@ -152,7 +136,9 @@ meta_IF <- data.frame(sample_id = colnames(abundances_IF),
 colnames(abundances_IMC) <- paste(colnames(abundances_IMC), "IMC")
 colnames(abundances_IF) <- paste(colnames(abundances_IF), "mIF")
 
-combined_df <- cbind(abundances_IMC, abundances_IF[rownames(abundances_IMC),])
+stopifnot(all.equal(rownames(abundances_IMC), rownames(abundances_IF)))
+
+combined_df <- cbind(abundances_IMC, abundances_IF)
 combined_meta <- rbind(meta_IMC, meta_IF)
 
 # DA testing
@@ -634,14 +620,10 @@ spicyTest <- spicy(
 )
 
 (p <- signifPlot(
-  spicyTest,
-  fdr = TRUE,
-  breaks = c(-2, 2, 1),
-  comparisonGroup = "mIF",
-  cutoff = 0.1
+  spicyTest
 )) 
 
-topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
+topPairs(spicyTest_2, adj = "fdr", cutoff = 0.1)
 
 spicyBoxPlot(results = spicyTest,
              from = "T",

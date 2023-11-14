@@ -24,6 +24,72 @@ sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/I
 sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
 ```
 
+# Number of cells
+
+```{r}
+no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
+  group_by(sample_id, patient_id) %>%
+  summarize(count = n())
+no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
+  group_by(sample_id, patient_id) %>%
+  summarize(count = n())
+
+combined_df <- left_join(no_IMC, no_mIF, by = c("sample_id", "patient_id"))
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+
+(p <- ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id), size = 2) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal(base_size = 20) + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  coord_fixed() + 
+  ylim(c(0, 5000)) + xlim(c(0, 5000)) +
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id))
+
+ggsave(filename = "output/Figure_S4/FigS4_A.pdf", plot = p)
+```
+
+# Supporting plots for DA analysis
+
+```{r}
+cur_mIF <- colData(sce_mIF)
+cur_IMC <- colData(sce_IMC)
+
+# Proportions of cell types for IMC
+cur_IMC$matched_celltype <- factor(cur_IMC$matched_celltype)
+prop_IMC <- cur_IMC %>% 
+  as.data.frame() %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  group_by(sample_id) %>%
+  mutate(prop = count/sum(count))
+
+# Proportions of cell types for mIF
+cur_mIF$matched_celltype <- factor(cur_mIF$matched_celltype)
+prop_mIF <- cur_mIF %>% 
+  as.data.frame() %>%
+  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
+  summarize(count = n()) %>%
+  group_by(sample_id) %>%
+  mutate(prop = count/sum(count))
+
+prop_IMC$modality <- "IMC"
+prop_mIF$modality <- "mIF"
+
+out <- rbind(prop_IMC, prop_mIF)
+
+p <- ggplot(out) + 
+  geom_boxplot(aes(modality, prop), outlier.shape = NA) +
+  geom_point(aes(modality, prop, color = sample_id)) +
+  geom_line(aes(modality, prop, group = sample_id)) +
+  facet_wrap(~matched_celltype, nrow = 1, scales = "free")  +
+  theme_classic(base_size = 20) +
+  theme(legend.position = "none") +
+  ylab("Proportion of cell phenotypes")
+
+ggsave(filename = "output/Figure_S4/FigS4_B.pdf", plot = p, height = 5, width = 15)
+```
+
 # Spatial comparison
 
 ## Mergin of data
