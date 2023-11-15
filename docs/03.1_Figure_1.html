@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Figure 1</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">IMMUcan Workflow</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+    Home
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    mIF preprocessing
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01.1_IF_read_data.html">Read data</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    IMC preprocessing
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="02.1_IMC_read_data.html">Read data</a>
+    </li>
+    <li>
+      <a href="02.2_IMC_spillover_correction.html">Spillover correction</a>
+    </li>
+    <li>
+      <a href="02.3_IMC_sample_correction.html">Sample correction</a>
+    </li>
+    <li>
+      <a href="02.4_IMC_quality_control.html">Quality control</a>
+    </li>
+    <li>
+      <a href="02.5_IMC_predict_celltypes.html">Predict celltypes</a>
+    </li>
+    <li>
+      <a href="02.6_IMC_composites.html">Generate composite images</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Main Figures
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="03.1_Figure_1.html">Figure 1</a>
+    </li>
+    <li>
+      <a href="03.2_Figure_2.html">Figure 2</a>
+    </li>
+    <li>
+      <a href="03.3_Figure_3.html">Figure 3</a>
+    </li>
+    <li>
+      <a href="03.4_Figure_4.html">Figure 4</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Figure 1</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-11-15
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>IMMUcanWorkflow2021/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20231009code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20231009)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20231009code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20231009)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree666d2bb0be80f1b359e804eeff7c034e66c86c80targetblank666d2bba">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/666d2bb0be80f1b359e804eeff7c034e66c86c80" target="_blank">666d2bb</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomImmucanWP7IMMUcanWorkflow2021tree666d2bb0be80f1b359e804eeff7c034e66c86c80targetblank666d2bba"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/tree/666d2bb0be80f1b359e804eeff7c034e66c86c80" target="_blank">666d2bb</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
+    Ignored:    code/alignment_validation/
+    Ignored:    output/.DS_Store
+
+Unstaged changes:
+    Modified:   analysis/02.6_IMC_composites.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/03.1_Figure_1.Rmd</code>) and
+HTML (<code>docs/03.1_Figure_1.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/c98cf5dc9ebb22f64d3fbd5126f27a743543c0e5/analysis/03.1_Figure_1.Rmd" target="_blank">c98cf5d</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-11-08
+</td>
+<td>
+Finalized L function analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/795672b157f98744430d857918df1118401cda67/analysis/03.1_Figure_1.Rmd" target="_blank">795672b</a>
+</td>
+<td>
+nilseling
+</td>
+<td>
+2023-10-09
+</td>
+<td>
+Restructured repository
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>Code to generate the plots of Figure 1.</p>
+<div id="read-data" class="section level2">
+<h2>Read data</h2>
+<pre class="r"><code>library(SingleCellExperiment)</code></pre>
+<pre><code>Warning: package &#39;GenomeInfoDb&#39; was built under R version 4.3.2</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(imcRtools)
+library(cytomapper)
+
+sce_imc &lt;- readRDS(&quot;/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds&quot;)
+sce_mIF &lt;- readRDS(&quot;/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds&quot;)
+
+images &lt;- readRDS(&quot;/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds&quot;)
+masks &lt;- readRDS(&quot;/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds&quot;)</code></pre>
+</div>
+<div id="show-simple-stats" class="section level2">
+<h2>Show simple stats</h2>
+<p>Number of cells.</p>
+<pre class="r"><code>sce_imc</code></pre>
+<pre><code>class: SingleCellExperiment 
+dim: 40 108790 
+metadata(1): color_vectors
+assays(2): counts exprs
+rownames(40): MPO HistoneH3 ... DNA1 DNA2
+rowData names(14): channel name ... use_channel channel_name
+colnames(108790): 10061074_001_1 10061074_001_2 ... 10082495_004_3786
+  10082495_004_3787
+colData names(22): sample_id ObjectNumber ... CD20_patches
+  matched_celltype
+reducedDimNames(3): fastMNN UMAP_fastMNN UMAP
+mainExpName: NULL
+altExpNames(0):</code></pre>
+<pre class="r"><code>sce_mIF</code></pre>
+<pre><code>class: SingleCellExperiment 
+dim: 6 9782806 
+metadata(1): color_vectors
+assays(3): counts raw exprs
+rownames(6): CD15 CK ... CD20 CD163
+rowData names(0):
+colnames: NULL
+colData names(19): cell.ID nucleus.x ... matched_celltype indication
+reducedDimNames(0):
+mainExpName: NULL
+altExpNames(0):</code></pre>
+<p>Number of cells per sample</p>
+<pre class="r"><code>colData(sce_imc) %&gt;%
+  as_tibble() %&gt;%
+  group_by(patient_id) %&gt;%
+  summarize(count = n()) %&gt;%
+  arrange(count)</code></pre>
+<pre><code># A tibble: 10 × 2
+   patient_id count
+   &lt;chr&gt;      &lt;int&gt;
+ 1 10082495    6643
+ 2 10075371    7714
+ 3 10074832    8834
+ 4 10067433    8838
+ 5 10074349   11347
+ 6 10075572   12183
+ 7 10071582   12315
+ 8 10061074   12901
+ 9 10073140   13795
+10 10068868   14220</code></pre>
+<pre class="r"><code>colData(sce_mIF) %&gt;%
+  as_tibble() %&gt;%
+  group_by(patient_id) %&gt;%
+  summarize(count = n()) %&gt;%
+  arrange(count)</code></pre>
+<pre><code># A tibble: 10 × 2
+   patient_id   count
+   &lt;chr&gt;        &lt;int&gt;
+ 1 10082495    108643
+ 2 10067433    111611
+ 3 10071582    178819
+ 4 10074832    443832
+ 5 10068868    579702
+ 6 10075371    585303
+ 7 10073140   1131079
+ 8 10061074   1892527
+ 9 10075572   2355977
+10 10074349   2395313</code></pre>
+<pre class="r"><code>unique(sce_imc$celltype)</code></pre>
+<pre><code> [1] &quot;Tumor&quot;      &quot;Neutrophil&quot; &quot;CD8&quot;        &quot;pDC&quot;        &quot;MacCD163&quot;  
+ [6] &quot;Mural&quot;      &quot;CD4&quot;        &quot;HLADR&quot;      &quot;NK&quot;         &quot;plasma&quot;    
+[11] &quot;B&quot;          &quot;DC&quot;         &quot;undefined&quot;  &quot;Treg&quot;       &quot;BnT&quot;       </code></pre>
+<pre class="r"><code>unique(sce_mIF$celltype)</code></pre>
+<pre><code>[1] &quot;MacCD163&quot;   &quot;other&quot;      &quot;T&quot;          &quot;Tumor&quot;      &quot;B&quot;         
+[6] &quot;BnT&quot;        &quot;DC&quot;         &quot;Neutrophil&quot; &quot;Tumor_CD15&quot;</code></pre>
+</div>
+<div id="imc" class="section level2">
+<h2>IMC</h2>
+<div id="sample-area" class="section level3">
+<h3>Sample area</h3>
+<pre class="r"><code>colData(sce_imc) %&gt;%
+  as_tibble() %&gt;%
+  select(sample_id, width_px, height_px) %&gt;%
+  unique() %&gt;%
+  mutate(area = width_px * height_px / (1000 * 1000)) %&gt;%
+  summarize(total = sum(area))</code></pre>
+<pre><code># A tibble: 1 × 1
+  total
+  &lt;dbl&gt;
+1  13.7</code></pre>
+</div>
+<div id="imc-example-image" class="section level3">
+<h3>IMC Example image</h3>
+<pre class="r"><code>if (!dir.exists(&quot;output/Figure_1/&quot;)) dir.create(&quot;output/Figure_1/&quot;)
+
+plotPixels(images[names(images) == &quot;IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008&quot;], 
+           colour_by = c(&quot;Ecad&quot;, &quot;CD20&quot;, &quot;CD3&quot;, &quot;CD163&quot;),
+           bcg = list(Ecad = c(0, 15, 1),
+                      CD20 = c(0, 5, 1),
+                      CD3 = c(0, 10, 1),
+                      CD163 = c(0, 10, 1)),
+           colour = list(Ecad = c(&quot;black&quot;, &quot;sienna4&quot;),
+                        CD20 = c(&quot;black&quot;, &quot;#BF0A3D&quot;),
+                        CD3 = c(&quot;black&quot;, &quot;darkorchid&quot;),
+                        CD163 = c(&quot;black&quot;, &quot;green3&quot;)),
+           image_title = NULL, 
+           legend = NULL,
+           scale_bar = list(length = 100, label = &quot;&quot;),
+           save_plot = list(filename = &quot;output/Figure_1/Figure_1B_1.png&quot;))
+
+cur_sce &lt;- sce_imc[,sce_imc$sample_id == &quot;IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008&quot;]
+
+(p &lt;- plotSpatial(cur_sce, 
+            node_color_by = &quot;celltype&quot;,
+            img_id = &quot;sample_id&quot;, node_size_fix = 2) +
+  scale_color_manual(values = metadata(sce_imc)$color_vectors$celltype) +
+  theme(axis.text = element_blank(),
+        legend.position = &quot;None&quot;,
+        panel.background = element_rect(fill = &quot;black&quot;,
+                                colour = &quot;black&quot;)) +
+  ggtitle(&quot;&quot;))</code></pre>
+<p><img src="figure/03.1_Figure_1.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;output/Figure_1/Figure_1A_2.pdf&quot;, p, width = 7, height = 7)</code></pre>
+</div>
+<div id="mif-example-image" class="section level3">
+<h3>mIF Example image</h3>
+<pre class="r"><code>cur_sce &lt;- sce_mIF[,sce_mIF$Lausanne_id == &quot;IMMU-NSCLC-0747&quot;]
+
+(p &lt;- plotSpatial(cur_sce, 
+            node_color_by = &quot;celltype&quot;,
+            img_id = &quot;sample_id&quot;, node_size_fix = 0.01,
+            coords = c(&quot;nucleus.x&quot;, &quot;nucleus.y&quot;)) +
+  scale_color_manual(values = metadata(sce_mIF)$color_vectors$celltype) +
+  theme(axis.text = element_blank(),
+        legend.position = &quot;None&quot;,
+        panel.background = element_rect(fill = &quot;black&quot;,
+                                colour = &quot;black&quot;)) +
+  ggtitle(&quot;&quot;))</code></pre>
+<p><img src="figure/03.1_Figure_1.Rmd/unnamed-chunk-7-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;output/Figure_1/Figure_1B_3.png&quot;, p)</code></pre>
+<pre><code>Saving 20 x 20 in image</code></pre>
+<p>Whole slide image. The original image was opened in QuPATH and saved
+as TIFF file while downsampling the pixels with a factor of 5.</p>
+<pre class="r"><code>library(terra)</code></pre>
+<pre><code>terra 1.7.55</code></pre>
+<pre><code>
+Attaching package: &#39;terra&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:EBImage&#39;:
+
+    flip, rotate</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre><code>The following objects are masked from &#39;package:SummarizedExperiment&#39;:
+
+    distance, nearest, shift, trim, values, values&lt;-, width</code></pre>
+<pre><code>The following objects are masked from &#39;package:GenomicRanges&#39;:
+
+    distance, gaps, nearest, shift, trim, values, values&lt;-, width</code></pre>
+<pre><code>The following objects are masked from &#39;package:IRanges&#39;:
+
+    distance, gaps, nearest, shift, trim, width</code></pre>
+<pre><code>The following objects are masked from &#39;package:S4Vectors&#39;:
+
+    values, values&lt;-, width</code></pre>
+<pre><code>The following object is masked from &#39;package:BiocGenerics&#39;:
+
+    width</code></pre>
+<pre class="r"><code>cur_img &lt;- rast(&quot;/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif&quot;)</code></pre>
+<pre><code>Warning: [rast] unknown extent</code></pre>
+<pre class="r"><code># Downscale 4 fold
+cur_img_small &lt;- terra::aggregate(cur_img, fact = 4)</code></pre>
+<pre><code>
+|---------|---------|---------|---------|
+=========================================
+                                          </code></pre>
+<pre class="r"><code># Save as CytoimageList object
+cur_CIL &lt;- CytoImageList(EBImage::as.Image(as.array(t(cur_img_small))))
+
+channelNames(cur_CIL) &lt;- c(&quot;DAPI&quot;, &quot;CD15&quot;,  &quot;CK&quot;, &quot;CD3&quot;, &quot;CD11c&quot;, &quot;CD20&quot;, &quot;CD163&quot;, &quot;af&quot;)
+
+# One pixel is 0.4962um in the original resolution
+# The image was downsampled with a factor of 5 in QuPATH and with a factor of 4 
+# The image was resized 20 fold
+# We will calculate the exact scaling factor by using the original width/height
+
+# width 
+46080 / 2304</code></pre>
+<pre><code>[1] 20</code></pre>
+<pre class="r"><code># height
+44640 / 2232</code></pre>
+<pre><code>[1] 20</code></pre>
+<pre class="r"><code># The new pixel size is therefore: 
+20 * 0.4962</code></pre>
+<pre><code>[1] 9.924</code></pre>
+<pre class="r"><code># We will add a 2000um scale bar which is this many pixels
+2000 / 9.924</code></pre>
+<pre><code>[1] 201.5316</code></pre>
+<pre class="r"><code>plotPixels(cur_CIL, 
+           colour_by = c(&quot;CK&quot;, &quot;CD20&quot;, &quot;CD3&quot;, &quot;CD163&quot;),
+           bcg = list(CK = c(0, 5, 1),
+                      CD20 = c(0, 5, 1),
+                      CD3 = c(0, 5, 1),
+                      CD163 = c(0, 5, 1)),
+           colour = list(CK = c(&quot;black&quot;, &quot;sienna4&quot;),
+                        CD20 = c(&quot;black&quot;, &quot;#BF0A3D&quot;),
+                        CD3 = c(&quot;black&quot;, &quot;darkorchid&quot;),
+                        CD163 = c(&quot;black&quot;, &quot;green3&quot;)),
+           image_title = NULL, 
+           legend = NULL,
+           scale_bar = list(length = 202, label = &quot;&quot;, lwidth = 30, margin = c(100, 400)),
+           save_plot = list(filename = &quot;output/Figure_1/Figure_1B_4.png&quot;))</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.1 (2023-06-16)
+Platform: x86_64-apple-darwin20 (64-bit)
+Running under: macOS Big Sur 11.7.10
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] terra_1.7-55                cytomapper_1.14.0          
+ [3] EBImage_4.44.0              imcRtools_1.8.0            
+ [5] SpatialExperiment_1.12.0    lubridate_1.9.3            
+ [7] forcats_1.0.0               stringr_1.5.0              
+ [9] dplyr_1.1.3                 purrr_1.0.2                
+[11] readr_2.1.4                 tidyr_1.3.0                
+[13] tibble_3.2.1                ggplot2_3.4.4              
+[15] tidyverse_2.0.0             SingleCellExperiment_1.24.0
+[17] SummarizedExperiment_1.32.0 Biobase_2.62.0             
+[19] GenomicRanges_1.54.1        GenomeInfoDb_1.38.1        
+[21] IRanges_2.36.0              S4Vectors_0.40.1           
+[23] BiocGenerics_0.48.1         MatrixGenerics_1.14.0      
+[25] matrixStats_1.1.0           workflowr_1.7.1            
+
+loaded via a namespace (and not attached):
+  [1] later_1.3.1               bitops_1.0-7             
+  [3] svgPanZoom_0.3.4          polyclip_1.10-6          
+  [5] lifecycle_1.0.4           sf_1.0-14                
+  [7] rprojroot_2.0.4           processx_3.8.2           
+  [9] lattice_0.22-5            vroom_1.6.4              
+ [11] MASS_7.3-60               magrittr_2.0.3           
+ [13] sass_0.4.7                rmarkdown_2.25           
+ [15] jquerylib_0.1.4           yaml_2.3.7               
+ [17] httpuv_1.6.12             sp_2.1-1                 
+ [19] DBI_1.1.3                 RColorBrewer_1.1-3       
+ [21] abind_1.4-5               zlibbioc_1.48.0          
+ [23] ggraph_2.1.0              RCurl_1.98-1.13          
+ [25] tweenr_2.0.2              git2r_0.32.0             
+ [27] GenomeInfoDbData_1.2.11   ggrepel_0.9.4            
+ [29] RTriangle_1.6-0.12        pheatmap_1.0.12          
+ [31] units_0.8-4               svglite_2.1.2            
+ [33] DelayedMatrixStats_1.24.0 codetools_0.2-19         
+ [35] DelayedArray_0.28.0       DT_0.30                  
+ [37] scuttle_1.12.0            ggforce_0.4.1            
+ [39] tidyselect_1.2.0          raster_3.6-26            
+ [41] farver_2.1.1              viridis_0.6.4            
+ [43] jsonlite_1.8.7            BiocNeighbors_1.20.0     
+ [45] e1071_1.7-13              ellipsis_0.3.2           
+ [47] tidygraph_1.2.3           systemfonts_1.0.5        
+ [49] tools_4.3.1               ragg_1.2.6               
+ [51] Rcpp_1.0.11               glue_1.6.2               
+ [53] gridExtra_2.3             SparseArray_1.2.2        
+ [55] xfun_0.40                 HDF5Array_1.30.0         
+ [57] shinydashboard_0.7.2      withr_2.5.2              
+ [59] fastmap_1.1.1             rhdf5filters_1.14.0      
+ [61] fansi_1.0.5               callr_3.7.3              
+ [63] digest_0.6.33             timechange_0.2.0         
+ [65] R6_2.5.1                  mime_0.12                
+ [67] textshaping_0.3.7         colorspace_2.1-0         
+ [69] jpeg_0.1-10               utf8_1.2.4               
+ [71] generics_0.1.3            data.table_1.14.8        
+ [73] class_7.3-22              graphlayouts_1.0.1       
+ [75] httr_1.4.7                htmlwidgets_1.6.2        
+ [77] S4Arrays_1.2.0            whisker_0.4.1            
+ [79] pkgconfig_2.0.3           gtable_0.3.4             
+ [81] XVector_0.42.0            htmltools_0.5.6.1        
+ [83] fftwtools_0.9-11          scales_1.2.1             
+ [85] png_0.1-8                 knitr_1.45               
+ [87] rstudioapi_0.15.0         tzdb_0.4.0               
+ [89] rjson_0.2.21              proxy_0.4-27             
+ [91] cachem_1.0.8              rhdf5_2.46.0             
+ [93] KernSmooth_2.23-22        parallel_4.3.1           
+ [95] vipor_0.4.5               concaveman_1.1.0         
+ [97] pillar_1.9.0              grid_4.3.1               
+ [99] vctrs_0.6.4               promises_1.2.1           
+[101] distances_0.1.9           beachmat_2.18.0          
+[103] xtable_1.8-4              beeswarm_0.4.0           
+[105] evaluate_0.23             magick_2.8.1             
+[107] cli_3.6.1                 locfit_1.5-9.8           
+[109] compiler_4.3.1            rlang_1.1.2              
+[111] crayon_1.5.2              labeling_0.4.3           
+[113] classInt_0.4-10           ps_1.7.5                 
+[115] getPass_0.2-2             fs_1.6.3                 
+[117] ggbeeswarm_0.7.2          stringi_1.7.12           
+[119] viridisLite_0.4.2         BiocParallel_1.36.0      
+[121] nnls_1.5                  munsell_0.5.0            
+[123] tiff_0.1-11               Matrix_1.6-1.1           
+[125] hms_1.1.3                 sparseMatrixStats_1.14.0 
+[127] bit64_4.0.5               Rhdf5lib_1.24.0          
+[129] shiny_1.7.5.1             highr_0.10               
+[131] igraph_1.5.1              bslib_0.5.1              
+[133] bit_4.0.5                </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
