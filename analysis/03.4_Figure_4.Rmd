@@ -4,10 +4,19 @@ output:
   workflowr::wflow_html:
     toc: false
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Code to generate the plots of Figure 4.
+
+```{r}
+# Set path
+if (Sys.info()["sysname"] == "Windows"){
+  mount_path <- "O:/projects/immucan"
+} else {
+  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
+}
+```
 
 ## Read data
 
@@ -18,7 +27,6 @@ library(ggpubr)
 library(cowplot)
 library(imcRtools)
 
-mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
 
 sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
 sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
@@ -27,7 +35,8 @@ sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/m
 ## Example images
 
 ```{r}
-if (!dir.exists("output/Figure_4/")) dir.create("output/Figure_4/")
+getwd()
+if (!dir.exists("../output/Figure_4/")) dir.create("../output/Figure_4/")
 
 cur_IMC <- sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
 cur_mIF <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
@@ -104,8 +113,8 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
 
 p_final <- plot_grid(p_1, p_2, p_3, p_4, p_5, p_6, nrow = 2, byrow = FALSE) 
 
-ggsave(filename = "output/Figure_4/Figure_4A.pdf", plot = p_final, width = 15, height = 10)
-ggsave(filename = "output/Figure_4/Figure_4A_legend.pdf", plot = p_1_with_legend)
+ggsave(filename = "../output/Figure_4/Figure_4A.pdf", plot = p_final, width = 15, height = 10)
+ggsave(filename = "../output/Figure_4/Figure_4A_legend.pdf", plot = p_1_with_legend)
 ```
 
 ## Differential abundance testing
@@ -186,7 +195,7 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   ylim(c(-1.5, 1.5)) +
   theme_classic(base_size = 25))
 
-ggsave(filename = "output/Figure_4/Figure_4B.pdf", plot = p, width = 9, height = 6)
+ggsave(filename = "../output/Figure_4/Figure_4B.pdf", plot = p, width = 9, height = 6)
 ```
 
 ## Cell phenotype correlation
@@ -406,7 +415,7 @@ combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, 
 
 p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 5) 
 
-ggsave(filename = "output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, height = 15)
+ggsave(filename = "../output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, height = 15)
 ```
 
 # Spatial comparison
@@ -586,7 +595,7 @@ final <- data.frame(p = unlist(cur_p),
                     celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
 
 set.seed(123)
-p <- ggplot(final) + 
+p <- ggplot(final) +
   geom_boxplot(aes(celltype, area), outlier.shape = NA) +
   geom_jitter(aes(celltype, area, color = p <= 0.01 & area > 0)) +
   geom_abline(slope = 0, intercept = 0, color = "dark red", linewidth = 1) +
@@ -596,7 +605,7 @@ p <- ggplot(final) +
 
 p
 
-ggsave(filename = "output/Figure_4/Figure_4D.pdf", plot = p, width = 12, height = 7)
+ggsave(filename = "../output/Figure_4/Figure_4D.pdf", plot = p, width = 12, height = 7)
 
 final[final$p > 0.01 | final$area < 0,]
 ```
@@ -657,7 +666,7 @@ spicyBoxPlot(results = spicyTest,
              from = "Tumor",
              to = "T")
 
-ggsave(filename = "output/Figure_4/Figure_4E.pdf", plot = p, width = 7, height = 5)
+ggsave(filename = "../output/Figure_4/Figure_4E.pdf", plot = p, width = 7, height = 5)
 ```
 
 Find example images:

@@ -9,6 +9,15 @@ editor_options:
 
 Code to generate the plots of Figure 4.
 
+```{r}
+# Set path
+if (Sys.info()["sysname"] == "Windows"){
+  mount_path <- "O:/projects/immucan/"
+} else {
+  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
+}
+```
+
 ## Read data
 
 ```{r, message=FALSE}
@@ -18,7 +27,6 @@ library(ggpubr)
 library(cowplot)
 library(imcRtools)
 
-mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
 
 sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
 sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
@@ -27,6 +35,8 @@ sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/m
 # Number of cells
 
 ```{r}
+if (!dir.exists("output/Figure_S4/")) dir.create("output/Figure_S4/")
+
 no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
   group_by(sample_id, patient_id) %>%
   summarize(count = n())
