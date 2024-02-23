@@ -1,10 +1,10 @@
 ---
-title: "Figure 4"
+title: "Figure S8"
 output:
   workflowr::wflow_html:
     toc: false
 editor_options:
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 Code to generate the plots of Figure 4.
@@ -77,165 +77,20 @@ all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
 all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ```
 
-## Lcross based comparison - example images
-
-```{r Lcross}
-# Good images
-# Area 29258, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_Batch20210921_10082495-SPECT-VAR-TIS-01-IMC-01_004"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
-
-# Area 47510, p 0.01
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_003"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "B"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 52021, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "BnT"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 18210, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "DC"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 27379, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 22904, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_005"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "other"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 32533, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_001"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "T"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 35468, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_003"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Neutrophil"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Bad images
-
-# Area 501, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 10289, p 0.06
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074349-SPECT-VAR-TIS-UNST-03_004"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "B"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 10895, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "BnT"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 2479, p 0.08
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "DC"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 1426, p 0.02
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_003"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area -1096, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_003"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "other"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area 1263, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "T"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Area -9209, p 0.01
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Neutrophil"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-```
-
-# spicyR example images
+## Visualize celltypes between mIF and IMC
 
 ```{r}
-# T cells
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10067433-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "T"]
+if (!dir.exists("../output/Figure_S8/")) dir.create("output/Figure_S8/")
 
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
+p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
+            node_color_by = "tissue.type", 
+            ncols = 4, img_id = "sample_id") 
 
-# Neutrophil and other
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Neutrophil" | cur_sce$matched_celltype == "other"]
+ggsave(filename = "../output/Figure_S8/FigS8_IMC.pdf", plot = p, width = 20, height = 49)
 
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
+p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
+            node_color_by = "tissue.type", 
+            ncols = 4, img_id = "sample_id") 
 
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Neutrophil" | cur_sce$matched_celltype == "other"]
-
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-
-# MacCD163
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_006"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10074832-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Tumor and MacCD163
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10075371-SPECT-VAR-TIS-01-IMC-01_001"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163" | cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_005"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "MacCD163" | cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-
-# Tumor and T
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10071582-SPECT-VAR-TIS-01-IMC-01_007"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "T" | cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "T" | cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce[,cur_sce$modality == "IMC"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
-plotSpatial(cur_sce[,cur_sce$modality == "mIF"], node_color_by = "matched_celltype", img_id = "sample_id", flip_y = TRUE)
+ggsave(filename = "../output/Figure_S8/FigS8_mIF.pdf", plot = p, width = 20, height = 49)
 ```

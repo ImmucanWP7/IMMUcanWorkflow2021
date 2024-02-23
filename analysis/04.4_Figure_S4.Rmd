@@ -4,7 +4,7 @@ output:
   workflowr::wflow_html:
     toc: false
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Code to generate the plots of Figure 4.
@@ -32,10 +32,10 @@ sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/I
 sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
 ```
 
-# Number of cells
+# A - Number of cells
 
 ```{r}
-if (!dir.exists("output/Figure_S4/")) dir.create("output/Figure_S4/")
+if (!dir.exists("output/Figure_S5/")) dir.create("output/Figure_S5/")
 
 no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
   group_by(sample_id, patient_id) %>%
@@ -47,21 +47,48 @@ no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
 combined_df <- left_join(no_IMC, no_mIF, by = c("sample_id", "patient_id"))
 combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
 
-(p <- ggplot(combined_df) + 
+p <- ggplot(combined_df) + 
   geom_point(aes(count.x, count.y, color = patient_id), size = 2) + 
   geom_abline(slope = 1, intercept = 0, color = "dark red") +
   geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
   theme_minimal(base_size = 20) + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
   coord_fixed() + 
   ylim(c(0, 5000)) + xlim(c(0, 5000)) +
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID"))
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
 
-ggsave(filename = "output/Figure_S4/FigS4_A.pdf", plot = p, width = 10, height = 7)
+p
+ggsave(filename = "../output/Figure_S5/FigS5_A.pdf", plot = p, width = 10, height = 7)
 ```
+
+# B - cellular area
+
+```{r}
+cur_dat <- data.frame(IMC_cell_size = sce_IMC$area)
+
+mean_IMC <- mean(cur_dat$IMC_cell_size)
+mean_IF <- mean(sce_mIF$cell.area)
+p <- cur_dat %>%
+  ggplot(aes(y= IMC_cell_size))+
+  geom_density(col= "blue", size = 2)+
+  coord_flip()+
+  theme_bw()+
+  geom_density(data = data.frame(IF_cell_size = sce_mIF$cell.area) ,aes(y = IF_cell_size),col= "red", size = 2)+
+  annotate("text", x = 0.009, y = 392 , label = expression( paste("IMC, mean = 78 mm"^2)), color = "blue", size = 5)+
+  annotate("text", x = 0.01, y = 400 , label = expression( paste("mIF, mean = 149 mm"^2)), color = "red", size = 5)+
+  ylab("cell size")+
+  xlab("density estimate")
+  #geom_hline(yintercept = mean_IMC, col= "blue")+
+  #geom_hline(yintercept = mean_IF, col= "red")
+p
+ggsave(filename = "../output/Figure_S5/FigS5_B.pdf", plot = p, width = 7, height = 5)
+```
+
+
+
 
 # Supporting plots for DA analysis
 
-```{r}
+```{r, fig.height=10, fig.width=10}
 cur_mIF <- colData(sce_mIF)
 cur_IMC <- colData(sce_IMC)
 
@@ -97,8 +124,8 @@ out <- rbind(prop_IMC, prop_mIF)
   ylab("Proportion of cell phenotypes") +
   xlab("Modality") +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, "Patient ID"))
-
-ggsave(filename = "output/Figure_S4/FigS4_B.pdf", plot = p, height = 5, width = 17)
+p
+ggsave(filename = "../output/Figure_S5/FigS5_C.pdf", plot = p, height = 5, width = 17)
 ```
 
 Example images
@@ -121,6 +148,6 @@ library(cytomapper)
         axis.text.y = element_blank(),
         panel.background = element_rect(fill = "black", colour = NA)) + ggtitle(""))
 
-ggsave(filename = "output/Figure_S4/FigS4_C1.pdf", plot = p1, height = 10, width = 10)
-ggsave(filename = "output/Figure_S4/FigS4_C2.pdf", plot = p2, height = 10, width = 10)
+ggsave(filename = "../output/Figure_S5/FigS5_D1.pdf", plot = p1, height = 10, width = 10)
+ggsave(filename = "../output/Figure_S5/FigS5_D2.pdf", plot = p2, height = 10, width = 10)
 ```

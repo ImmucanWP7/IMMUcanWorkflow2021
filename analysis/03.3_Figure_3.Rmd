@@ -4,7 +4,7 @@ output:
   workflowr::wflow_html:
     toc: false
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Code to generate the plots of Figure 1.
@@ -18,7 +18,7 @@ if (Sys.info()["sysname"] == "Windows"){
 }
 ```
 
-## Read data
+# Read data
 
 ```{r, message=FALSE}
 library(SingleCellExperiment)
@@ -33,7 +33,7 @@ images <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/I
 masks <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds"))
 ```
 
-### IMC Example image
+# IMC Example image
 
 ```{r}
 if (!dir.exists("output/Figure_3/")) dir.create("output/Figure_3/")
@@ -108,7 +108,47 @@ plotCells(cur_CIL_mask,
           save_plot = list(filename = "output/Figure_3/Figure_3_B_4.png"))
 ```
 
-### Overview stats
+# Figure 3C
+
+```{r}
+library(scater)
+library(dittoSeq)
+library(ComplexHeatmap)
+library(viridis)
+library(RColorBrewer)
+library(circlize)
+
+mean_sce <- aggregateAcrossCells(sce_imc,ids = sce_imc$celltype,
+                                 statistics = "mean", 
+                                 use.assay.type = "exprs", subset.row = !grepl("DNA|HistoneH3", rownames(mean_sce)))
+
+assay(mean_sce,"z_scale") <- t(scale(t(assay(mean_sce,"exprs")),center = TRUE,scale = TRUE))
+
+
+heatmap_body <- t(assay(mean_sce,"z_scale")) #rows = cell_types, columns = genes
+
+row_anno <- data.frame(ncells = mean_sce$ncells,
+                       celltype = mean_sce$celltype)
+pdf(file = "../output/Figure_3/Figure_3C.pdf", width = 10, height = 6)
+Heatmap(heatmap_body,
+        name = "z_scale",
+        col = colorRamp2(breaks = c(-3,0,3),colors = c("dark blue", "white", "dark red")),
+        #col = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+        column_title = "channels",
+        column_title_side = "bottom",
+        row_title_side = "right",
+        clustering_method_columns = "ward.D2",
+        clustering_method_rows = "ward.D2",
+        column_split = rowData(mean_sce)$immune_channel)+
+  rowAnnotation(ncells = anno_barplot(row_anno$ncells,annotation_name_rot = 90, width = unit(2,"cm")))+ 
+  rowAnnotation(celltype = anno_simple(row_anno$celltype, border = TRUE, col = metadata(sce_imc)$color_vectors$celltype))+
+  rowAnnotation(names = anno_text(row_anno$celltype))
+  #simple annotation
+dev.off()
+```
+
+
+# Figure 3D
 
 ```{r}
 p <- colData(sce_imc) %>%
@@ -129,46 +169,48 @@ p <- colData(sce_imc) %>%
 
 p
 
-ggsave("output/Figure_3/Figure_3_C_1.pdf", p, width = 12, height = 8)
+ggsave("../output/Figure_3/Figure_3D.pdf", p, width = 12, height = 8)
 
-sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
-
-p <- colData(sce_imc) %>%
-  as_tibble() %>%
-  group_by(patient_id, indication, CD20_patch_logical) %>%
-  count() %>%
-  ggplot() + 
-  geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
-           position = "stack", stat = "identity") +
-  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-  scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-  theme_classic(base_size = 25) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "bottom") +
-  xlab("Patients") +
-  ylab("CD20 patch cell count")
-
-p
-
-ggsave("output/Figure_3/Figure_3_C_2.pdf", p, width = 12, height = 8)
-
-p <- colData(sce_imc) %>%
-  as_tibble() %>%
-  group_by(patient_id, indication, tumor_patches) %>%
-  count() %>%
-  ggplot() + 
-  geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
-           position = "stack", stat = "identity") +
-  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-  scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-  theme_classic(base_size = 25) + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "bottom") +
-  xlab("Patients") +
-  ylab("CD20 patch cell count")
-
-p
-
-ggsave("output/Figure_3/Figure_3_C_3.pdf", p, width = 12, height = 8)
+# sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
+# 
+# p <- colData(sce_imc) %>%
+#   as_tibble() %>%
+#   group_by(patient_id, indication, CD20_patch_logical) %>%
+#   count() %>%
+#   ggplot() + 
+#   geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
+#            position = "stack", stat = "identity") +
+#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+#   theme_classic(base_size = 25) + 
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         legend.position = "bottom") +
+#   xlab("Patients") +
+#   ylab("CD20 patch cell count")
+# 
+# p
+# 
+# ggsave("output/Figure_3/Figure_3_C_2.pdf", p, width = 12, height = 8)
+# 
+# p <- colData(sce_imc) %>%
+#   as_tibble() %>%
+#   group_by(patient_id, indication, tumor_patches) %>%
+#   count() %>%
+#   ggplot() + 
+#   geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
+#            position = "stack", stat = "identity") +
+#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+#   theme_classic(base_size = 25) + 
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         legend.position = "bottom") +
+#   xlab("Patients") +
+#   ylab("CD20 patch cell count")
+# 
+# p
+# 
+# ggsave("output/Figure_3/Figure_3_C_3.pdf", p, width = 12, height = 8)
 ```
+
+
 

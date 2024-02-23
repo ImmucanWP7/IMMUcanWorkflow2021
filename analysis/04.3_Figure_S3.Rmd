@@ -4,7 +4,7 @@ output:
   workflowr::wflow_html:
     toc: false
 editor_options:
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 Code to generate the plots of Figure 1.
@@ -22,66 +22,66 @@ if (Sys.info()["sysname"] == "Windows"){
 
 ```{r, message=FALSE}
 library(SingleCellExperiment)
+library(data.table)
 library(tidyverse)
-library(imcRtools)
-library(scater)
-library(dittoSeq)
-
-sce_imc <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
 ```
 
-### Heatmap
 
+
+# B - signal stability
 ```{r}
-mean_sce <- aggregateAcrossCells(sce_imc,
-                                 ids = DataFrame(sample = sce_imc$sample_id,
-                                                  celltype = sce_imc$celltype),
-                                 statistics = "mean")
-```   
-
+dat <- fread(paste0(mount_path  ,"processed_data/Panel_1/2022_WORKFLOW/IF_fluorophore_time_series/QuPath_project/measurements.csv"),stringsAsFactors = FALSE)
+```
 
 
 ```{r}
-# if (!dir.exists("output/Figure_S3/")) dir.create("output/Figure_S3/")
-# 
-# sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
-# 
-# p <- colData(sce_imc) %>%
-#   as_tibble() %>%
-#   group_by(patient_id, indication, CD20_patch_logical) %>%
-#   count() %>%
-#   ggplot() + 
-#   geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
-#            position = "stack", stat = "identity") +
-#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-#   theme_classic(base_size = 25) + 
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-#         legend.position = "bottom") +
-#   xlab("Patients") +
-#   ylab("CD20 patch cell count")
-# 
-# p
-# 
-# ggsave("output/Figure_S3/Figure_S3_A.pdf", p, width = 12, height = 8)
-# 
-# p <- colData(sce_imc) %>%
-#   as_tibble() %>%
-#   group_by(patient_id, indication, tumor_patches) %>%
-#   count() %>%
-#   ggplot() + 
-#   geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
-#            position = "stack", stat = "identity") +
-#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-#   theme_classic(base_size = 25) + 
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-#         legend.position = "bottom") +
-#   xlab("Patients") +
-#   ylab("CD20 patch cell count")
-# 
-# p
-# 
-# ggsave("output/Figure_S3/Figure_S3_B.pdf", p, width = 12, height = 8)
+#subset the data table
+
+dat_new <- dat[, .(Image, `Cell: DAPI mean`, `Cell: EGFP mean`, `Cell: Cy3 mean`, `Cell: AF647 mean`)]
+
+dat_sum <- dat_new %>%
+  group_by(Image) %>%
+  summarise(mean_DAPI = mean(`Cell: DAPI mean`),
+            mean_panCK = mean(`Cell: EGFP mean`), 
+            mean_CD45 = mean(`Cell: Cy3 mean`),
+            mean_CD163 = mean (`Cell: AF647 mean`))
+
+
+#Using data.table
+#test <- dat_new[, .(mean_DAPI = mean(`Cell: DAPI mean`)), by = Image]
+
+
+#Extract the time and sampleID values
+dat_sum <- as.data.table(dat_sum)
+dat_sum <- dat_sum[, time := stringr::str_extract(string = dat_sum$Image, pattern = "[0-9]+hr")]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "20210923_", "", dat_sum$Image)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "20210921_", "", dat_sum$sampleID)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "_0hr", "", dat_sum$sampleID)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "_48hr", "", dat_sum$sampleID)]
+
+
+
+#melt the data table
+dat_melt <- melt(dat_sum, 
+     id.vars = c("sampleID", "time"),
+     measure.vars = c("mean_DAPI", "mean_panCK", "mean_CD45", "mean_CD163"),
+     variable.name = "Marker_mean",
+     value.name = "value")
 ```
 
+```{r, fig.height=12, fig.width=10}
+
+#Draw a barplot
+p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) + 
+  geom_bar(stat="identity", position=position_dodge())+
+  scale_fill_manual(values=c('#999999','#E69F00')) +
+  facet_wrap(~sampleID, scales = "free") +
+  #stat_compare_means(label = "p.signif")+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90,hjust=1,vjust=0.5))
+p
+
+fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
+ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = "../output/Figure_S3/", width = 8, height = 10)
+
+```

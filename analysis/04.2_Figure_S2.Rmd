@@ -1,0 +1,395 @@
+---
+title: "Figure 4"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: inline
+---
+
+Code to generate the plots of S2
+
+```{r}
+# Set path
+if (Sys.info()["sysname"] == "Windows"){
+  mount_path <- "O:/projects/immucan/"
+} else {
+  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
+}
+```
+
+## libraries
+
+```{r, message=FALSE}
+library(SingleCellExperiment)
+library(tidyverse)
+library(data.table)
+library(cowplot)
+library(imcRtools)
+library(ggpubr)
+library(dittoSeq)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(scales)
+library(scater)
+```
+# read data
+
+```{r}
+cyto_sce <- readRDS(paste0(mount_path,"/processed_data/Panel_1/2022_WORKFLOW/cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
+
+# fix annotation
+cyto_sce[,cyto_sce$label == "Apoptotic B-cells"]$label <- "Apoptotic_cells"
+names(metadata(cyto_sce)$colour_vectors$cell_types) <- c(names(metadata(cyto_sce)$colour_vectors$cell_types)[c(1:9)],"Apoptotic_cells","CD8 T-cells (non-activated)","NK")
+```
+
+
+
+# A - activation effect
+```{r}
+p <- dittoDimPlot(cyto_sce, var = "Activation_status", 
+                  reduction.use = "UMAP", size = 0.25,
+                  do.label = FALSE)
+p
+ggsave (filename = "Fig_S2A.png", plot = p, device = "png", path = "../output/Figure_S2/", width=200, height=150, units='mm', dpi=600)
+
+```
+
+
+# B- panel effect
+```{r}
+p <- dittoDimPlot(cyto_sce, var = "Panel", 
+                  reduction.use = "UMAP", size = 0.25,
+                  do.label = FALSE)
+p
+ggsave (filename = "Fig_S2B.png", plot = p, device = "png", path = "../output/Figure_S2/", width=200, height=150, units='mm', dpi=600)
+```
+
+
+
+# C - Marker expression on UMAP
+
+```{r, fig.width=25, fig.height=40}
+assay(cyto_sce, "scaled") <- t(scale(t(assay(cyto_sce, "exprs"))))
+
+p.list <- list()
+for(i in c("HLADR","GrzB","PDL1","Ecad","LAG3","PD1","Ki67","CD8a","CD4", "CD206","CD20","ICOS")){
+  p.list[[i]] <- plotUMAP(cyto_sce, colour_by = i, by_exprs_values = "scaled", 
+                          point_size = 0.25, point_alpha = 1, shape_by = "Activation_status") +
+    scale_colour_gradient2(name = i, low = "#2166ac", mid = "white", high = "#b2182b",
+                           limits = c(-3, 3), oob = squish)
+}
+
+png(file = "../output/Figure_S2/Figure_S2_UMAPmarkers.png",width = 1500 ,height = 1400)
+plot_grid(plotlist = p.list, ncol = 3)
+dev.off()
+```
+
+
+
+# D - CV for cell type detection
+
+```{r}
+# filter out undefined cells for further analysis
+act_mean_CV <- coldata %>%
+  filter(label != "undefined",
+         Activation_status == "activated") %>%
+  group_by(Batch, label)%>%
+  summarise(n = n()) %>%
+  mutate(freq = n/sum(n)) %>%
+  group_by(label) %>%
+  summarise(CV = sd(freq)/mean(freq)) %>%
+  summarise(mean_CV = mean(CV)) %>%
+  pull(mean_CV)
+p1 <- ggplot(coldata %>%
+               filter(label != "undefined",
+                      Activation_status == "activated") %>%
+             group_by(Batch, label)%>%
+               summarise(n = n()) %>%
+               mutate(freq = n/sum(n)) %>%
+               group_by(label) %>%
+               summarise(CV = sd(freq)/mean(freq)),
+             # aes(x = label, y = CV across Batches, col = label))+
+             aes(x = label, y = CV))+
+  geom_point()+
+  geom_hline(yintercept = act_mean_CV, linetype = "dashed", color = "red") +
+  annotate("text", x = "GrzB", y = act_mean_CV + 0.022, label = paste("Mean:", round(act_mean_CV,2)), hjust = 0.1, color = "red") +
+  theme_bw()+
+  # scale_color_manual("Labels", values = metadata(sce)$colour_vectors$cell_types) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  ggtitle("activated")
+
+non_act_mean_CV <- coldata %>%
+  filter(label != "undefined",
+         Activation_status == "non-activated") %>%
+  group_by(Batch, label)%>%
+  summarise(n = n()) %>%
+  mutate(freq = n/sum(n)) %>%
+  group_by(label) %>%
+  summarise(CV = sd(freq)/mean(freq)) %>%
+  summarise(mean_CV = mean(CV)) %>%
+  pull(mean_CV)
+p2 <- ggplot(coldata %>%
+               filter(label != "undefined",
+                      Activation_status == "non-activated") %>%
+             group_by(Batch, label)%>%
+               summarise(n = n()) %>%
+               mutate(freq = n/sum(n)) %>%
+               group_by(label) %>%
+               summarise(CV = sd(freq)/mean(freq)),
+             # aes(x = label, y = CV across Batches, col = label))+
+             aes(x = label, y = CV))+
+  geom_point()+
+  geom_hline(yintercept = non_act_mean_CV, linetype = "dashed", color = "red") +
+  annotate("text", x = "GrzB", y = non_act_mean_CV + 0.03, label = paste("Mean:", round(non_act_mean_CV,2)), hjust = 0.1, color = "red") +
+  theme_bw()+
+  # scale_color_manual("Labels", values = metadata(sce)$colour_vectors$cell_types) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  ggtitle("non-activated")
+
+
+pdf(file = "../output/Figure_S2/Fig_S2D.pdf",width = 8, height = 4)
+plot_grid(p1,p2,ncol = 2)
+dev.off()
+
+```
+
+# E - variation and marker expression
+
+
+```{r, fig.height=15, fig.width=10}
+markers <- list()
+
+# functional markers for T cells
+markers[["CD8 T-cells (activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
+markers[["CD8 T-cells (non-activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
+
+markers[["T-Helper (activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
+markers[["T-Helper (non-activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
+
+
+# B and BnT cell markers
+markers[["B-cells"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|HLADR|CD40|CD20",rownames(cyto_sce))]
+
+# NK markers
+markers[["NK"]] <- rownames(cyto_sce)[grepl(pattern = "CD7|GrzB|CD16$|CD45RA|CD45RO",rownames(cyto_sce))]
+
+# tumor markers
+markers[["PDL-1 positive Epithelial cells"]] <- rownames(cyto_sce)[grepl(pattern = "Ecad|HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67",rownames(cyto_sce))]
+
+markers[["Ecad positive Epithelial cells"]] <- rownames(cyto_sce)[grepl(pattern = "Ecad|HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67",rownames(cyto_sce))]
+
+# myeloid markers
+markers[["Macrophages"]] <- rownames(cyto_sce)[grepl(pattern = "CD68|CD11c|PDL1|ICOS|VISTA|CD40|CD14|CD206|IDO1|CD33|CD16|CD163",rownames(cyto_sce))]
+markers[["Myeloid"]] <- rownames(cyto_sce)[grepl(pattern = "CD68|CD11c|PDL1|ICOS|VISTA|CD40|CD14|CD206|IDO1|CD33|CD16|CD163",rownames(cyto_sce))]
+
+# Apoptotic
+markers[["Apoptotic B-cells"]] <- rownames(cyto_sce)[grepl(pattern = "cleavedPARP",rownames(cyto_sce))]
+
+
+# separate by activation status
+cyto_sce_act <- cyto_sce[,cyto_sce$Activation_status == "activated"]
+cyto_sce_non_act <- cyto_sce[,cyto_sce$Activation_status == "non-activated"]
+
+
+
+
+```
+
+## activated cells 
+
+```{r}
+# compute mean expression of marker per batch and cluster
+# Activated
+library(reshape2)
+
+# extract expression matrix as dataframe and add label and batch information
+expr_df_act <- as.data.frame(t(assay(cyto_sce_act, "exprs")))
+expr_df_act$label <- cyto_sce_act$label
+expr_df_act$Batch <- cyto_sce_act$Batch
+
+# reshape dataframe so it fits our needs
+expr_df_act <- expr_df_act %>%
+  group_by(Batch,label)%>%
+  summarise(across(everything(), mean),
+            .groups = 'drop')
+
+expr_df_act <- melt(expr_df_act, id.vars=c('Batch',"label"), 
+                  measure.vars=rownames(cyto_sce),
+                  na.rm = F)
+
+# select for relevant markers per cell type
+for (lbl in unique(expr_df_act$label)){
+  expr_df_act <- expr_df_act[!((expr_df_act$label == lbl) & !(expr_df_act$variable %in% markers[[lbl]])),]
+}
+
+```
+
+## non-activated cells
+
+```{r}
+# extract expression matrix as dataframe and add label and batch information
+expr_df_non_act <- as.data.frame(t(assay(cyto_sce_non_act, "exprs")))
+expr_df_non_act$label <- cyto_sce_non_act$label
+expr_df_non_act$Batch <- cyto_sce_non_act$Batch
+
+# reshape dataframe so it fits our needs
+expr_df_non_act <- expr_df_non_act %>%
+  group_by(Batch,label)%>%
+  summarise(across(everything(), mean),
+            .groups = 'drop')
+
+expr_df_non_act <- melt(expr_df_non_act, id.vars=c('Batch',"label"), 
+                  measure.vars=rownames(cyto_sce),
+                  na.rm = F)
+
+# select for relevant markers per cell type
+for (lbl in unique(expr_df_non_act$label)){
+  expr_df_non_act <- expr_df_non_act[!((expr_df_non_act$label == lbl) & !(expr_df_non_act$variable %in% markers[[lbl]])),]
+}
+
+```
+
+##  plot
+
+```{r}
+cv_act <- expr_df_act %>%
+  group_by(label,variable) %>%
+  summarise(CV = sd(value)/mean(value))
+
+# fit linear model
+res <- expr_df_act %>%
+  group_by(label,variable) %>%
+  mutate(CV = sd(value)/mean(value)) %>%
+  group_by(variable) %>%
+  summarise(mean_value = mean(value),
+            mean_CV = mean(CV))
+
+fit <- lm(formula = mean_CV ~ mean_value, data = res)
+
+r_square <- summary(fit)$r.squared
+
+
+# plot data
+
+p <- expr_df_act %>%
+  group_by(label,variable) %>%
+  mutate(CV = sd(value)/mean(value)) %>%
+  group_by(variable) %>%
+  summarise(mean_value = mean(value),
+            mean_CV = mean(CV)) %>%
+  ggplot(aes(x = mean_value, y = mean_CV))+
+  geom_smooth(method = lm, formula = y ~ x ,)+
+  geom_point(aes(col =variable))+
+  theme_bw()+
+  annotate(geom = "text",label = paste0("R2 =", round(r_square,digits = 2)),x = 3, y = 0.25)
+
+p
+ggsave (filename = "Fig_S2E.pdf", plot = p, device = "pdf", path = "../output/Figure_S2/", width = 16, height = 10, units = "cm")
+```
+
+# G CV - non_activated
+
+```{r}
+cv_non_act <- expr_df_non_act %>%
+  group_by(label,variable) %>%
+  summarise(CV = sd(value)/mean(value))
+
+marker_cv_non_act <- cv_non_act%>%
+  group_by(variable) %>%
+  summarise(mean = mean(CV), sd = sd(CV), n = n()) %>%
+  mutate(upper = mean + sd, lower = mean - sd)
+
+
+ymax <- max(marker_cv_non_act$mean)
+ymin <- min(marker_cv_non_act$mean)
+ymean <- mean(marker_cv_non_act$mean)
+p <- ggplot(marker_cv_non_act, aes(x = variable))+
+  # geom_errorbar(aes(ymin=lower, ymax =upper))+
+  geom_point(aes(y = mean)) +
+  # geom_text(aes(label=n, y=upper+0.02)) +
+  geom_hline(yintercept = ymax, linetype = "dashed", color = "red") +
+  annotate("text", x = "cleavedPARP", y = ymax - 0.022, label = paste("Max:", round(ymax,2)), hjust = 1.1, color = "red") +
+  geom_hline(yintercept = ymin, linetype = "dashed", color = "red") +
+  annotate("text", x = "CD16", y = ymin + 0.022, label = paste("Min:", round(ymin,2)), hjust = -0.1, color = "red") +
+  geom_hline(yintercept = ymean, linetype = "dashed", color = "red") +
+  annotate("text", x = "GrzB", y = ymean + 0.022, label = paste("Mean:", round(ymean,2)), hjust = 0.1, color = "red") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  xlab("Marker")+
+  ylab("mean CV")
+p
+ggsave (filename = "Fig_S2G_non_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_S2/", width = 12, height = 8, units = "cm")
+```
+
+
+
+
+
+# G
+```{r}
+dat <- fread(paste0(mount_path  ,"processed_data/Panel_1/2022_WORKFLOW/IF_fluorophore_time_series/QuPath_project/measurements.csv"))
+```
+
+
+```{r}
+#subset the data table
+
+dat_new <- dat[, .(Image, `Cell: DAPI mean`, `Cell: EGFP mean`, `Cell: Cy3 mean`, `Cell: AF647 mean`)]
+
+dat_sum <- dat_new %>%
+  group_by(Image) %>%
+  summarise(mean_DAPI = mean(`Cell: DAPI mean`),
+            mean_panCK = mean(`Cell: EGFP mean`), 
+            mean_CD45 = mean(`Cell: Cy3 mean`),
+            mean_CD163 = mean (`Cell: AF647 mean`))
+
+
+#Using data.table
+#test <- dat_new[, .(mean_DAPI = mean(`Cell: DAPI mean`)), by = Image]
+
+
+#Extract the time and sampleID values
+dat_sum <- as.data.table(dat_sum)
+dat_sum <- dat_sum[, time := stringr::str_extract(string = dat_sum$Image, pattern = "[0-9]+hr")]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "20210923_", "", dat_sum$Image)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "20210921_", "", dat_sum$sampleID)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "_0hr", "", dat_sum$sampleID)]
+dat_sum <- dat_sum[, sampleID := sub(pattern = "_48hr", "", dat_sum$sampleID)]
+
+
+
+#melt the data table
+dat_melt <- melt(dat_sum, 
+     id.vars = c("sampleID", "time"),
+     measure.vars = c("mean_DAPI", "mean_panCK", "mean_CD45", "mean_CD163"),
+     variable.name = "Marker_mean",
+     value.name = "value")
+
+
+#Widen the data table
+dat_test <- dcast(dat_melt, sampleID + Marker_mean ~ time, value.var = "value")
+
+#compute the fold change
+dat_test <- dat_test [, fc := (dat_test$`48hr` - dat_test$`0hr`)/dat_test$`0hr`]
+
+```
+
+```{r, fig.height=12, fig.width=10}
+
+#Draw a barplot
+p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) + 
+  geom_bar(stat="identity", position=position_dodge())+
+  scale_fill_manual(values=c('#999999','#E69F00')) +
+  facet_wrap(~sampleID, scales = "free") +
+  stat_compare_means(label = "p.signif")+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90,hjust=1,vjust=0.5))
+p
+
+fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
+ggsave (filename = "Fig_S2E.png", plot = p, device = "png", path = "../output/Figure_S2/", width=350, height=300, units='mm', dpi=600)
+
+```
+
