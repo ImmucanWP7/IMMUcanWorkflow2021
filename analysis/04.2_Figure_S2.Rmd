@@ -76,13 +76,14 @@ assay(cyto_sce, "scaled") <- t(scale(t(assay(cyto_sce, "exprs"))))
 p.list <- list()
 for(i in c("HLADR","GrzB","PDL1","Ecad","LAG3","PD1","Ki67","CD8a","CD4", "CD206","CD20","ICOS")){
   p.list[[i]] <- plotUMAP(cyto_sce, colour_by = i, by_exprs_values = "scaled", 
-                          point_size = 0.25, point_alpha = 1, shape_by = "Activation_status") +
+                          point_size = 0.25, point_alpha = 1) +
     scale_colour_gradient2(name = i, low = "#2166ac", mid = "white", high = "#b2182b",
-                           limits = c(-3, 3), oob = squish)
+                           limits = c(-3, 3), oob = squish)+
+    theme(legend.title = element_text(size = 20), legend.key.size = unit(8, "mm"))
 }
 
-png(file = "../output/Figure_S2/Figure_S2_UMAPmarkers.png",width = 1500 ,height = 1400)
-plot_grid(plotlist = p.list, ncol = 3)
+png(file = "../output/Figure_S2/Figure_S2_UMAPmarkers.png",width = 2000 ,height = 1200)
+plot_grid(plotlist = p.list, ncol = 4)
 dev.off()
 ```
 
@@ -91,6 +92,7 @@ dev.off()
 # D - CV for cell type detection
 
 ```{r}
+coldata <- as.data.frame(colData(cyto_sce))
 # filter out undefined cells for further analysis
 act_mean_CV <- coldata %>%
   filter(label != "undefined",
@@ -282,8 +284,8 @@ p <- expr_df_act %>%
   ggplot(aes(x = mean_value, y = mean_CV))+
   geom_smooth(method = lm, formula = y ~ x ,)+
   geom_point(aes(col =variable))+
-  theme_bw()+
-  annotate(geom = "text",label = paste0("R2 =", round(r_square,digits = 2)),x = 3, y = 0.25)
+  stat_regline_equation(aes(label =  ..rr.label..))+
+  theme_bw()
 
 p
 ggsave (filename = "Fig_S2E.pdf", plot = p, device = "pdf", path = "../output/Figure_S2/", width = 16, height = 10, units = "cm")

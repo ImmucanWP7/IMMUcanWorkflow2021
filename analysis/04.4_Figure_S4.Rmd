@@ -1,5 +1,5 @@
 ---
-title: "Figure 4"
+title: "Figure S4"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,7 +7,9 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Code to generate the plots of Figure 4.
+Code to generate the plots of Figure S4.
+The code reads data from labelled images to build a random forest classifier which was used to predict the cell types.
+The classifier is also the general classifier used for Panel 1 IMC data in the immucan consortium.
 
 ```{r}
 # Set path
@@ -18,136 +20,333 @@ if (Sys.info()["sysname"] == "Windows"){
 }
 ```
 
-## Read data
 
-```{r, message=FALSE}
+load libraries
+```{r}
 library(SingleCellExperiment)
+library(caret)
+library(doParallel)
 library(tidyverse)
-library(ggpubr)
-library(cowplot)
-library(imcRtools)
-
-
-sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
+library(ggplot2)
 ```
 
-# A - Number of cells
+
+# load data
+training data consists of labels from the first round of labelling (V1) and a second round of labelling (V3)
 
 ```{r}
-if (!dir.exists("output/Figure_S5/")) dir.create("output/Figure_S5/")
-
-no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
-  group_by(sample_id, patient_id) %>%
-  summarize(count = n())
-no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
-  group_by(sample_id, patient_id) %>%
-  summarize(count = n())
-
-combined_df <- left_join(no_IMC, no_mIF, by = c("sample_id", "patient_id"))
-combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
-
-p <- ggplot(combined_df) + 
-  geom_point(aes(count.x, count.y, color = patient_id), size = 2) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red") +
-  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
-  theme_minimal(base_size = 20) + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
-  coord_fixed() + 
-  ylim(c(0, 5000)) + xlim(c(0, 5000)) +
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
-
-p
-ggsave(filename = "../output/Figure_S5/FigS5_A.pdf", plot = p, width = 10, height = 7)
+sce <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/sce_labelled_V1.rds")
+sce_new <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/sce_labelled_V3.rds")
 ```
 
-# B - cellular area
+## Exclude DCs with low CD11c expression
 
-```{r}
-cur_dat <- data.frame(IMC_cell_size = sce_IMC$area)
+We observed an over-estimation of DCs in the trials and will now exclude DCs with low CD11c. 
 
-mean_IMC <- mean(cur_dat$IMC_cell_size)
-mean_IF <- mean(sce_mIF$cell.area)
-p <- cur_dat %>%
-  ggplot(aes(y= IMC_cell_size))+
-  geom_density(col= "blue", size = 2)+
-  coord_flip()+
-  theme_bw()+
-  geom_density(data = data.frame(IF_cell_size = sce_mIF$cell.area) ,aes(y = IF_cell_size),col= "red", size = 2)+
-  annotate("text", x = 0.009, y = 392 , label = expression( paste("IMC, mean = 78 mm"^2)), color = "blue", size = 5)+
-  annotate("text", x = 0.01, y = 400 , label = expression( paste("mIF, mean = 149 mm"^2)), color = "red", size = 5)+
-  ylab("cell size")+
-  xlab("density estimate")
-  #geom_hline(yintercept = mean_IMC, col= "blue")+
-  #geom_hline(yintercept = mean_IF, col= "red")
-p
-ggsave(filename = "../output/Figure_S5/FigS5_B.pdf", plot = p, width = 7, height = 5)
+```{r exclude-DCs}
+ggplot(data.frame(CD11c = assay(sce[,sce$cell_labels == "DC"], "exprs")["CD11c",],
+                  CD68 = assay(sce[,sce$cell_labels == "DC"], "exprs")["CD68",])) +
+  geom_point(aes(CD11c, CD68))
+
+sce$cell_labels[sce$cell_labels == "DC" & (assay(sce, "exprs")["CD11c",] < 2 | assay(sce, "exprs")["CD68",] > 3)] <- "unlabelled"
+
+ggplot(data.frame(CD11c = assay(sce[,sce$cell_labels == "DC"], "exprs")["CD11c",],
+                  CD68 = assay(sce[,sce$cell_labels == "DC"], "exprs")["CD68",])) +
+  geom_point(aes(CD11c, CD68))
+
+ggplot(data.frame(CD11c = assay(sce_new[,sce_new$cell_labels == "DC"], "exprs")["CD11c",],
+                  CD68 = assay(sce_new[,sce_new$cell_labels == "DC"], "exprs")["CD68",])) +
+  geom_point(aes(CD11c, CD68))
+
+sce_new$cell_labels[sce_new$cell_labels == "DC" & (assay(sce_new, "exprs")["CD11c",] < 2 | assay(sce_new, "exprs")["CD68",] > 3)] <- "unlabelled"
+
+ggplot(data.frame(CD11c = assay(sce_new[,sce_new$cell_labels == "DC"], "exprs")["CD11c",],
+                  CD68 = assay(sce_new[,sce_new$cell_labels == "DC"], "exprs")["CD68",])) +
+  geom_point(aes(CD11c, CD68))
+
+lab_sce <- sce[,sce$cell_labels != "unlabelled"]
+unlab_sce <- sce[,sce$cell_labels == "unlabelled"]
+
+lab_sce_new <- sce_new[,sce_new$cell_labels != "unlabelled"]
+unlab_sce_new <- sce_new[,sce_new$cell_labels == "unlabelled"]
+
+table(lab_sce$cell_labels)
+table(lab_sce_new$cell_labels)
 ```
 
+Next, we will first split the labelled data into training and test (validation) data at a ratio of 80/20 using images as grouping level.
 
+```{r split-data-images-DCs}
+set.seed(221107)
+trainIndex <- groupKFold(group = factor(lab_sce$sample_id), k = 5)
+train_sce <- lab_sce[,trainIndex$Fold1]
+test_sce <- lab_sce[,-trainIndex$Fold1]
 
+table(train_sce$cell_labels)
+table(test_sce$cell_labels)
 
-# Supporting plots for DA analysis
+set.seed(230410)
+trainIndex_new <- groupKFold(group = factor(lab_sce_new$sample_id), k = 5)
+train_sce_new <- lab_sce_new[,trainIndex_new$Fold1]
+test_sce_new <- lab_sce_new[,-trainIndex_new$Fold1]
 
-```{r, fig.height=10, fig.width=10}
-cur_mIF <- colData(sce_mIF)
-cur_IMC <- colData(sce_IMC)
+table(train_sce_new$cell_labels)
+table(test_sce_new$cell_labels)
 
-# Proportions of cell types for IMC
-cur_IMC$matched_celltype <- factor(cur_IMC$matched_celltype)
-prop_IMC <- cur_IMC %>% 
-  as.data.frame() %>%
-  group_by(sample_id, patient_id, matched_celltype, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  group_by(sample_id) %>%
-  mutate(prop = count/sum(count))
+cur_names <- Reduce(intersect, x = list(colnames(colData(train_sce)), colnames(colData(train_sce_new))))
+colData(train_sce) <- colData(train_sce)[,cur_names]
+colData(test_sce) <- colData(test_sce)[,cur_names]
+colData(train_sce_new) <- colData(train_sce_new)[,cur_names]
+colData(test_sce_new) <- colData(test_sce_new)[,cur_names]
 
-# Proportions of cell types for mIF
-cur_mIF$matched_celltype <- factor(cur_mIF$matched_celltype)
-prop_mIF <- cur_mIF %>% 
-  as.data.frame() %>%
-  group_by(sample_id, patient_id, matched_celltype, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  group_by(sample_id) %>%
-  mutate(prop = count/sum(count))
+reducedDims(train_sce) <- NULL
+reducedDims(test_sce) <- NULL
+reducedDims(train_sce_new) <- NULL
+reducedDims(test_sce_new) <- NULL
 
-prop_IMC$modality <- "IMC"
-prop_mIF$modality <- "mIF"
+train_sce$classifier <- "v1"
+test_sce$classifier <- "v1"
+train_sce_new$classifier <- "v3"
+test_sce_new$classifier <- "v3"
 
-out <- rbind(prop_IMC, prop_mIF)
+final_train <- cbind(train_sce, train_sce_new)
+final_test <- cbind(test_sce, test_sce_new)
 
-(p <- ggplot(out) + 
-  geom_boxplot(aes(modality, prop), outlier.shape = NA) +
-  geom_point(aes(modality, prop, color = patient_id)) +
-  geom_line(aes(modality, prop, group = sample_id)) +
-  facet_wrap(~matched_celltype, nrow = 1, scales = "free")  +
-  theme_classic(base_size = 20) +
-  ylab("Proportion of cell phenotypes") +
-  xlab("Modality") +
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, "Patient ID"))
-p
-ggsave(filename = "../output/Figure_S5/FigS5_C.pdf", plot = p, height = 5, width = 17)
+table(final_train$cell_labels, final_train$classifier)
+table(final_test$cell_labels, final_test$classifier)
 ```
 
-Example images
+Here, we will first use a 5-fold cross validation by partitioning the images randomly across the full dataset.
+We will also use parallel processing for time reasons.
+For the `randomForrest` classifier, we need to tune the `mtry` parameter - the number of variables sampled for each split.
+We will also add the indication as dummy variable.
 
-```{r}
-library(cytomapper)
+```{r train-model-images-DCs, message = FALSE, eval=TRUE}
+# Define seeds for parallel processing
+# Per iteration, we evaluate 5 models while tuning mtry
+set.seed(221107)
+seeds <- vector(mode = "list", length = 6)
+for (i in 1:5) {
+  seeds[[i]] <- sample(5000, 5)
+}
+seeds[[6]] <- sample(5000, 1)
 
-(p1 <- plotSpatial(sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004"], 
-            img_id = "sample_id", node_color_by = "matched_celltype") +
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) +
-    theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") + ggtitle(""))
+trainIndex <- groupKFold(group = factor(final_train$sample_id), k = 5)
 
-(p2 <- plotSpatial(sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004"], 
-            img_id = "sample_id", node_color_by = "matched_celltype", coords = c("nucleus.x", "nucleus.y")) +
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) +
-    theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA)) + ggtitle(""))
+fitControl <- trainControl(method = "cv",
+                           number = 5,
+                           seeds = seeds, 
+                           index = trainIndex)
 
-ggsave(filename = "../output/Figure_S5/FigS5_D1.pdf", plot = p1, height = 10, width = 10)
-ggsave(filename = "../output/Figure_S5/FigS5_D2.pdf", plot = p2, height = 10, width = 10)
+cl <- makePSOCKcluster(3, outfile = "~/parallel_out")
+registerDoParallel(cl)
+
+# Add dummy variables
+cur_mat <- t(assay(final_train, "exprs")[!grepl("DNA|Histone", rownames(final_train)),])
+
+dummies <- dummyVars(SampleId ~ Indication, data = colData(final_train))
+all_dummies <- predict(dummies, newdata = colData(final_train))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+set.seed(221107)
+rffit <- train(x = cur_mat, 
+               y = factor(final_train$cell_labels),
+               method = "rf", ntree = 1000,
+               tuneLength = 5,
+               trControl = fitControl)
+stopCluster(cl)
+
+rffit
+
+saveRDS(rffit, file = "O:/projects/immucan/processed_data/Panel_1/classification/raw/data/rf_images_DCfix.rds")
 ```
+
+We will now have a look at the accuracy measures over iterations.
+The only parameter that has been tuned is `mtry`.
+
+```{r accuracy-images-DCs}
+rffit <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/rf_images_DCfix.rds")
+
+ggplot(rffit) + 
+  geom_errorbar(data = rffit$results,
+                aes(ymin = Accuracy - AccuracySD,
+                    ymax = Accuracy + AccuracySD),
+                width = 0.4)
+```
+
+We can also compute the confusion matrix:
+
+```{r confusion-matrix-images-DCs}
+confusionMatrix(rffit)
+```
+
+We will also look at the variable importance.
+
+```{r variable-importance-images-DCs, fig.height = 15}
+cur_varImp <- varImp(rffit)
+plot(cur_varImp)
+```
+
+## Old test data
+
+Finally, we will validate the model using the test data.
+
+```{r model-testing-images-DCs-old-data}
+# Add dummy variables
+cur_sce <- final_test[,final_test$classifier == "v1"]
+cur_mat <- t(assay(cur_sce, "exprs")[!grepl("DNA|Histone", rownames(cur_sce)),])
+
+dummies <- dummyVars(SampleId ~ Indication, data = colData(cur_sce))
+all_dummies <- predict(dummies, newdata = colData(cur_sce))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat)
+
+cm <- confusionMatrix(data = cur_pred, reference = factor(cur_sce$cell_labels), mode = "everything")
+cm
+
+data.frame(cm$byClass) %>%
+  mutate(class = sub("Class: ", "", rownames(cm$byClass))) %>%
+  ggplot() + 
+  geom_point(aes(1 - Specificity, Sensitivity, 
+                 size = Detection.Rate,
+                 fill = class),
+             shape = 21) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) + 
+  theme_bw() + 
+  ylab("Sensitivity (TPR)") +
+  xlab("1 - Specificity (FPR)")
+```
+
+We will also observe the distribution of classification probabilities per image and class:
+
+```{r prediciton-probability-images-DCs-old-data, fig.width = 15}
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat, 
+                    type = "prob")
+cur_pred$truth <- factor(cur_sce$cell_labels)
+
+cur_pred %>%
+  pivot_longer(cols = B:Tumor) %>%
+  ggplot() +
+  geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
+  facet_wrap(. ~ truth) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) +
+  theme(panel.background = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## New test data
+
+Now we specifically test the classifier on the newly labelled cells.
+
+```{r model-testing-images-DCs-new-data}
+# Add dummy variables
+cur_sce <- final_test[,final_test$classifier == "v3"]
+cur_mat <- t(assay(cur_sce, "exprs")[!grepl("DNA|Histone", rownames(cur_sce)),])
+
+dummies <- dummyVars(SampleId ~ Indication, data = colData(cur_sce))
+all_dummies <- predict(dummies, newdata = colData(cur_sce))
+all_dummies <- cbind(all_dummies, matrix(0, nrow = nrow(all_dummies), dimnames = list(rownames(all_dummies), "IndicationGI")))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat)
+cur_ref <- factor(cur_sce$cell_labels, levels = levels(cur_pred))
+
+cm <- confusionMatrix(data = cur_pred, reference = cur_ref, mode = "everything")
+cm
+
+data.frame(cm$byClass) %>%
+  mutate(class = sub("Class: ", "", rownames(cm$byClass))) %>%
+  ggplot() + 
+  geom_point(aes(1 - Specificity, Sensitivity, 
+                 size = Detection.Rate,
+                 fill = class),
+             shape = 21) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) + 
+  theme_bw() + 
+  ylab("Sensitivity (TPR)") +
+  xlab("1 - Specificity (FPR)")
+```
+
+We will also observe the distribution of classification probabilities per image and class:
+
+```{r prediciton-probability-images-DCs-new-data, fig.width = 7}
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat, 
+                    type = "prob")
+cur_pred$truth <- factor(cur_sce$cell_labels)
+
+cur_pred %>%
+  pivot_longer(cols = B:Tumor) %>%
+  ggplot() +
+  geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
+  facet_wrap(. ~ truth) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) +
+  theme(panel.background = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## combined test data
+
+We will check the model performance on the complete test data
+
+```{r model-testing-images-DCs-new-data}
+# Add dummy variables
+cur_sce <- final_test
+cur_mat <- t(assay(cur_sce, "exprs")[!grepl("DNA|Histone", rownames(cur_sce)),])
+
+dummies <- dummyVars(SampleId ~ Indication, data = colData(cur_sce))
+all_dummies <- predict(dummies, newdata = colData(cur_sce))
+all_dummies <- cbind(all_dummies, matrix(0, nrow = nrow(all_dummies), dimnames = list(rownames(all_dummies), "IndicationGI")))
+
+cur_mat <- cbind(cur_mat, all_dummies)
+
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat)
+cur_ref <- factor(cur_sce$cell_labels, levels = levels(cur_pred))
+
+cm <- confusionMatrix(data = cur_pred, reference = cur_ref, mode = "everything")
+cm
+
+pdf(file ="../output/Figure_S4/Fig_4A.pdf", width = 8,height = 6)
+data.frame(cm$byClass) %>%
+  mutate(class = sub("Class: ", "", rownames(cm$byClass))) %>%
+  ggplot() + 
+  geom_point(aes(1 - Specificity, Sensitivity, 
+                 size = Detection.Rate,
+                 fill = class),
+             shape = 21) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) + 
+  theme_bw() + 
+  scale_size(range = c(1,12))+
+  ylab("Sensitivity (TPR)") +
+  xlab("1 - Specificity (FPR)")
+dev.off()
+```
+
+```{r prediciton-probability-images-DCs-new-data, fig.width = 15}
+cur_pred <- predict(rffit, 
+                    newdata = cur_mat, 
+                    type = "prob")
+cur_pred$truth <- factor(cur_sce$cell_labels)
+
+png(file ="../output/Figure_S4/Fig_4B.png", width = 35,height = 22,units = "cm", res = 1200)
+cur_pred %>%
+  pivot_longer(cols = B:Tumor) %>%
+  ggplot() +
+  geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
+  facet_wrap(. ~ truth) + 
+  scale_fill_manual(values = metadata(sce)$colour_vectors$cell_types) +
+  theme(panel.background = element_blank(), 
+        axis.text.x = element_text(angle = 45, hjust = 1))+
+  ylab("probability")+
+  xlab("cell type")
+dev.off()
+```
+

@@ -82,6 +82,6 @@ p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) +
 p
 
 fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
-ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = "../output/Figure_S3/", width = 8, height = 10)
+ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = "../output/Figure_S3/", width = 12, height = 8)
 
 ```

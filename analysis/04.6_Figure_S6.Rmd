@@ -1,5 +1,5 @@
 ---
-title: "Figure S6"
+title: "Figure 4"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-Code to generate figure S6
+Code to generate the plots of Figure 4.
 
 ```{r}
 # Set path
@@ -84,15 +84,22 @@ if (!dir.exists("output/Figure_S6/")) dir.create("output/Figure_S6/")
 
 p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
             node_color_by = "matched_celltype", 
-            ncols = 4, img_id = "sample_id") + 
+            ncols = 4, img_id = "sample_id",
+            node_size_fix = 0.04,) + 
+  theme(strip.text =  element_text(size=2))+
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
+  
 
-ggsave(filename = "output/Figure_S6/FigS6_1.pdf", plot = p, width = 20, height = 49)
+#ggsave(filename = "output/Figure_S6/FigS6_1.pdf", plot = p, width = 20, height = 49)
+ggsave(filename = "output/Figure_S6/FigS6_1.png", plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 
 p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
             node_color_by = "matched_celltype", 
-            ncols = 4, img_id = "sample_id") + 
+            ncols = 4, img_id = "sample_id",
+            node_size_fix = 0.04) + 
+  theme(strip.text =  element_text(size=2))+
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
 
-ggsave(filename = "output/Figure_S6/FigS6_2.pdf", plot = p, width = 20, height = 49)
+#ggsave(filename = "output/Figure_S6/FigS6_2.pdf", plot = p, width = 20, height = 49)
+ggsave(filename = "output/Figure_S6/FigS6_2.png", plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 ```

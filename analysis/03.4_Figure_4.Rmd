@@ -1,5 +1,5 @@
 ---
-title: "Figure 4"
+title: "Figure 1"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Code to generate the plots of S2
+Code to generate the plots of Figure 1.
 
 ```{r}
 # Set path
@@ -18,70 +18,120 @@ if (Sys.info()["sysname"] == "Windows"){
 }
 ```
 
-## libraries
+# Read data
 
 ```{r, message=FALSE}
 library(SingleCellExperiment)
 library(tidyverse)
-library(cowplot)
 library(imcRtools)
-library(ggpubr)
-library(dittoSeq)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
-library(scales)
+library(cytomapper)
+library(EBImage)
+
+sce_imc <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
+
+images <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds"))
+masks <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds"))
+```
+
+# IMC Example image
+
+```{r}
+if (!dir.exists("output/Figure_4/")) dir.create("output/Figure_4/")
+
+cur_img <- images$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
+cur_mask <- masks$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
+
+# Rotate to match immucan-roi orientation
+cur_img <- flop(flip(cur_img))
+cur_mask <- flop(flip(cur_mask))
+cur_CIL_img <- CytoImageList(cur_img)
+cur_CIL_mask <- CytoImageList(cur_mask)
+
+mcols(cur_CIL_mask)$sample_id <- "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"
+
+plotPixels(cur_CIL_img, 
+           colour_by = c("Ecad", "CD45RO", "CD45RA", "CD163"),
+           bcg = list(Ecad = c(0, 5, 1),
+                      CD45RO = c(0, 3, 1),
+                      CD45RA = c(0, 3, 1),
+                      CD163 = c(0, 10, 1)),
+           colour = list(Ecad = c("black", "orange"),
+                        CD45RO = c("black", "red"),
+                        CD45RA = c("black", "red"),
+                        CD163 = c("black", "green")),
+           image_title = NULL, 
+           legend = NULL,
+           scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+           save_plot = list(filename = "output/Figure_4/Figure_4_A.png"))
+
+set.seed(123)
+labels <- colorLabels(cur_CIL_mask[[1]])
+labels <- CytoImageList(labels)
+channelNames(labels) <- c("red", "green", "blue")
+
+plotPixels(labels, 
+           colour_by = c("red", "green", "blue"),
+           image_title = NULL,
+           legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+          save_plot = list(filename = "output/Figure_4/Figure_4_B_1.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "celltype",
+          colour = list(celltype = metadata(sce_imc)$color_vectors$celltype),
+          image_title = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10)),
+          save_plot = list(filename = "output/Figure_4/Figure_4_B_2.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "CD20_patches",
+          image_title = NULL,
+          legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10), colour = "black"),
+          save_plot = list(filename = "output/Figure_4/Figure_4_B_3.png"))
+
+plotCells(cur_CIL_mask,
+          object = sce_imc, 
+          img_id = "sample_id", 
+          cell_id = "ObjectNumber",
+          colour_by = "tumor_patches",
+          colour = list(tumor_patches = c(`TRUE` = "brown", `FALSE` = "white")),
+          image_title = NULL,
+          legend = NULL,
+          scale_bar = list(length = 100, label = "", margin = c(30, 10), colour = "black"),
+          save_plot = list(filename = "output/Figure_4/Figure_4_B_4.png"))
+```
+
+# Figure 3C
+
+```{r}
 library(scater)
-```
-# read data
-
-```{r}
-cyto_sce <- readRDS(paste0(mount_path,"/processed_data/Panel_1/2022_WORKFLOW/cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
-
-# fix annotation
-cyto_sce[,cyto_sce$label == "Apoptotic B-cells"]$label <- "Apoptotic_cells"
-names(metadata(cyto_sce)$colour_vectors$cell_types) <- c(names(metadata(cyto_sce)$colour_vectors$cell_types)[c(1:9)],"Apoptotic_cells","CD8 T-cells (non-activated)","NK")
-```
-
-
-# A - cell phenotyping
-
-```{r}
-p <- dittoDimPlot(cyto_sce, var = "label", 
-                  reduction.use = "UMAP",
-                  size = 2,
-                  do.label = TRUE,
-                  labels.size = 3) +
-  scale_color_manual(values = metadata(cyto_sce)$colour_vectors$cell_types)+
-  ggtitle("Grouped Phenograph clusters on UMAP")
-p
-ggsave (filename = "Fig_4A.png", plot = p, device = "png", path = "../output/Figure_4/", width=200, height=150, units='mm', dpi=600)
-
-```
-
-
-# B - Marker expression heatmap
-
-```{r, fig.height=5, fig.width=10}
-library(RColorBrewer)
+library(dittoSeq)
 library(ComplexHeatmap)
 library(viridis)
+library(RColorBrewer)
 library(circlize)
 
-label_sce <- aggregateAcrossCells(cyto_sce,cyto_sce$label, statistics= "mean", use.assay.type="scaled")
+mean_sce <- aggregateAcrossCells(sce_imc,ids = sce_imc$celltype,
+                                 statistics = "mean", 
+                                 use.assay.type = "exprs", subset.row = !grepl("DNA|HistoneH3", rownames(mean_sce)))
 
-heatmap_body <- t(assay(label_sce,"scaled")) #rows = cell_types, columns = genes
+assay(mean_sce,"z_scale") <- t(scale(t(assay(mean_sce,"exprs")),center = TRUE,scale = TRUE))
 
-row_anno <- data.frame(ncells = label_sce$ncells,
-                       celltype = label_sce$label)
 
-col = colorRampPalette(brewer.pal(length(unique(row_anno$celltype)), "Paired"))(length(unique(row_anno$celltype)))
-names(col) <- row_anno$celltype
-col_list <- list(celltype = col)
+heatmap_body <- t(assay(mean_sce,"z_scale")) #rows = cell_types, columns = genes
 
-pdf(file = "../output/Figure_4/Fig_4B.pdf", width = 12, height = 6)
+row_anno <- data.frame(ncells = mean_sce$ncells,
+                       celltype = mean_sce$celltype)
+pdf(file = "../output/Figure_4/Figure_4C.pdf", width = 10, height = 6)
 Heatmap(heatmap_body,
-        name = "z_scaled",
+        name = "z_scale",
         col = colorRamp2(breaks = c(-3,0,3),colors = c("dark blue", "white", "dark red")),
         #col = colorRampPalette(c("dark blue", "white", "dark red"))(100),
         column_title = "channels",
@@ -89,197 +139,77 @@ Heatmap(heatmap_body,
         row_title_side = "right",
         clustering_method_columns = "ward.D2",
         clustering_method_rows = "ward.D2",
-        column_split = rowData(label_sce)$immune_channel)+
+        column_split = rowData(mean_sce)$immune_channel)+
   rowAnnotation(ncells = anno_barplot(row_anno$ncells,annotation_name_rot = 90, width = unit(2,"cm")))+ 
-  rowAnnotation(celltype = anno_simple(row_anno$celltype, border = TRUE, col = metadata(cyto_sce)$colour_vectors$cell_types))+
+  rowAnnotation(celltype = anno_simple(row_anno$celltype, border = TRUE, col = metadata(sce_imc)$color_vectors$celltype))+
   rowAnnotation(names = anno_text(row_anno$celltype))
   #simple annotation
 dev.off()
 ```
 
 
-# C - Control cell pellets
-
-Here we will show the marker and cell type abundace changes in sections from cell pellets acquired over two years
-```{r}
-coldata <- as.data.frame(colData(cyto_sce))
-
-p <- ggplot(coldata, aes(x = Batch, fill = label))+
-  geom_bar(position = "fill")+
-  labs(y = "Proportion")+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
-  scale_fill_manual("Labels", values = metadata(cyto_sce)$colour_vectors$cell_types)+
-  facet_wrap(~Activation_status)+
-  theme(legend.key.size = unit(3,"mm"),legend.position = "bottom")
-p 
-
-ggsave (filename = "Fig_4C.pdf", plot = p, device = "pdf", path = "../output/Figure_4/", width = 22, height = 12, units='cm')
-
-```
-
-
-
-# D - CV marker expression
-
-```{r, fig.height=15, fig.width=10}
-markers <- list()
-
-# functional markers for T cells
-markers[["CD8 T-cells (activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
-markers[["CD8 T-cells (non-activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
-
-markers[["T-Helper (activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
-markers[["T-Helper (non-activated)"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA",rownames(cyto_sce))]
-
-
-# B and BnT cell markers
-markers[["B-cells"]] <- rownames(cyto_sce)[grepl(pattern = "CD27|CD45RA|CD45RO|HLADR|CD40|CD20",rownames(cyto_sce))]
-
-# NK markers
-markers[["NK"]] <- rownames(cyto_sce)[grepl(pattern = "CD7|GrzB|CD16$|CD45RA|CD45RO",rownames(cyto_sce))]
-
-# tumor markers
-markers[["PDL-1 positive Epithelial cells"]] <- rownames(cyto_sce)[grepl(pattern = "Ecad|HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67",rownames(cyto_sce))]
-
-markers[["Ecad positive Epithelial cells"]] <- rownames(cyto_sce)[grepl(pattern = "Ecad|HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67",rownames(cyto_sce))]
-
-# myeloid markers
-markers[["Macrophages"]] <- rownames(cyto_sce)[grepl(pattern = "CD68|CD11c|PDL1|ICOS|VISTA|CD40|CD14|CD206|IDO1|CD33|CD16|CD163",rownames(cyto_sce))]
-markers[["Myeloid"]] <- rownames(cyto_sce)[grepl(pattern = "CD68|CD11c|PDL1|ICOS|VISTA|CD40|CD14|CD206|IDO1|CD33|CD16|CD163",rownames(cyto_sce))]
-
-# Apoptotic
-markers[["Apoptotic B-cells"]] <- rownames(cyto_sce)[grepl(pattern = "cleavedPARP",rownames(cyto_sce))]
-
-
-# separate by activation status
-cyto_sce_act <- cyto_sce[,cyto_sce$Activation_status == "activated"]
-cyto_sce_non_act <- cyto_sce[,cyto_sce$Activation_status == "non-activated"]
-
-
-
-
-```
-
-## activated cells 
+# Figure 3D
 
 ```{r}
-# compute mean expression of marker per batch and cluster
-# Activated
-library(reshape2)
+p <- colData(sce_imc) %>%
+  as_tibble() %>%
+  group_by(patient_id, indication, celltype) %>%
+  count() %>%
+  ggplot() + 
+  geom_bar(aes(patient_id, n, fill = celltype, group = indication), 
+           position = "stack", stat = "identity") +
+  scale_fill_manual(values = metadata(sce_imc)$color_vectors$celltype,
+                    name = "Cell types") +
+  facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+  theme_classic(base_size = 25) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom") +
+  xlab("Patients") +
+  ylab("Cell type count")
 
-# extract expression matrix as dataframe and add label and batch information
-expr_df_act <- as.data.frame(t(assay(cyto_sce_act, "exprs")))
-expr_df_act$label <- cyto_sce_act$label
-expr_df_act$Batch <- cyto_sce_act$Batch
-
-# reshape dataframe so it fits our needs
-expr_df_act <- expr_df_act %>%
-  group_by(Batch,label)%>%
-  summarise(across(everything(), mean),
-            .groups = 'drop')
-
-expr_df_act <- melt(expr_df_act, id.vars=c('Batch',"label"), 
-                  measure.vars=rownames(cyto_sce),
-                  na.rm = F)
-
-# select for relevant markers per cell type
-for (lbl in unique(expr_df_act$label)){
-  expr_df_act <- expr_df_act[!((expr_df_act$label == lbl) & !(expr_df_act$variable %in% markers[[lbl]])),]
-}
-
-```
-
-## non-activated cells
-
-```{r}
-# extract expression matrix as dataframe and add label and batch information
-expr_df_non_act <- as.data.frame(t(assay(cyto_sce_non_act, "exprs")))
-expr_df_non_act$label <- cyto_sce_non_act$label
-expr_df_non_act$Batch <- cyto_sce_non_act$Batch
-
-# reshape dataframe so it fits our needs
-expr_df_non_act <- expr_df_non_act %>%
-  group_by(Batch,label)%>%
-  summarise(across(everything(), mean),
-            .groups = 'drop')
-
-expr_df_non_act <- melt(expr_df_non_act, id.vars=c('Batch',"label"), 
-                  measure.vars=rownames(cyto_sce),
-                  na.rm = F)
-
-# select for relevant markers per cell type
-for (lbl in unique(expr_df_non_act$label)){
-  expr_df_non_act <- expr_df_non_act[!((expr_df_non_act$label == lbl) & !(expr_df_non_act$variable %in% markers[[lbl]])),]
-}
-
-```
-
-# G CV - activated
-
-```{r}
-cv_act <- expr_df_act %>%
-  group_by(label,variable) %>%
-  summarise(CV = sd(value)/mean(value))
-
-marker_cv_act <- cv_act%>%
-  group_by(variable) %>%
-  summarise(mean = mean(CV), sd = sd(CV), n = n()) %>%
-  mutate(upper = mean + sd, lower = mean - sd)
-
-
-ymax <- max(marker_cv_act$mean)
-ymin <- min(marker_cv_act$mean)
-ymean <- mean(marker_cv_act$mean)
-p <- ggplot(marker_cv_act, aes(x = variable))+
-  # geom_errorbar(aes(ymin=lower, ymax =upper))+
-  geom_point(aes(y = mean)) +
-  # geom_text(aes(label=n, y=upper+0.02)) +
-  geom_hline(yintercept = ymax, linetype = "dashed", color = "red") +
-  annotate("text", x = "cleavedPARP", y = ymax - 0.022, label = paste("Max:", round(ymax,2)), hjust = 1.1, color = "red") +
-  geom_hline(yintercept = ymin, linetype = "dashed", color = "red") +
-  annotate("text", x = "CD16", y = ymin + 0.022, label = paste("Min:", round(ymin,2)), hjust = -0.1, color = "red") +
-  geom_hline(yintercept = ymean, linetype = "dashed", color = "red") +
-  annotate("text", x = "GrzB", y = ymean + 0.022, label = paste("Mean:", round(ymean,2)), hjust = 0.1, color = "red") +
-  theme_bw() +
-  theme(axis.text.x = element_blank(), axis.title.x = element_blank()) +
-  ylab("mean CV")
 p
-ggsave (filename = "Fig_4D_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_4/", width = 12, height = 4.6, units = "cm")
-```
 
-# G CV - non_activated
+ggsave("../output/Figure_4/Figure_4D.pdf", p, width = 12, height = 8)
 
-```{r}
-cv_non_act <- expr_df_non_act %>%
-  group_by(label,variable) %>%
-  summarise(CV = sd(value)/mean(value))
-
-marker_cv_non_act <- cv_non_act%>%
-  group_by(variable) %>%
-  summarise(mean = mean(CV), sd = sd(CV), n = n()) %>%
-  mutate(upper = mean + sd, lower = mean - sd)
-
-
-ymax <- max(marker_cv_non_act$mean)
-ymin <- min(marker_cv_non_act$mean)
-ymean <- mean(marker_cv_non_act$mean)
-p <- ggplot(marker_cv_non_act, aes(x = variable))+
-  # geom_errorbar(aes(ymin=lower, ymax =upper))+
-  geom_point(aes(y = mean)) +
-  # geom_text(aes(label=n, y=upper+0.02)) +
-  geom_hline(yintercept = ymax, linetype = "dashed", color = "red") +
-  annotate("text", x = "cleavedPARP", y = ymax - 0.022, label = paste("Max:", round(ymax,2)), hjust = 1.1, color = "red") +
-  geom_hline(yintercept = ymin, linetype = "dashed", color = "red") +
-  annotate("text", x = "CD16", y = ymin + 0.022, label = paste("Min:", round(ymin,2)), hjust = -0.1, color = "red") +
-  geom_hline(yintercept = ymean, linetype = "dashed", color = "red") +
-  annotate("text", x = "GrzB", y = ymean + 0.022, label = paste("Mean:", round(ymean,2)), hjust = 0.1, color = "red") +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  xlab("Marker")+
-  ylab("mean CV")
-p
-ggsave (filename = "Fig_4D_non_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_4/", width = 12, height = 8, units = "cm")
+# sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
+# 
+# p <- colData(sce_imc) %>%
+#   as_tibble() %>%
+#   group_by(patient_id, indication, CD20_patch_logical) %>%
+#   count() %>%
+#   ggplot() + 
+#   geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
+#            position = "stack", stat = "identity") +
+#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+#   theme_classic(base_size = 25) + 
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         legend.position = "bottom") +
+#   xlab("Patients") +
+#   ylab("CD20 patch cell count")
+# 
+# p
+# 
+# ggsave("output/Figure_4/Figure_4_C_2.pdf", p, width = 12, height = 8)
+# 
+# p <- colData(sce_imc) %>%
+#   as_tibble() %>%
+#   group_by(patient_id, indication, tumor_patches) %>%
+#   count() %>%
+#   ggplot() + 
+#   geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
+#            position = "stack", stat = "identity") +
+#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
+#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
+#   theme_classic(base_size = 25) + 
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
+#         legend.position = "bottom") +
+#   xlab("Patients") +
+#   ylab("CD20 patch cell count")
+# 
+# p
+# 
+# ggsave("output/Figure_4/Figure_4_C_3.pdf", p, width = 12, height = 8)
 ```
 
 

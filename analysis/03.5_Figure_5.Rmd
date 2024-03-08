@@ -36,7 +36,7 @@ sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/m
 
 ```{r}
 getwd()
-if (!dir.exists("../output/Figure_4/")) dir.create("../output/Figure_4/")
+if (!dir.exists("../output/Figure_5/")) dir.create("../output/Figure_5/")
 
 cur_IMC <- sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
 cur_mIF <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
@@ -47,7 +47,7 @@ cur_mIF$nucleus.y <- cur_mIF$nucleus.y * 0.4962
 cur_mIF$TLS.ID <- as.character(cur_mIF$TLS.ID)
 
 # Plot to match Figure 3
-(p_1 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
+(p_4 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
@@ -56,7 +56,7 @@ cur_mIF$TLS.ID <- as.character(cur_mIF$TLS.ID)
         legend.position = "none") +
   ggtitle(""))
 
-p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
+p_4_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
@@ -65,7 +65,7 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
         legend.position = "bottom") +
   ggtitle("")
 
-(p_2 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "matched_celltype", coords = c("nucleus.x", "nucleus.y")) + 
+(p_1 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "matched_celltype", coords = c("nucleus.x", "nucleus.y")) + 
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype) + 
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
@@ -74,7 +74,7 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
         legend.position = "none") +
   ggtitle(""))
 
-(p_3 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "CD20_patches") + 
+(p_6 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "CD20_patches") + 
   scale_color_manual(values = c("252" = "red", "257" = "red")) +
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
@@ -83,7 +83,7 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
         legend.position = "none") +
   ggtitle(""))
 
-(p_4 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "TLS.ID", coords = c("nucleus.x", "nucleus.y")) + 
+(p_3 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "TLS.ID", coords = c("nucleus.x", "nucleus.y")) + 
   scale_color_manual(values = c("1" = "red")) +
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
@@ -94,16 +94,16 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
 
 (p_5 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "tumor_patches") + 
   scale_color_manual(values = c("TRUE" = "sienna", "FALSE" = "grey")) + 
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-(p_6 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "tissue.type", coords = c("nucleus.x", "nucleus.y")) + 
-  scale_color_manual(values = c("tumor" = "sienna", "stroma" = "grey")) + 
+  xlim(c(600,0)) + ylim(c(0,600))+ 
   geom_segment(aes(x = 50, y = 50, xend = 150, yend = 50), lwd = 3, color = "white") +
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        panel.background = element_rect(fill = "black", colour = NA),
+        legend.position = "none") +
+  ggtitle(""))
+
+(p_2 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "tissue.type", coords = c("nucleus.x", "nucleus.y")) + 
+  scale_color_manual(values = c("tumor" = "sienna", "stroma" = "grey"))  +
   xlim(c(600,0)) + ylim(c(0,600)) +
   theme(axis.text.x = element_blank(),
         axis.text.y = element_blank(),
@@ -111,10 +111,10 @@ p_1_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "m
         legend.position = "none") +
   ggtitle(""))
 
-p_final <- plot_grid(p_1, p_2, p_3, p_4, p_5, p_6, nrow = 2, byrow = FALSE) 
+p_final <- plot_grid(p_1, p_3, p_2,p_4,p_6, p_5, nrow = 2, byrow = TRUE) 
 
-ggsave(filename = "../output/Figure_4/Figure_4A.pdf", plot = p_final, width = 15, height = 10)
-ggsave(filename = "../output/Figure_4/Figure_4A_legend.pdf", plot = p_1_with_legend)
+ggsave(filename = "../output/Figure_5/Figure_5A.pdf", plot = p_final, width = 15, height = 10)
+ggsave(filename = "../output/Figure_5/Figure_5A_legend.pdf", plot = p_4_with_legend)
 
 ```
 
@@ -197,7 +197,7 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   theme_classic(base_size = 25))+
   theme(legend.position = "none")
 
-ggsave(filename = "../output/Figure_4/Figure_4B.pdf", plot = p, width = 9, height = 6)
+ggsave(filename = "../output/Figure_5/Figure_5B.pdf", plot = p, width = 9, height = 6)
 ```
 
 ## Cell phenotype correlation
@@ -417,7 +417,7 @@ combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, 
 
 p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 5) 
 
-ggsave(filename = "../output/Figure_4/Figure_4C.pdf", plot = p_final, width = 30, height = 15)
+ggsave(filename = "../output/Figure_5/Figure_5C.pdf", plot = p_final, width = 30, height = 15)
 ```
 
 # Spatial comparison
@@ -607,7 +607,7 @@ p <- ggplot(final) +
 
 p
 
-ggsave(filename = "../output/Figure_4/Figure_4D.pdf", plot = p, width = 12, height = 7)
+ggsave(filename = "../output/Figure_5/Figure_5D.pdf", plot = p, width = 12, height = 7)
 
 final[final$p > 0.01 | final$area < 0,]
 ```
@@ -670,7 +670,7 @@ spicyBoxPlot(results = spicyTest,
              from = "Tumor",
              to = "T")
 
-ggsave(filename = "../output/Figure_4/Figure_4E_new.pdf", plot = p, width = 7, height = 5)
+ggsave(filename = "../output/Figure_5/Figure_5E_new.pdf", plot = p, width = 7, height = 5)
 ```
 
 Find example images:
