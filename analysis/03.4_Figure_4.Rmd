@@ -108,7 +108,7 @@ plotCells(cur_CIL_mask,
           save_plot = list(filename = "output/Figure_4/Figure_4_B_4.png"))
 ```
 
-# Figure 3C
+# Figure 4C
 
 ```{r}
 library(scater)
@@ -148,7 +148,7 @@ dev.off()
 ```
 
 
-# Figure 3D
+# Figure 4D
 
 ```{r}
 p <- colData(sce_imc) %>%
