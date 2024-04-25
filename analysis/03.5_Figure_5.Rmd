@@ -524,7 +524,6 @@ plot(cur_env_inhom)
 cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
 
 
-# TODO set fix.n and fix.marks to TRUE in the functions below
 ```
 
 
@@ -692,4 +691,64 @@ test1[order(final[,"MacCD163__MacCD163"], decreasing = TRUE),c("imageID", "T__T"
 test1[order(final[,"MacCD163__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
 
 test1[order(final[,"T__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
+```
+
+# spicyR without TLS images
+```{r, fig.height=6, fig.width=8}
+library(spicyR)
+
+remove <- unique(all_sce$sample_id)[grepl("_004|_008",unique(all_sce$sample_id))]
+
+spicyTest <- spicy(
+  all_sce[,!all_sce$sample_id %in% remove],
+  condition = "modality",
+  subject = "sample_id",
+  spatialCoords = c("Pos_X", "Pos_Y"),
+  window = "square",
+  cellType = "matched_celltype",
+  imageID = "sample_id_global",
+  Rs = c(20, 50, 100, 150)
+)
+
+
+(p <- signifPlot(
+  spicyTest, fdr = T,cutoff = 0.1
+)) 
+signifPlot(spicyTest,type = "", comparisonGroup = "IMC")
+
+topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
+
+spicyBoxPlot(results = spicyTest,
+             from = "T",
+             to = "T")
+
+spicyBoxPlot(results = spicyTest,
+             from = "MacCD163",
+             to = "MacCD163")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Neutrophil",
+             to = "other")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Neutrophil",
+             to = "other")
+
+spicyBoxPlot(results = spicyTest,
+             from = "MacCD163",
+             to = "Tumor")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Tumor",
+             to = "MacCD163")
+
+spicyBoxPlot(results = spicyTest,
+             from = "T",
+             to = "Tumor")
+
+spicyBoxPlot(results = spicyTest,
+             from = "Tumor",
+             to = "T")
+p
+#ggsave(filename = "../output/Figure_5/Figure_5E_new.pdf", plot = p, width = 7, height = 5)
 ```

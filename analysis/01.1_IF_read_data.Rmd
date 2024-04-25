@@ -49,13 +49,13 @@ First, we will start with reading in the whole slide data.
 library(SingleCellExperiment)
 library(tidyverse)
 
-cur_files <- list.files("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+cur_files <- list.files("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
                         pattern = "cells_properties_", full.names = TRUE)
-cur_files_2 <- list.files("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+cur_files_2 <- list.files("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
                           pattern = "cells_properties2_", full.names = TRUE)
 
 # Map between Lausanne and Zurich IDs
-cur_table <- read_csv("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
+cur_table <- read_csv("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
 
 # Read in data
 cur_sces <- lapply(seq_along(cur_files), function(x){
@@ -110,7 +110,7 @@ sce <- do.call("cbind", cur_sces)
 assay(sce, "exprs") <- log(counts(sce))
 
 # Add phenotype labels
-cur_key <- as.data.frame(read_csv("~/Github/mIF_cell_types/cell_types/phenotype_key_IF1.csv"))
+cur_key <- as.data.frame(read_csv("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/phenotype_key_IF1.csv"))
 rownames(cur_key) <- cur_key$phenotype
 
 sce$celltype <- cur_key[sce$phenotype,2]
@@ -126,7 +126,7 @@ sce$indication[grepl("SCCHN", sce$indication)] <- "SCCHN"
 
 metadata(sce)$color_vectors <- color_vectors
 
-saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+saveRDS(sce, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
 ```
 
 ## Read matched ROI information
@@ -265,7 +265,7 @@ plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"),
 Finally, we will save the generated object
 
 ```{r}
-saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+saveRDS(sce, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
 ```
 
 ### Read images
@@ -277,7 +277,7 @@ library(EBImage)
 library(tiff)
 library(cytomapper)
 
-cur_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+cur_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
 
 if (!dir.exists(cur_path)) dir.create(cur_path)
 
@@ -307,12 +307,12 @@ for (i in seq_along(cur_folders)) {
     cur_channels <- abind(cur_channels, along = 3)
     
     writeImage(as.array(cur_channels)/(2^16 - 1),
-               paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+               paste0("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
                       basename(cur_folders[i]), ".tiff"),
                bits.per.sample = 16)
 }
 
-images <- loadImages("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
+images <- loadImages("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
                      as.is = TRUE)
 
 channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
@@ -320,7 +320,7 @@ channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "
 mcols(images) <- DataFrame(image = names(images),
                           sample_id = sub(".tiff", "", names(images)))
 
-saveRDS(images, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
+saveRDS(images, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
 ```
 
 # Save out data

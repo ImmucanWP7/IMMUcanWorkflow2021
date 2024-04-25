@@ -175,8 +175,6 @@ plot(cur_env_inhom)
 
 cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
 
-
-# TODO set fix.n and fix.marks to TRUE in the functions below
 ```
 
 
@@ -242,21 +240,23 @@ final <- data.frame(p = unlist(cur_p),
                     area = unlist(cur_area),
                     area_inhom = unlist(cur_area_inhom),
                     sample_id = sub("_", "", str_extract(names(cur_p), "_[0-9]{8}")),
+                    ROI = str_extract(names(cur_p), "\\w{3}(?=\\.test)"),
                     celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
 
 
 p <- final %>%
+  mutate(sample_id = paste0(sample_id,"_",ROI)) %>%
   ggplot()+
-  geom_col(aes(x = sample_id,y = area,fill=as.factor(p_inhom)))+
+  geom_col(aes(x = sample_id,y = area,fill=as.factor(p)))+
+  #facet_wrap(.~sample_id)+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 90, vjust= 0.5, hjust = 1))+
   ylab("Area between L curve and theoretical L curve")+
   labs(fill = ("significant"))
 
 p
-ggsave(filename = "../output/Figure_S7/Fig_S7C.pdf", plot = p, width = 6, height = 4)
 
-final[final$p > 0.01 | final$area < 0,]
+ggsave(filename = "../output/Figure_S7/Fig_S7C.pdf", plot = p, width = 6, height = 4)
 ```
 
 

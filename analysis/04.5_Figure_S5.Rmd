@@ -73,8 +73,8 @@ p <- cur_dat %>%
   coord_flip()+
   theme_bw()+
   geom_density(data = data.frame(IF_cell_size = sce_mIF$cell.area) ,aes(y = IF_cell_size),col= "red", size = 2)+
-  annotate("text", x = 0.009, y = 392 , label = expression( paste("IMC, mean = 78 mm"^2)), color = "blue", size = 5)+
-  annotate("text", x = 0.01, y = 400 , label = expression( paste("mIF, mean = 149 mm"^2)), color = "red", size = 5)+
+  annotate("text", x = 0.009, y = 392 , label = expression( paste("IMC, mean = 78 µm"^2)), color = "blue", size = 5)+
+  annotate("text", x = 0.01, y = 400 , label = expression( paste("mIF, mean = 149 µm"^2)), color = "red", size = 5)+
   ylab("cell size")+
   xlab("density estimate")
   #geom_hline(yintercept = mean_IMC, col= "blue")+
