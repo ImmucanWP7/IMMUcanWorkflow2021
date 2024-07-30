@@ -13,6 +13,12 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
+# set path
+this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+```{r}
+mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+```
+
 In the quality control section, we observe sample differences between tumor cells across the samples.
 We can now correct for these effect using batch effect correction methods developed for scRNAseq data.
 
@@ -29,7 +35,7 @@ library(DT)
 library(BiocSingular)
 library(cowplot)
 
-sce <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+sce <- readRDS(paste0(mount_path,"IMC/Rout/sce.rds"))
 ```
 
 ## Perform samples correction
@@ -99,5 +105,5 @@ plot_grid(plotlist = p.list, ncol = 7)
 Finally, we will save the modified `SingleCellExperiment` object.
 
 ```{r save-RDS}
-saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+saveRDS(sce, paste0(mount_path,"IMC/Rout/sce.rds")
 ```

@@ -12,6 +12,12 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ```
 
+# set path
+this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+```{r}
+mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+```
+
 In this script, we will read in the mIF data that was processed by IFQuant.
 
 ## Define color vectors
@@ -49,13 +55,13 @@ First, we will start with reading in the whole slide data.
 library(SingleCellExperiment)
 library(tidyverse)
 
-cur_files <- list.files("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+cur_files <- list.files(paste0(mount_path,"mIF/data/whole_slide/"), 
                         pattern = "cells_properties_", full.names = TRUE)
-cur_files_2 <- list.files("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/whole_slide/", 
+cur_files_2 <- list.files(paste0(mount_path,"mIF/data/whole_slide/"), 
                           pattern = "cells_properties2_", full.names = TRUE)
 
 # Map between Lausanne and Zurich IDs
-cur_table <- read_csv("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/comparisons/sample_mapping.csv")
+cur_table <- read_csv(paste0(mount_path,"comparisons/sample_mapping.csv"))
 
 # Read in data
 cur_sces <- lapply(seq_along(cur_files), function(x){
@@ -110,7 +116,7 @@ sce <- do.call("cbind", cur_sces)
 assay(sce, "exprs") <- log(counts(sce))
 
 # Add phenotype labels
-cur_key <- as.data.frame(read_csv("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/phenotype_key_IF1.csv"))
+cur_key <- as.data.frame(read_csv(paste0(mount_path,"mIF/phenotype_key_IF1.csv")))
 rownames(cur_key) <- cur_key$phenotype
 
 sce$celltype <- cur_key[sce$phenotype,2]
@@ -126,7 +132,7 @@ sce$indication[grepl("SCCHN", sce$indication)] <- "SCCHN"
 
 metadata(sce)$color_vectors <- color_vectors
 
-saveRDS(sce, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds")
+saveRDS(sce, paste0(mount_path,"mIF/Rout/sce_whole_slide.rds"))
 ```
 
 ## Read matched ROI information
@@ -135,7 +141,7 @@ We will read in the tsv files that contain cells from the same region as
 the IMC acquisition and store them in `SingleCellExperiment` objects.
 
 ```{r load-data, message=FALSE}
-cur_files <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+cur_files <- list.files(paste0(mount_path,"mIF/data/final/"),
                         recursive = TRUE, 
                         pattern = "cells_properties_ROI_coordinates.tsv.gz", full.names = TRUE)
 
@@ -154,7 +160,9 @@ cur_sces <- lapply(cur_files, function(x){
                                                 raw = cur_raw))
   colData(cur_sce) <- DataFrame(cur_data[,!grepl("score", colnames(cur_data))])
   
-  colData(cur_sce)$sample_id <- str_extract(x, "IMMUcan_[2|B].*00[1-9]{1}")
+  samp_id <- str_extract(x, "IMMUcan_[2|B].*00[1-9]{1}")
+  samp_id <- str_split(string = samp_id,pattern = "/",simplify = TRUE)[,2]
+  colData(cur_sce)$sample_id <- samp_id
   colData(cur_sce)$patient_id <- sub("-", "", str_extract(cur_sce$sample_id, "[0-9]{8}-"))
   colData(cur_sce)$ROI <- str_extract(cur_sce$sample_id, "00[1-9]{1}$")
   
@@ -226,24 +234,6 @@ sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion",
 sce <- buildSpatialGraph(sce, img_id = "sample_id", type = "expansion", 
                          coords = c("nucleus.x", "nucleus.y"),
                          threshold = 40, name = "expansion_40")
-
-plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
-            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
-            nodes_first = TRUE)
-
-plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
-            draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
-            nodes_first = TRUE)
-
-plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
-            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
-            draw_edges = TRUE, colPairName = "expansion_60", node_size_fix = 0.1,
-            nodes_first = TRUE)
-
-plotSpatial(sce[,sce$sample_id == "IMMUcan_Batch20210701_10075572-SPECT-VAR-TIS-UNST-03_001"], 
-            img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"), 
-            draw_edges = TRUE, colPairName = "expansion_40", node_size_fix = 0.1,
-            nodes_first = TRUE)
 ```
 
 ### Visualize celltypes, TLS and Tumor regions
@@ -265,31 +255,33 @@ plotSpatial(sce, img_id = "sample_id", coords = c("nucleus.x", "nucleus.y"),
 Finally, we will save the generated object
 
 ```{r}
-saveRDS(sce, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds")
+saveRDS(sce, paste0(mount_path,"mIF/Rout/sce_ROIs.rds"))
 ```
 
 ### Read images
 
 Here, we read in the single-channel images and create multi-channel images.
 
+Note: these are the preselected, matched regions from the whole slide mIF images to the consecutive IMC images. 
+
 ```{r, message=FALSE}
 library(EBImage)
 library(tiff)
 library(cytomapper)
 
-cur_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/"
+cur_path <- paste0(mount_path,"mIF/multichannel_images/img/")
 
 if (!dir.exists(cur_path)) dir.create(cur_path)
 
-cur_folders <- list.files("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/Lausanne_data/final/",
+cur_folders <- list.files(paste0(mount_path,"mIF/data/final/"),
                           full.names = TRUE)
 
 for (i in seq_along(cur_folders)) {
-    if (length(list.files(cur_folders[i], pattern = "ROI_image.*.rds")) == 0) {
+    if (length(list.files(cur_folders[i],recursive = TRUE, pattern = "ROI_image.*.rds")) == 0) {
         stop("Missing images.")
     }
     
-    if (!all.equal(list.files(cur_folders[i], pattern = "ROI_image.*.rds"),
+    if (!all.equal(basename(list.files(cur_folders[i],recursive = TRUE, pattern = "ROI_image.*.rds")),
                    c("ROI_image_autofluorescence.rds", "ROI_image_CD11c.rds", 
                      "ROI_image_CD15.rds", "ROI_image_CD163.rds", 
                      "ROI_image_CD20.rds", "ROI_image_CD3.rds", 
@@ -297,22 +289,23 @@ for (i in seq_along(cur_folders)) {
         stop("Wrong channel order")
     }
     
-    cur_channels <- lapply(list.files(cur_folders[i], 
-                                     pattern = "ROI_image.*.rds",
-                                     full.names = TRUE),
-                          function(x) {
-                              return(readRDS(x))
-                          })
+    cur_channels <- lapply(list.files(cur_folders[i],
+                                      recursive = TRUE,
+                                      pattern = "ROI_image.*.rds",
+                                      full.names = TRUE),
+                           function(x) {
+                             return(readRDS(x))
+                           })
     
     cur_channels <- abind(cur_channels, along = 3)
     
     writeImage(as.array(cur_channels)/(2^16 - 1),
-               paste0("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/",
+               paste0(paste0(mount_path,"mIF/multichannel_images/img/"),
                       basename(cur_folders[i]), ".tiff"),
                bits.per.sample = 16)
 }
 
-images <- loadImages("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/multichannel_images/img/", 
+images <- loadImages(paste0(mount_path,"mIF/multichannel_images/img/"), 
                      as.is = TRUE)
 
 channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
@@ -320,7 +313,7 @@ channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "
 mcols(images) <- DataFrame(image = names(images),
                           sample_id = sub(".tiff", "", names(images)))
 
-saveRDS(images, "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/images.rds")
+saveRDS(images, paste0(mount_path,"mIF/Rout/images.rds"))
 ```
 
 # Save out data
@@ -332,7 +325,7 @@ for the mIF data.
 for (i in unique(sce$sample_id)) {
     cur_sce_mIF <- sce[,sce$sample_id == i]
    
-    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/mIF/cells/", i, ".tsv"))   
+    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0(mount_path,"comparisons/mIF/cells/", i, ".tsv"))   
 }
 ```
 

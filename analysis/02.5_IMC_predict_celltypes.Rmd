@@ -13,6 +13,12 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
+# set path
+this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+```{r}
+mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+```
+
 Here, we will use the previously trained random forest classifier to 
 predict all unlabelled cells.
 
@@ -27,9 +33,9 @@ library(tidyverse)
 library(dittoSeq)
 library(viridis)
 
-sce <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
-images <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds")
-masks <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds")
+sce <- readRDS(paste0(mount_path,"IMC/Rout/sce.rds"))
+images <- readRDS(paste0(mount_path,"IMC/Rout/images.rds"))
+masks <- readRDS(paste0(mount_path,"IMC/Rout/masks.rds"))
 ```
 
 ## Prediction based on external pre-trained classifier
@@ -37,8 +43,11 @@ masks <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Pa
 Here, we will use a pre-trained classifier to predict cell types.
 We will first adjust the data to match to the classifier
 
+Note: more details about the pretrained classifier can be found here: [panel 1 classifier](https://github.com/ImmucanWP7/IMMUcan_IMC_panel_1_cell_type_classifier)
+
 ```{r, message=FALSE}
-rffit <- readRDS("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/cell_classification/classifier_v3/rf_images_DCfix.rds")
+# we will load the classifier for panel 1 classification
+rffit <- readRDS(paste0(mount_path,"IMC/Rout/rf_images_DCfix.rds"))
 
 sce$Indication <- sce$indication
 
@@ -219,8 +228,8 @@ images <- normalize(images, separateImages = TRUE,
 Now, we will loop through the cell-types and indication.
 
 ```{r viz-cell-types-2}
-if (!dir.exists("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/")) {
-  dir.create("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/")
+if (!dir.exists(paste0(mount_path,"IMC/Rout/CellTypeValidation/"))) {
+  dir.create(paste0(mount_path,"IMC/Rout/CellTypeValidation/"))
 } 
 
 for(j in unique(sce$celltype)){
@@ -246,7 +255,7 @@ for(j in unique(sce$celltype)){
                 image_title = list(text = names(images),
                                 cex = 1), 
                 colour = cur_col,
-                save_plot = list(filename = paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                save_plot = list(filename = paste0(mount_path,"IMC/Rout/CellTypeValidation/",
                             j, ".png")))
     } else {
         plotPixels(image = images,
@@ -258,7 +267,7 @@ for(j in unique(sce$celltype)){
                    outline_by = "celltype",
                    image_title = list(text = names(images),
                                   cex = 1),
-                   save_plot = list(filename = paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                   save_plot = list(filename = paste0(mount_path,"IMC/Rout/CellTypeValidation/",
                             j, ".png")))
     }
 }
@@ -291,7 +300,7 @@ for (j in c("tumor_patches", "CD20_patches")) {
                    outline_by = j,
                    image_title = list(text = names(images),
                                  cex = 1), 
-                   save_plot = list(filename = paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                   save_plot = list(filename = paste0(mount_path,"IMC/Rout/CellTypeValidation/",
                             j, ".png")))
       } else {
         plotPixels(image = images, 
@@ -303,7 +312,7 @@ for (j in c("tumor_patches", "CD20_patches")) {
                    outline_by = j,
                    image_title = list(text = names(images),
                                  cex = 1),
-                   save_plot = list(filename = paste0("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/CellTypeValidation/",
+                   save_plot = list(filename = paste0(mount_path,"IMC/Rout/CellTypeValidation/",
                             j, ".png")))
       }
 }
@@ -324,7 +333,7 @@ sce$matched_celltype <- matched_celltype
 # Save RDS
 
 ```{r saveRDS}
-saveRDS(sce, "/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds")
+saveRDS(sce, paste0(mount_path,"IMC/Rout/sce.rds"))
 ```
 
 # TODO Save out data
@@ -336,6 +345,6 @@ for the IMC and mIF data.
 for (i in unique(sce$sample_id)) {
     cur_sce <- sce[,sce$sample_id == i]
    
-    write_tsv(as.data.frame(colData(cur_sce)), paste0("/Volumes/GoogleDrive/My Drive/IMMUcan_workflow/data/comparisons/data_for_comparisons/IMC/cells/", i, ".tsv"))  
+    write_tsv(as.data.frame(colData(cur_sce)), paste0(mount_path,"comparisons/IMC/cells/", i, ".tsv"))  
 }
 ```
