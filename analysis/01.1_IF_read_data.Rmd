@@ -10,12 +10,13 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 # set path
-this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 In this script, we will read in the mIF data that was processed by IFQuant.
@@ -306,7 +307,7 @@ for (i in seq_along(cur_folders)) {
 }
 
 images <- loadImages(paste0(mount_path,"mIF/multichannel_images/img/"), 
-                     as.is = TRUE)
+                     as.is = TRUE, pattern = "*.tiff")
 
 channelNames(images) <- c("af", "CD11c", "CD15", "CD163", "CD20", "CD3", "CK", "DAPI")
 

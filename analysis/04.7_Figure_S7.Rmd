@@ -9,13 +9,18 @@ editor_options:
 
 Code to generate the plots of Figure S7.
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Code to generate the plots of Figure 4.
+
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
+output <- "output/Figure_S7"
 ```
 
 ## Read data
@@ -27,8 +32,8 @@ library(ggpubr)
 library(cowplot)
 library(imcRtools)
 
-sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
+sce_IMC <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
+sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
 ```
 
 # Spatial comparison
@@ -80,7 +85,7 @@ all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ## Visualize celltypes between mIF and IMC
 
 ```{r}
-if (!dir.exists("../output/Figure_S7/")) dir.create("output/Figure_S7/")
+if (!dir.exists("output/Figure_S7/")) dir.create("output/Figure_S7/")
 all_sce$CD20_logical <- !is.na(all_sce$TLS.ID)
 
 p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
@@ -89,7 +94,7 @@ p <- plotSpatial(all_sce[,all_sce$modality == "IMC"],
             node_size_fix = 0.04)  +
   theme(strip.text =  element_text(size=2))
 
-ggsave(filename = "../output/Figure_S7/FigS7_A_IMC.png", plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "FigS7_A_IMC.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 
 p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
             node_color_by = "CD20_logical", 
@@ -97,7 +102,7 @@ p <- plotSpatial(all_sce[,all_sce$modality == "mIF"],
             node_size_fix = 0.04) +
   theme(strip.text =  element_text(size=2))
 
-ggsave(filename = "../output/Figure_S7/FigS7_A_mIF.png", plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "FigS7_A_mIF.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 ```
 
 # B - example image
@@ -111,7 +116,7 @@ cur_sce <- cur_sce[,cur_sce$TLS == TRUE]
 p <- plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)+
   theme(panel.background = element_rect(fill = "black", colour = NA))
 p
-ggsave(filename = "../output/Figure_S7/Fig_S7B.pdf", plot = p, width = 8, height = 6)
+ggsave(filename = "Fig_S7B.pdf",path=output, plot = p, width = 8, height = 6)
 ```
 # spatial comparison
 
@@ -256,7 +261,7 @@ p <- final %>%
 
 p
 
-ggsave(filename = "../output/Figure_S7/Fig_S7C.pdf", plot = p, width = 6, height = 4)
+ggsave(filename = "Fig_S7C.pdf",path=output, plot = p, width = 6, height = 4)
 ```
 
 

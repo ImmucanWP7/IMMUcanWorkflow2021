@@ -14,9 +14,9 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 # set path
-this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 Here, we will use the previously trained random forest classifier to 
@@ -336,9 +336,9 @@ sce$matched_celltype <- matched_celltype
 saveRDS(sce, paste0(mount_path,"IMC/Rout/sce.rds"))
 ```
 
-# TODO Save out data
+# Save out data
 
-For cell type comparison I will now write out the x/y cooridnates and cell labels
+For cell type comparison I will now write out the x/y coordinates and cell labels
 for the IMC and mIF data.
 
 ```{r}

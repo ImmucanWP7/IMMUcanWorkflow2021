@@ -9,10 +9,18 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-Here, we prepare IMC composites to find excatly these regions on the mIF images.
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
+```{r}
+mount_path <- readRDS(file = "data/mount_path.rds")
+```
+
+
+Here, we prepare IMC composites to find exactly these regions on the mIF images. The images where then used to align mIF and IMC and to retrieve the matched mIF regions from the whole tissue mIF images.
 
 ## Read data and libraries
 
@@ -21,8 +29,8 @@ We will first load the needed libraries and data.
 ```{r read-data, message=FALSE}
 library(cytomapper)
 
-all_images <- loadImages("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/img/")
-panel <- read.csv("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/IMC/panel.csv")
+all_images <- loadImages(paste0(mount_path,"IMC/img/"))
+panel <- read.csv(paste0(mount_path,"IMC/panel.csv"))
 channelNames(all_images) <- panel$name
 ```
 
@@ -44,6 +52,6 @@ out <- plotPixels(all_images,
 
 lapply(names(out$images), function(x){
     cur_image <- out$images[[x]]
-    writeImage(rotate(cur_image, angle = 180), paste0("~/SIB Swiss Institute of Bioinformatics/Robin Liechti - Workflow2021/Zurich_data/IMC_composites/", x, ".tiff"))
+    writeImage(rotate(cur_image, angle = 180), paste0(mount_path,"IMC/IMC_composites/", x, ".tiff"))
 })
 ```

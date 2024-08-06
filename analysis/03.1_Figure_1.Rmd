@@ -7,15 +7,17 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
 Code to generate the plots of Figure 1.
 
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 ## Read data
@@ -26,11 +28,11 @@ library(tidyverse)
 library(imcRtools)
 library(cytomapper)
 
-sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
+sce_imc <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
+sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
 
-images <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds"))
-masks <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/masks.rds"))
+images <- readRDS(file.path(mount_path, "IMC/Rout/images.rds"))
+masks <- readRDS(file.path(mount_path, "IMC/Rout/masks.rds"))
 ```
 
 ## Show simple stats
@@ -127,7 +129,7 @@ cur_sce <- sce_mIF[,sce_mIF$Lausanne_id == "IMMU-NSCLC-0747"]
                                 colour = "black")) +
   ggtitle(""))
 
-ggsave("output/Figure_1/Figure_1B_3.png", p)
+#ggsave("output/Figure_1/Figure_1B_3.png", p)
 ```
 
 Whole slide image. The original image was opened in QuPATH and saved as TIFF file 
@@ -136,7 +138,7 @@ while downsampling the pixels with a factor of 5.
 ```{r}
 library(terra)
 
-cur_img <- rast("/Volumes/G_DQBM_BB_Central$/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif")
+cur_img <- rast(paste0(mount_path,"mIF/data/IMMU-NSCLC-0747-FIXT-01-IF1-01_#_97a5c68acb84cb7679a52672b3a9ecd8.qptiff - resolution #1.tif"))
 
 # Downscale 4 fold
 cur_img_small <- terra::aggregate(cur_img, fact = 4)

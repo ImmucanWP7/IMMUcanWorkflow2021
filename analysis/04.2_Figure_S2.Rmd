@@ -1,5 +1,5 @@
 ---
-title: "Figure 4"
+title: "Figure S2"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,15 +7,18 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Code to generate the plots of S2
+Code to generate the plots of Figure S2
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+# set path
+this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
+output <- "output/Figure_S2/"
 ```
 
 ## libraries
@@ -37,7 +40,7 @@ library(scater)
 # read data
 
 ```{r}
-cyto_sce <- readRDS(paste0(mount_path,"/processed_data/Panel_1/2022_WORKFLOW/cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
+cyto_sce <- readRDS(paste0(mount_path,"cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
 
 # fix annotation
 cyto_sce[,cyto_sce$label == "Apoptotic B-cells"]$label <- "Apoptotic_cells"
@@ -52,7 +55,7 @@ p <- dittoDimPlot(cyto_sce, var = "Activation_status",
                   reduction.use = "UMAP", size = 0.25,
                   do.label = FALSE)
 p
-ggsave (filename = "Fig_S2A.png", plot = p, device = "png", path = "../output/Figure_S2/", width=200, height=150, units='mm', dpi=600)
+ggsave (filename = "Fig_S2A.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
 
 ```
 
@@ -63,7 +66,7 @@ p <- dittoDimPlot(cyto_sce, var = "Panel",
                   reduction.use = "UMAP", size = 0.25,
                   do.label = FALSE)
 p
-ggsave (filename = "Fig_S2B.png", plot = p, device = "png", path = "../output/Figure_S2/", width=200, height=150, units='mm', dpi=600)
+ggsave (filename = "Fig_S2B.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
 ```
 
 
@@ -82,7 +85,7 @@ for(i in c("HLADR","GrzB","PDL1","Ecad","LAG3","PD1","Ki67","CD8a","CD4", "CD206
     theme(legend.title = element_text(size = 20), legend.key.size = unit(8, "mm"))
 }
 
-png(file = "../output/Figure_S2/Figure_S2_UMAPmarkers.png",width = 2000 ,height = 1200)
+png(file = "output/Figure_S2/Figure_S2_UMAPmarkers.png",width = 2000 ,height = 1200)
 plot_grid(plotlist = p.list, ncol = 4)
 dev.off()
 ```
@@ -151,7 +154,7 @@ p2 <- ggplot(coldata %>%
   ggtitle("non-activated")
 
 
-pdf(file = "../output/Figure_S2/Fig_S2D.pdf",width = 8, height = 4)
+pdf(file = "output/Figure_S2/Fig_S2D.pdf",width = 8, height = 4)
 plot_grid(p1,p2,ncol = 2)
 dev.off()
 
@@ -288,7 +291,7 @@ p <- expr_df_act %>%
   theme_bw()
 
 p
-ggsave (filename = "Fig_S2E.pdf", plot = p, device = "pdf", path = "../output/Figure_S2/", width = 16, height = 10, units = "cm")
+ggsave (filename = "Fig_S2E.pdf", plot = p, device = "pdf", path = output, width = 16, height = 10, units = "cm")
 ```
 
 # G CV - non_activated
@@ -322,7 +325,7 @@ p <- ggplot(marker_cv_non_act, aes(x = variable))+
   xlab("Marker")+
   ylab("mean CV")
 p
-ggsave (filename = "Fig_S2G_non_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_S2/", width = 12, height = 8, units = "cm")
+ggsave (filename = "Fig_S2G_non_activated.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8, units = "cm")
 ```
 
 
@@ -391,7 +394,7 @@ p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) +
 p
 
 fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
-ggsave (filename = "Fig_S2E.png", plot = p, device = "png", path = "../output/Figure_S2/", width=350, height=300, units='mm', dpi=600)
+ggsave (filename = "Fig_S2E.png", plot = p, device = "png", path = output, width=350, height=300, units='mm', dpi=600)
 
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: "Figure 1"
+title: "Figure S3"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,15 +7,18 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Code to generate the plots of Figure 1.
+Code to generate the plots for Figure S3.
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+# set path
+this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
+output <- "output/Figure_S3/"
 ```
 
 ## Read data
@@ -30,7 +33,7 @@ library(tidyverse)
 
 # B - signal stability
 ```{r}
-dat <- fread(paste0(mount_path  ,"processed_data/Panel_1/2022_WORKFLOW/IF_fluorophore_time_series/QuPath_project/measurements.csv"),stringsAsFactors = FALSE)
+dat <- fread(paste0(mount_path  ,"IF_fluorophore_time_series/QuPath_project/measurements.csv"),stringsAsFactors = FALSE)
 ```
 
 
@@ -82,6 +85,6 @@ p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) +
 p
 
 fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
-ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = "../output/Figure_S3/", width = 12, height = 8)
+ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8)
 
 ```

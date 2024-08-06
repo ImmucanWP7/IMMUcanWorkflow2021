@@ -8,16 +8,22 @@ editor_options:
 ---
 
 Code to generate the plots of Figure S4.
-The code reads data from labelled images to build a random forest classifier which was used to predict the cell types.
-The classifier is also the general classifier used for Panel 1 IMC data in the immucan consortium.
+for a more detailed description and training of the random forest the classifier for IMMUcan panel 1 please also see this git repo [here](https://github.com/ImmucanWP7/IMMUcan_IMC_panel_1_cell_type_classifier)
 
+In this script we only load the pretrained classifier to generated Figure S4
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Code to generate the plots of Figure 4.
+
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
+output <- "output/Figure_S4"
 ```
 
 
@@ -30,13 +36,12 @@ library(tidyverse)
 library(ggplot2)
 ```
 
-
 # load data
 training data consists of labels from the first round of labelling (V1) and a second round of labelling (V3)
 
 ```{r}
-sce <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/sce_labelled_V1.rds")
-sce_new <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/sce_labelled_V3.rds")
+sce <- readRDS(paste0(mount_path,"IMC/Rout/sce_labelled_V1.rds"))
+sce_new <- readRDS(paste0(mount_path,"IMC/Rout/sce_labelled_V3.rds"))
 ```
 
 ## Exclude DCs with low CD11c expression
@@ -116,57 +121,10 @@ table(final_train$cell_labels, final_train$classifier)
 table(final_test$cell_labels, final_test$classifier)
 ```
 
-Here, we will first use a 5-fold cross validation by partitioning the images randomly across the full dataset.
-We will also use parallel processing for time reasons.
-For the `randomForrest` classifier, we need to tune the `mtry` parameter - the number of variables sampled for each split.
-We will also add the indication as dummy variable.
-
-```{r train-model-images-DCs, message = FALSE, eval=TRUE}
-# Define seeds for parallel processing
-# Per iteration, we evaluate 5 models while tuning mtry
-set.seed(221107)
-seeds <- vector(mode = "list", length = 6)
-for (i in 1:5) {
-  seeds[[i]] <- sample(5000, 5)
-}
-seeds[[6]] <- sample(5000, 1)
-
-trainIndex <- groupKFold(group = factor(final_train$sample_id), k = 5)
-
-fitControl <- trainControl(method = "cv",
-                           number = 5,
-                           seeds = seeds, 
-                           index = trainIndex)
-
-cl <- makePSOCKcluster(3, outfile = "~/parallel_out")
-registerDoParallel(cl)
-
-# Add dummy variables
-cur_mat <- t(assay(final_train, "exprs")[!grepl("DNA|Histone", rownames(final_train)),])
-
-dummies <- dummyVars(SampleId ~ Indication, data = colData(final_train))
-all_dummies <- predict(dummies, newdata = colData(final_train))
-
-cur_mat <- cbind(cur_mat, all_dummies)
-
-set.seed(221107)
-rffit <- train(x = cur_mat, 
-               y = factor(final_train$cell_labels),
-               method = "rf", ntree = 1000,
-               tuneLength = 5,
-               trControl = fitControl)
-stopCluster(cl)
-
-rffit
-
-saveRDS(rffit, file = "O:/projects/immucan/processed_data/Panel_1/classification/raw/data/rf_images_DCfix.rds")
-```
-
-We will now have a look at the accuracy measures over iterations.
-The only parameter that has been tuned is `mtry`.
+Note: we will load the pretrained classifier here
 
 ```{r accuracy-images-DCs}
-rffit <- readRDS("O:/projects/immucan/processed_data/Panel_1/classification/raw/data/rf_images_DCfix.rds")
+rffit <- readRDS(paste0(mount_path,"IMC/Rout/rf_images_DCfix.rds"))
 
 ggplot(rffit) + 
   geom_errorbar(data = rffit$results,
@@ -314,8 +272,7 @@ cur_ref <- factor(cur_sce$cell_labels, levels = levels(cur_pred))
 cm <- confusionMatrix(data = cur_pred, reference = cur_ref, mode = "everything")
 cm
 
-pdf(file ="../output/Figure_S4/Fig_4A.pdf", width = 8,height = 6)
-data.frame(cm$byClass) %>%
+p <- data.frame(cm$byClass) %>%
   mutate(class = sub("Class: ", "", rownames(cm$byClass))) %>%
   ggplot() + 
   geom_point(aes(1 - Specificity, Sensitivity, 
@@ -327,7 +284,9 @@ data.frame(cm$byClass) %>%
   scale_size(range = c(1,12))+
   ylab("Sensitivity (TPR)") +
   xlab("1 - Specificity (FPR)")
-dev.off()
+p
+
+ggsave (filename = "Fig_S4A.pdf", plot = p, device = "pdf", path = output, width = 8, height = 6)
 ```
 
 ```{r prediciton-probability-images-DCs-new-data, fig.width = 15}
@@ -336,8 +295,7 @@ cur_pred <- predict(rffit,
                     type = "prob")
 cur_pred$truth <- factor(cur_sce$cell_labels)
 
-png(file ="../output/Figure_S4/Fig_4B.png", width = 35,height = 22,units = "cm", res = 1200)
-cur_pred %>%
+p <- cur_pred %>%
   pivot_longer(cols = B:Tumor) %>%
   ggplot() +
   geom_boxplot(aes(x = name, y = value, fill = name), outlier.size = 0.5) +
@@ -347,6 +305,7 @@ cur_pred %>%
         axis.text.x = element_text(angle = 45, hjust = 1))+
   ylab("probability")+
   xlab("cell type")
-dev.off()
+p
+ggsave (filename = "Fig_S4B.png", plot = p, device = "png", path = output, width = 35, height = 22,units = "cm",dpi = 1200)
 ```
 

@@ -9,13 +9,18 @@ editor_options:
 
 Code to generate the plots of Figure S5.
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+Code to generate the plots of Figure 4.
+
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
+output <- "output/Figure_S5"
 ```
 
 ## Read data
@@ -28,8 +33,8 @@ library(cowplot)
 library(imcRtools)
 
 
-sce_IMC <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_ROIs.rds"))
+sce_IMC <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
+sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
 ```
 
 # A - Number of cells
@@ -57,7 +62,7 @@ p <- ggplot(combined_df) +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
 
 p
-ggsave(filename = "../output/Figure_S5/FigS5_A.pdf", plot = p, width = 10, height = 7)
+ggsave(filename = "FigS5_A.pdf",path = output, plot = p, width = 10, height = 7)
 ```
 
 # B - cellular area
@@ -80,7 +85,7 @@ p <- cur_dat %>%
   #geom_hline(yintercept = mean_IMC, col= "blue")+
   #geom_hline(yintercept = mean_IF, col= "red")
 p
-ggsave(filename = "../output/Figure_S5/FigS5_B.pdf", plot = p, width = 7, height = 5)
+ggsave(filename = "FigS5_B.pdf",path= output, plot = p, width = 7, height = 5)
 ```
 
 
@@ -125,7 +130,7 @@ out <- rbind(prop_IMC, prop_mIF)
   xlab("Modality") +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, "Patient ID"))
 p
-ggsave(filename = "../output/Figure_S5/FigS5_C.pdf", plot = p, height = 5, width = 17)
+ggsave(filename = "FigS5_C.pdf",path=output, plot = p, height = 5, width = 17)
 ```
 
 Example images

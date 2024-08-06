@@ -7,15 +7,17 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
 Code to generate the plots of Figure 2.
 
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 ## Read data
@@ -25,7 +27,7 @@ library(SingleCellExperiment)
 library(tidyverse)
 library(imcRtools)
 
-sce_mIF <- readRDS(file.path(mount_path, "processed_data/Panel_1/2022_WORKFLOW/mIF/Rout/sce_whole_slide.rds"))
+sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_whole_slide.rds"))
 
 sce_mIF
 

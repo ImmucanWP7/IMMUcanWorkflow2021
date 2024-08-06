@@ -7,15 +7,17 @@ editor_options:
   chunk_output_type: inline
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
 Code to generate the plots of S2
 
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 ## libraries
@@ -33,10 +35,15 @@ library(dplyr)
 library(scales)
 library(scater)
 ```
+
 # read data
 
+Note: The data from the cytoblocks from each batch over time has been processed using steinbock version 0.15 with IMMUcan panel 1 with commands as shown [here](https://github.com/ImmucanWP7/IMMUcanWorkflow2021/blob/main/code/steinbock.sh)
+Here, we provide the `SingleCellExperiment` objects from the cytoblocks from each batch to be loaded and analyzed.
+
+
 ```{r}
-cyto_sce <- readRDS(paste0(mount_path,"/processed_data/Panel_1/2022_WORKFLOW/cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
+cyto_sce <- readRDS(paste0(mount_path,"cytoblocks/Rout/Cleaned_cytoblocks_sce.rds"))
 
 # fix annotation
 cyto_sce[,cyto_sce$label == "Apoptotic B-cells"]$label <- "Apoptotic_cells"
@@ -55,8 +62,7 @@ p <- dittoDimPlot(cyto_sce, var = "label",
   scale_color_manual(values = metadata(cyto_sce)$colour_vectors$cell_types)+
   ggtitle("Grouped Phenograph clusters on UMAP")
 p
-ggsave (filename = "Fig_4A.png", plot = p, device = "png", path = "../output/Figure_3/", width=200, height=150, units='mm', dpi=600)
-
+ggsave (filename = "output/Figure_3/Fig_3A.png", plot = p, device = "png", width=200, height=150, units='mm', dpi=600)
 ```
 
 
@@ -81,7 +87,7 @@ col = colorRampPalette(brewer.pal(length(unique(row_anno$celltype)), "Paired"))(
 names(col) <- row_anno$celltype
 col_list <- list(celltype = col)
 
-pdf(file = "../output/Figure_3/Fig_4B.pdf", width = 12, height = 6)
+pdf(file = "output/Figure_3/Fig_3B.pdf", width = 12, height = 6)
 Heatmap(heatmap_body,
         name = "z_scaled",
         col = colorRamp2(breaks = c(-3,0,3),colors = c("dark blue", "white", "dark red")),
@@ -117,7 +123,7 @@ p <- ggplot(coldata, aes(x = Batch, fill = label))+
   theme(legend.key.size = unit(3,"mm"),legend.position = "bottom")
 p 
 
-ggsave (filename = "Fig_4C.pdf", plot = p, device = "pdf", path = "../output/Figure_3/", width = 22, height = 12, units='cm')
+ggsave (filename = "output/Figure_3/Fig_3C.pdf", plot = p, device = "pdf", width = 22, height = 12, units='cm')
 
 ```
 
@@ -158,10 +164,6 @@ markers[["Apoptotic B-cells"]] <- rownames(cyto_sce)[grepl(pattern = "cleavedPAR
 # separate by activation status
 cyto_sce_act <- cyto_sce[,cyto_sce$Activation_status == "activated"]
 cyto_sce_non_act <- cyto_sce[,cyto_sce$Activation_status == "non-activated"]
-
-
-
-
 ```
 
 ## activated cells 
@@ -248,7 +250,7 @@ p <- ggplot(marker_cv_act, aes(x = variable))+
   theme(axis.text.x = element_blank(), axis.title.x = element_blank()) +
   ylab("mean CV")
 p
-ggsave (filename = "Fig_4D_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_3/", width = 12, height = 4.6, units = "cm")
+ggsave (filename = "output/Figure_3/Fig_3D_activated.pdf", plot = p, device = "pdf", width = 12, height = 4.6, units = "cm")
 ```
 
 # G CV - non_activated
@@ -282,7 +284,7 @@ p <- ggplot(marker_cv_non_act, aes(x = variable))+
   xlab("Marker")+
   ylab("mean CV")
 p
-ggsave (filename = "Fig_4D_non_activated.pdf", plot = p, device = "pdf", path = "../output/Figure_3/", width = 12, height = 8, units = "cm")
+ggsave (filename = "output/Figure_3/Fig_4D_non_activated.pdf", plot = p, device = "pdf", width = 12, height = 8, units = "cm")
 ```
 
 

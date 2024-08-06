@@ -14,9 +14,9 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 # set path
-this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-mount_path <- "O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/"
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 
@@ -86,7 +86,7 @@ sce <- sce[,sce$area > 7]
 
 We will now visualize the expression differences between patients.
 
-```{r expression-differences, fig.height=25}
+```{r expression-differences, fig.height=35}
 multi_dittoPlot(sce, vars = rownames(sce)[rowData(sce)$use_channel],
                group.by = "patient_id", plots = c("ridgeplot"), 
                assay = "exprs", 

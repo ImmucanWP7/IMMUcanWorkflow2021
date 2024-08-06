@@ -7,15 +7,17 @@ editor_options:
   chunk_output_type: inline
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
 Code to generate the plots of Figure 1.
 
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-# Set path
-if (Sys.info()["sysname"] == "Windows"){
-  mount_path <- "O:/projects/immucan/"
-} else {
-  mount_path <- "/Volumes/G_DQBM_BB_Central$/projects/immucan"
-}
+mount_path <- readRDS(file = "data/mount_path.rds")
 ```
 
 # Read data
@@ -27,10 +29,11 @@ library(imcRtools)
 library(cytomapper)
 library(EBImage)
 
-sce_imc <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/sce.rds"))
 
-images <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/images.rds"))
-masks <- readRDS(file.path(mount_path,  "processed_data/Panel_1/2022_WORKFLOW/IMC/Rout/masks.rds"))
+sce_imc <- readRDS(file.path(mount_path,  "IMC/Rout/sce.rds"))
+
+images <- readRDS(file.path(mount_path,  "IMC/Rout/images.rds"))
+masks <- readRDS(file.path(mount_path,  "IMC/Rout/masks.rds"))
 ```
 
 # IMC Example image
@@ -42,8 +45,8 @@ cur_img <- images$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
 cur_mask <- masks$`IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008`
 
 # Rotate to match immucan-roi orientation
-cur_img <- flop(flip(cur_img))
-cur_mask <- flop(flip(cur_mask))
+cur_img <- EBImage::flop(EBImage::flip(cur_img))
+cur_mask <- EBImage::flop(EBImage::flip(cur_mask))
 cur_CIL_img <- CytoImageList(cur_img)
 cur_CIL_mask <- CytoImageList(cur_mask)
 
@@ -120,7 +123,7 @@ library(circlize)
 
 mean_sce <- aggregateAcrossCells(sce_imc,ids = sce_imc$celltype,
                                  statistics = "mean", 
-                                 use.assay.type = "exprs", subset.row = !grepl("DNA|HistoneH3", rownames(mean_sce)))
+                                 use.assay.type = "exprs", subset.row = !grepl("DNA|HistoneH3", rownames(sce_imc)))
 
 assay(mean_sce,"z_scale") <- t(scale(t(assay(mean_sce,"exprs")),center = TRUE,scale = TRUE))
 
@@ -129,7 +132,7 @@ heatmap_body <- t(assay(mean_sce,"z_scale")) #rows = cell_types, columns = genes
 
 row_anno <- data.frame(ncells = mean_sce$ncells,
                        celltype = mean_sce$celltype)
-pdf(file = "../output/Figure_4/Figure_4C.pdf", width = 10, height = 6)
+pdf(file = "output/Figure_4/Figure_4C.pdf", width = 10, height = 6)
 Heatmap(heatmap_body,
         name = "z_scale",
         col = colorRamp2(breaks = c(-3,0,3),colors = c("dark blue", "white", "dark red")),
@@ -169,48 +172,5 @@ p <- colData(sce_imc) %>%
 
 p
 
-ggsave("../output/Figure_4/Figure_4D.pdf", p, width = 12, height = 8)
-
-# sce_imc$CD20_patch_logical <- !is.na(sce_imc$CD20_patches)
-# 
-# p <- colData(sce_imc) %>%
-#   as_tibble() %>%
-#   group_by(patient_id, indication, CD20_patch_logical) %>%
-#   count() %>%
-#   ggplot() + 
-#   geom_bar(aes(patient_id, n, fill = CD20_patch_logical, group = indication), 
-#            position = "stack", stat = "identity") +
-#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-#   theme_classic(base_size = 25) + 
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-#         legend.position = "bottom") +
-#   xlab("Patients") +
-#   ylab("CD20 patch cell count")
-# 
-# p
-# 
-# ggsave("output/Figure_4/Figure_4_C_2.pdf", p, width = 12, height = 8)
-# 
-# p <- colData(sce_imc) %>%
-#   as_tibble() %>%
-#   group_by(patient_id, indication, tumor_patches) %>%
-#   count() %>%
-#   ggplot() + 
-#   geom_bar(aes(patient_id, n, fill = tumor_patches, group = indication), 
-#            position = "stack", stat = "identity") +
-#   facet_wrap(. ~ indication, scales = "free_x", nrow = 1) +
-#   scale_fill_manual(values = c(`TRUE` = "dark blue", `FALSE` = "dark red")) +
-#   theme_classic(base_size = 25) + 
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-#         legend.position = "bottom") +
-#   xlab("Patients") +
-#   ylab("CD20 patch cell count")
-# 
-# p
-# 
-# ggsave("output/Figure_4/Figure_4_C_3.pdf", p, width = 12, height = 8)
+ggsave("output/Figure_4/Figure_4D.pdf", p, width = 12, height = 8)
 ```
-
-
-
