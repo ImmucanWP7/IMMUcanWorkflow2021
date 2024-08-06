@@ -25,14 +25,14 @@ book](https://bodenmillergroup.github.io/IMCDataAnalysis/)
 
 ### Accompanying data repositories
 
-2. whole slide mIF qptiff files from 10 patients
-[Zenodo](https://zenodo.org/records/12699335) 3. data for IMC panel 1 cell type
-classification [Zenodo](https://zenodo.org/records/12912567)
+2. whole slide mIF qptiff files from 10 patients [Zenodo](https://zenodo.org/records/12699335)
+3. data for IMC panel 1 cell type classification [Zenodo](https://zenodo.org/records/12912567)
 
 ## Accompanying code repositories
 
 - [IFQuant](https://github.com/BICC-UNIL-EPFL/IFQuant)
 - [IMC panel 1 cell type classifier](https://github.com/ImmucanWP7/IMMUcan_IMC_panel_1_cell_type_classifier)
+
 ## Figure reproduction
 
 Please download Zenodo repo 1 and keep the structure of the folders. Clone this
