@@ -34,6 +34,22 @@ navbar:
       href: 03.3_Figure_3.html
     - text: Figure 4
       href: 03.4_Figure_4.html
+    - text: Figure 5
+      href: 0.3.5_Figure_5.html
+  - text: "Supplemental Figures"
+    menu:
+    - text: Figure S2
+      href: 04.2_Figure_S2.html
+    - text: Figure S3
+      href: 04.3_Figure_S3.html
+    - text: Figure S4
+      href: 04.4_Figure_S4.html
+    - text: Figure S5
+      href: 04.5_Figure_S5.html
+    - text: Figure S6
+      href: 04.6_Figure_S6.html
+    - text: Figure S7
+      href: 04.7_Figure_S7.html
   right:
   - icon: fa-github fa-lg
     href: https://github.com/ImmucanWP7/IMMUcanWorkflow2021
