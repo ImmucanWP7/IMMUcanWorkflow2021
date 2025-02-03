@@ -370,6 +370,52 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
   ggtitle("Other cells") +
   coord_fixed())
 ```
+# image based intensity correlation of CD11c
+
+```{r}
+exp_IMC <- as.data.frame(t(assay(sce_imc,"exprs")))
+exp_mIF <- as.data.frame(t(assay(sce_mIF,"exprs")))
+exp_IMC$sample_id <- sce_imc$sample_id
+exp_mIF$sample_id <- sce_mIF$sample_id
+exp_mIF$matched_celltype <- sce_mIF$matched_celltype
+
+mean_IMC <- exp_IMC %>%
+  group_by(sample_id) %>%
+  summarise(mean_CD11c_IMC = mean(CD11c))
+mean_mif <- exp_mIF %>%
+  group_by(sample_id) %>%
+  summarise(mean_CD11c_mIF = mean(CD11c))
+
+mean_dat <- left_join(mean_IMC,mean_mif,"sample_id")
+
+x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF)
+p1<- mean_dat %>%
+  ggplot(aes(x = mean_CD11c_IMC,mean_CD11c_mIF))+
+  geom_point()+
+  theme_bw()+
+  ggtitle(paste0("IFQuant mIF pearson's r: ",round(x$estimate, digits = 3)))
+
+# steinbock
+mif_steinbock <- readRDS("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/old/steinbock/Rout/sce.rds")
+
+exp_mIF_st <- as.data.frame(t(assay(mif_steinbock,"exprs")))
+exp_mIF_st$sample_id <- mif_steinbock$sample_id
+mean_mif <- exp_mIF_st %>%
+  group_by(sample_id) %>%
+  summarise(mean_CD11c_mIF = mean(CD11c))
+
+mean_dat <- left_join(mean_IMC,mean_mif,"sample_id")
+
+x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF)
+p2 <- mean_dat %>%
+  ggplot(aes(x = mean_CD11c_IMC,mean_CD11c_mIF))+
+  geom_point()+
+  theme_bw()+
+  ggtitle(paste0("steinbock mIF pearson's r: ",round(x$estimate, digits = 3)))
+
+cowplot::plot_grid(p1, p2)
+```
+
 
 ## CD20 patch and tumor patch correlation
 

@@ -1,0 +1,287 @@
+---
+title: "Figure 6"
+author: "Daniel Schulz"
+date: "2025-01-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+In this script we will only generate a figure from the analysis that was performed at Ewa Szczureks lab (here)[https://github.com/dav3794/IMC-models/blob/main/models/compare_results.ipynb]
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(pals)
+library(SingleCellExperiment)
+```
+
+```{r}
+dat <- data.frame(method = c("XGB","RF","MLP","LR","Stellar","Celesta","Astir","StarlingLR","Starling"),
+                  MacroF1 = c(0.903,0.893,0.891,0.847,.844,.388,.345,.227,.163))
+
+cols <-tol(n=9)
+names(cols) <- dat$method
+p <- dat %>%
+  ggplot(aes(x = factor(method, levels = dat$method),y = MacroF1,fill = method))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = cols)+
+  theme_bw()+
+  xlab("Method")+
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+p
+
+ggsave(plot = p,filename =  "output/Figure_6/Benchmark.pdf",device = "pdf",width = 5,height = 3)
+```
+
+# TPR and FPR
+We will load the confusion matrices from each model and caluclate TPR and FPR and plot them as boxplots
+
+The data can be obtained here: https://github.com/dav3794/IMC-models
+
+```{r}
+XGB <- read_tsv("D:/Git/IMC-models/models/Baselines/xgb_predictions.tsv")
+RF <- read_tsv("D:/Git/IMC-models/models/Baselines/rf_predictions.tsv")
+MLP <- read_tsv("D:/Git/IMC-models/models/Baselines/mlp_predictions.tsv")
+LR <- read_tsv("D:/Git/IMC-models/models/Baselines/logreg_predictions.tsv")
+Stellar <- read_tsv("D:/Git/IMC-models/models/Stellar/stellar_predictions.tsv")
+Celesta <- read_csv("D:/Git/IMC-models/models/Celesta/celesta_predictions.csv")
+Astir <- read_tsv("D:/Git/IMC-models/models/Astir/astir_predictions.tsv")
+Astir <- Astir %>%
+  mutate(predicted_label = ifelse(predicted_label == "Other","Unknown",predicted_label))
+StarlingLR <- read_tsv("D:/Git/IMC-models/models/Starling/starling-lr_predictions.tsv")
+Starling <- read_tsv("D:/Git/IMC-models/models/Starling/starling_predictions.tsv")
+
+dat <- list(XGB,RF,MLP,LR,Stellar,Celesta,Astir,StarlingLR,Starling)
+names(dat) <- c("XGB","RF","MLP","LR","Stellar","Celesta","Astir","StarlingLR","Starling")
+```
+
+clean the data
+
+```{r}
+lapply(dat, colnames)
+dat <- lapply(dat, function(x){
+  x <- x[,c("predicted_label","true_label")]
+  return(x)
+})
+
+# get confusion matrices
+library(caret)
+# here we define all possible names that the cell types have
+all_levels <- unique(unlist(lapply(dat,function(x){
+  x$predicted_label
+})))
+cms <- lapply(dat, function(x){
+  cm <- confusionMatrix(data = factor(x$predicted_label, levels = all_levels), reference = factor(x$true_label, levels = all_levels), mode = "everything")
+  y <- as.data.frame(cm$byClass)
+  return(y)
+})
+
+# add the column for the method
+dat <- imap(cms, ~ mutate(.x, method = .y))
+
+cur_dat <- do.call(rbind,dat)
+cur_dat <- cur_dat %>%
+  mutate(cell_type = str_split_i(rownames(cur_dat),": ",2))
+
+p1<- cur_dat %>%
+  ggplot(aes(x = cell_type,y = 1- Specificity)) +
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(aes(x = cell_type,y = 1- Specificity, col= method),position = position_jitter(width = .2) ,size= 2)+
+  scale_color_manual(values = cols)+
+  theme_bw()+
+  coord_flip()+
+  ylab("FPR")
+
+p2 <- cur_dat %>%
+  ggplot(aes(x = cell_type,y = Sensitivity)) +
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(aes(x = cell_type,y = Sensitivity, col= method), position = position_jitter(width = .2), size= 2)+
+  scale_color_manual(values = cols)+
+  theme_bw()+
+  theme(legend.position = "none")+
+  coord_flip()+
+  ylab("TPR")
+
+p<- cowplot::plot_grid(p2,p1, rel_widths = c(1,1.3))
+p
+ggsave(filename = "output/Figure_6/TPR_and_FPR.pdf",
+       plot = p,
+       device = "pdf",
+       width = 6,
+       height = 4)
+```
+
+# subclustering
+
+```{r}
+sce <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/IMC/Rout/sce.rds")
+
+table(sce$celltype)
+```
+
+```{r determine markers for clustering}
+markers <- list()
+# we will not subcluters "uncertain" cells as the merging will be very difficult. we may inspect this at a later time point again
+
+#functional markers for T cells
+markers[["CD4"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7",rownames(sce))]
+
+markers[["CD8"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7",rownames(sce))]
+
+markers[["Treg"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|ICOS|Ki67|TCF7",rownames(sce))]
+
+# B and BnT cell markers
+markers[["BnT"]] <- rownames(sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA|CD40|HLADR|CD38",rownames(sce))]
+
+markers[["B"]] <- rownames(sce)[grepl(pattern = "CD27|CD40|Ki67",rownames(sce))]
+
+# myeloid markers
+markers[["MacCD163"]] <- rownames(sce)[grepl(pattern = "CD68|CD11c|PDL1|VISTA|CD40|CD14|CD206|IDO1|CD16",rownames(sce))]
+
+# we will also use CD20 for DCs to detect those DCs that sit in TLS
+markers[["DC"]] <- rownames(sce)[grepl(pattern = "PDL1|VISTA|CD40|IDO1|CD20|CD206|CD16",rownames(sce))]
+
+# we will also use E-cad for HLADR cells as there may still be tumor cells in these cells
+markers[["HLADR"]] <- rownames(sce)[grepl(pattern = "CD11b|CD163|CD68|CD11c|PDL1|ICOS|VISTA|TIM3|CD40|CD14|CD206|CD163|HLADR|Ecad",rownames(sce))]
+
+# NK markers
+markers[["NK"]] <- rownames(sce)[grepl(pattern = "CD7|GrzB|CD16|CD45RA|CD45RO",rownames(sce))]
+
+# Neutrophil markers
+markers[["Neutrophil"]] <- rownames(sce)[grepl(pattern = "MPO|PDL1|VISTA",rownames(sce))]
+
+# pDC markers
+markers[["pDC"]] <- rownames(sce)[grepl(pattern = "CD303|CD4|GrzB|CD45RA|CD45RO|CD27",rownames(sce))]
+
+# Plasma cell markers
+markers[["plasma"]] <- rownames(sce)[grepl(pattern = "CD38|TCF7|CD27|CD45RA|CD45RO|",rownames(sce))]
+
+# stroma markers
+markers[["Mural"]] <- rownames(sce)[grepl(pattern = "PDGFR|SMA",rownames(sce))]
+
+# tumor markers
+markers[["Tumor"]] <- rownames(sce)[grepl(pattern = "HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67|Ido|B2M",rownames(sce))]
+
+good_markers <- rownames(sce)[!grepl("DNA|Histone",rownames(sce))]
+```
+
+```{r}
+dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "celltype")+
+  scale_color_manual(values = metadata(sce)$color_vectors$celltype)
+
+```
+
+```{r}
+library(scran)
+library(scater)
+library(bluster)
+celltypes <- sort(unique(sce$celltype))
+celltypes
+ct_k <- as.vector(unclass(table(sce$celltype)))
+table(sce$celltype)
+
+dittoSeq::dittoScatterPlot(sce[,sce$celltype == "CD4"],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
+dittoSeq::dittoScatterPlot(sce[,sce$celltype %in% c("CD4","Treg")],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
+dittoSeq::dittoScatterPlot(sce[,sce$celltype %in% c("CD8")],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
+
+
+param <- data.frame(celltype = c("CD4","CD8","DC","MacCD163"),
+                    k = c(30L, 40L, 40L, 25L),
+                    type = "rank")
+
+# clustering
+cur_sces <- lapply(param$celltype, function(x){
+
+  cur_sce <- sce[,sce$celltype %in% x]
+
+  set.seed(220620)
+  clusters <- clusterCells(cur_sce[markers[[x]],], 
+                           assay.type = "exprs", 
+                           BLUSPARAM = SNNGraphParam(k=param[param$celltype == x,"k"], 
+                                                     cluster.fun = "louvain",
+                                                     type = param[param$celltype == x,"type"]))
+
+
+  cur_sce$cluster <- paste0(x,"_",clusters)
+
+  cur_sce <-  runUMAP(cur_sce, subset_row =markers[[x]], exprs_values = "exprs",name = "UMAP_subcluster") 
+  return(cur_sce)
+
+})
+
+names(cur_sces) <- param$celltype
+for(i in 1:4){
+  print(dittoSeq::dittoDimPlot(cur_sces[[i]],var = "cluster",reduction.use = "UMAP_subcluster"))
+}
+
+for(i in param$celltype){
+  mean_sce <- aggregateAcrossCells(cur_sces[[i]],
+                                   ids = cur_sces[[i]]$cluster,
+                                   statistics = "mean")
+  assay(mean_sce, "exprs") <- asinh(counts(mean_sce))
+  colnames(mean_sce) <- mean_sce$cluster
+  print(dittoSeq::dittoHeatmap(mean_sce,
+                               annot.by = "cluster",
+                               genes = markers[[i]],
+                               heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+                               breaks = seq(-3, 3, length.out = 101)))
+}
+
+cur_sces <- lapply(cur_sces, function(x){
+  reducedDim(x, "UMAP_subcluster") <- NULL
+  return(x)
+})
+
+sce_2 <- do.call(cbind, cur_sces)
+
+sce$cluster <- NA
+sce <- sce[,!sce$celltype %in% c("CD4","CD8","DC","MacCD163")]
+
+sce <- cbind(sce,sce_2)
+sce[,is.na(sce$cluster)]$cluster <- sce[,is.na(sce$cluster)]$celltype
+```
+
+```{r, fig.height=13, fig.width=16}
+
+dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "cluster")
+
+mean_sce <- aggregateAcrossCells(sce,
+                                 ids = sce$cluster,
+                                 statistics = "mean")
+assay(mean_sce, "exprs") <- asinh(counts(mean_sce))
+colnames(mean_sce) <- mean_sce$cluster
+
+# scaled heatmap
+pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid_scaled.pdf",width = 15, height=12)
+dittoSeq::dittoHeatmap(mean_sce,
+                             annot.by = c("cluster", "celltype"),
+                             genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
+                             heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+                             breaks = seq(-3, 3, length.out = 101))+
+  coord_flip()
+dev.off()
+
+# calculate normalized counts for visualization
+norm_counts <- t(apply(assay(mean_sce, "counts"), 1, function(x)(x-min(x))/(quantile(x,0.99)-min(x))))
+normalized_count <- t(apply(norm_counts,1,function(x) pmin(x,1)))
+assay(mean_sce,"normalized") <- normalized_count
+
+pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid.pdf",width = 15, height=12)
+dittoSeq::dittoHeatmap(mean_sce,
+                       annot.by = c("cluster", "celltype"),scale = "none",assay = "normalized",
+                       genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
+                       heatmap.colors = viridis(100),
+                       annotation_colors = list(celltype = metadata(sce)$color_vectors$celltype))
+dev.off()
+
+
+```
+
+

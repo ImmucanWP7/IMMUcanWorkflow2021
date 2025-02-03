@@ -68,23 +68,40 @@ ggsave(filename = "FigS5_A.pdf",path = output, plot = p, width = 10, height = 7)
 # B - cellular area
 
 ```{r}
+mif_steinbock <- readRDS("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/old/steinbock/Rout/sce.rds")
+IMC_dat <- data.frame(IMC_cell_size = sce_IMC$area)
+mIF_dat <- data.frame(IF_cell_size = sce_mIF$cell.area)
+mIF_steinbock_dat <- data.frame(IF_cell_size = mif_steinbock$area)
+
+# correct for difference in resolution: one pixel in mIF is 0.4962µm
+mIF_dat$IF_cell_size <- mIF_dat$IF_cell_size*0.4962^2
+mIF_steinbock_dat$IF_cell_size <- mIF_steinbock_dat$IF_cell_size*0.4962^2
+
+mean_IMC <- mean(IMC_dat$IMC_cell_size)
+mean_IF <- mean(mIF_dat$IF_cell_size )
+mean_IF_steinbock <- mean(mIF_steinbock_dat$IF_cell_size)
+
+
 cur_dat <- data.frame(IMC_cell_size = sce_IMC$area)
 
 mean_IMC <- mean(cur_dat$IMC_cell_size)
 mean_IF <- mean(sce_mIF$cell.area)
+
 p <- cur_dat %>%
   ggplot(aes(y= IMC_cell_size))+
   geom_density(col= "blue", size = 2)+
   coord_flip()+
   theme_bw()+
-  geom_density(data = data.frame(IF_cell_size = sce_mIF$cell.area) ,aes(y = IF_cell_size),col= "red", size = 2)+
-  annotate("text", x = 0.009, y = 392 , label = expression( paste("IMC, mean = 78 µm"^2)), color = "blue", size = 5)+
-  annotate("text", x = 0.01, y = 400 , label = expression( paste("mIF, mean = 149 µm"^2)), color = "red", size = 5)+
+  geom_density(data = mIF_dat ,aes(y = IF_cell_size),col= "red", size = 2)+
+  geom_density(data = mIF_steinbock_dat ,aes(y = IF_cell_size),col= "green", size = 2)+
+  annotate("text", x = 0.02, y = 392 , label = expression( paste("IMC, mean = 78 µm"^2)), color = "blue", size = 5)+
+  annotate("text", x = 0.022, y = 400 , label = expression( paste("mIF, mean = 37 µm"^2)), color = "red", size = 5)+
+  annotate("text", x = 0.024, y = 400 , label = expression( paste("mIF steinbock, mean = 55 µm"^2)), color = "green", size = 5)+
   ylab("cell size")+
   xlab("density estimate")
-  #geom_hline(yintercept = mean_IMC, col= "blue")+
-  #geom_hline(yintercept = mean_IF, col= "red")
+
 p
+
 ggsave(filename = "FigS5_B.pdf",path= output, plot = p, width = 7, height = 5)
 ```
 
@@ -156,3 +173,420 @@ library(cytomapper)
 #ggsave(filename = "../output/Figure_S5/FigS5_D1.pdf", plot = p1, height = 10, width = 10)
 #ggsave(filename = "../output/Figure_S5/FigS5_D2.pdf", plot = p2, height = 10, width = 10)
 ```
+
+
+# whole slide comparison
+we will correlate the fractions of cell types from mIF and IMC. we will therefore exclude ROI4 (TLS) which will otherwise falsify the results because they add many B cells to the IMC for a specific patient
+```{r, fig.height=10, fig.width=10}
+mIF_sce <- readRDS(paste0(mount_path,"mIF/Rout/sce_whole_slide.rds"))
+
+mIF_sce
+unique(mIF_sce$patient_id)
+unique(sce_IMC$patient_id)
+
+cur_imc <- sce_IMC[,sce_IMC$ROI != 4]
+
+mIF <- as.data.frame(colData(mIF_sce))
+IMC <- as.data.frame(colData(sce_IMC))
+mIF <- mIF %>%
+  group_by(patient_id) %>%
+  count(matched_celltype, name = "ct_count_mIF") %>%
+  mutate(total_cell_count_mIF = sum(ct_count_mIF),
+         frac_cellt_mIF = ct_count_mIF/total_cell_count_mIF)
+
+IMC <- IMC %>%
+  filter(! ROI %in% c(4,8)) %>%
+  group_by(patient_id) %>%
+  count(matched_celltype, name = "ct_count_IMC") %>%
+  mutate(total_cell_count_IMC = sum(ct_count_IMC),
+         frac_cellt_IMC = ct_count_IMC/total_cell_count_IMC)
+
+dat <- left_join(IMC, mIF, c("patient_id","matched_celltype"))
+
+dat <- dat %>%
+  pivot_wider(id_cols = patient_id,names_from = matched_celltype,values_from = c(frac_cellt_IMC,frac_cellt_mIF))
+cor <- psych::corr.test(dat[,grepl("_IMC",colnames(dat))],dat[,grepl("mIF",colnames(dat))],  method = "pearson")
+
+cur_dat <- as.data.frame(cor$r)
+cur_dat$variable <- rownames(cur_dat)
+dat_long <- reshape2::melt(cur_dat,id.vars="variable")
+colnames(dat_long) <- c("cell_types_IMC","cell_types_mIF","correlation")
+
+#get p-value matrix
+p_dat <- as_tibble(cor$p)
+p_dat$variable <- rownames(cur_dat)
+pdat_long <- reshape2::melt(p_dat,id.vars="variable")
+colnames(pdat_long) <- c("cell_types_IMC","cell_types_mIF","p_adj")
+
+dat_long$p_adj <- pdat_long$p_adj
+
+dat_long <- dat_long %>%
+  mutate(sig = ifelse(p_adj <= 0.001 & p_adj > 0.0001,0.001,p_adj))
+
+dat_long <- dat_long %>%
+  mutate(sig = case_when(p_adj <= 0.0001 ~ "< 0.0001",
+                         p_adj <= 0.001 & p_adj > 0.0001 ~ "< 0.001",
+                         p_adj <= 0.01 & p_adj > 0.001 ~ "< 0.01",
+                         p_adj <= 0.1 & p_adj > 0.01 ~ "< 0.1",
+                         p_adj >0.1 ~ "ns"))
+
+cor_filter <- 0.0
+library(ggnewscale)
+p <- dat_long %>%
+   filter(abs(correlation) > cor_filter) %>%
+   ggplot(aes(x=factor(cell_types_IMC, levels=sort(unique(dat_long$cell_types_IMC))),y = factor(cell_types_mIF, levels=sort(levels(dat_long$cell_types_mIF))),col = correlation, size= -log10(p_adj)))+
+    #geom_tile(aes(fill = sig))+
+    #theme_bw()+
+    geom_point()+
+    theme_bw()+
+    scale_color_gradient2(low =  "blue",mid = "white",high = "red", name = expression("Pearson's" ~ rho))+
+    #theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+    #      panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    #theme_bw()+
+    #scale_color_gradient(low = "white",   high = "red")+
+    scale_size(range = c(1,8))+
+    new_scale_colour() +
+    geom_point(data = dat_long %>% filter(sig <0.01, abs(correlation) > cor_filter),shape = 1,aes(size = -log10(p_adj), col = sig), stroke =2.5)+
+    scale_color_manual(values = c("TRUE" = "black","FALSE" = "white"), name = "FDR < 0.1")+
+    theme(axis.text.x = element_text(angle = 90, vjust=0.5, hjust=1,size = 20))+
+    theme(axis.text.y = element_text(size = 20))+
+    theme(legend.text = element_text(size = 20))+
+    theme(legend.title = element_text(size = 20))
+p
+
+ggsave(filename = paste0(output,"/wholeslide_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
+
+dat %>%
+  ggplot(aes(x = frac_cellt_IMC_MacCD163,y = frac_cellt_mIF_MacCD163))+
+  geom_point()+
+  geom_abline(slope = 1,intercept = 0)+
+  coord_cartesian(xlim = c(0,1),ylim = c(0,1))+
+  theme_bw()
+cor(dat$frac_cellt_mIF_MacCD163,dat$frac_cellt_IMC_MacCD163)
+
+
+```
+
+```{r, fig.height=10, fig.width=10}
+mIF_sce <- readRDS(paste0(mount_path,"mIF/Rout/sce_whole_slide.rds"))
+
+mIF_sce
+unique(mIF_sce$patient_id)
+unique(sce_IMC$patient_id)
+
+cur_imc <- sce_IMC[,sce_IMC$ROI != 4]
+
+mIF <- as.data.frame(colData(sce_mIF))
+IMC <- as.data.frame(colData(sce_IMC))
+mIF <- mIF %>%
+  group_by(patient_id) %>%
+  count(matched_celltype, name = "ct_count_mIF") %>%
+  mutate(total_cell_count_mIF = sum(ct_count_mIF),
+         frac_cellt_mIF = ct_count_mIF/total_cell_count_mIF)
+
+IMC <- IMC %>%
+  filter(! ROI %in% c(4,8)) %>%
+  group_by(patient_id) %>%
+  count(matched_celltype, name = "ct_count_IMC") %>%
+  mutate(total_cell_count_IMC = sum(ct_count_IMC),
+         frac_cellt_IMC = ct_count_IMC/total_cell_count_IMC)
+
+dat <- left_join(IMC, mIF, c("patient_id","matched_celltype"))
+
+dat <- dat %>%
+  pivot_wider(id_cols = patient_id,names_from = matched_celltype,values_from = c(frac_cellt_IMC,frac_cellt_mIF))
+cor <- psych::corr.test(dat[,grepl("_IMC",colnames(dat))],dat[,grepl("mIF",colnames(dat))],  method = "pearson")
+
+cur_dat <- as.data.frame(cor$r)
+cur_dat$variable <- rownames(cur_dat)
+dat_long <- reshape2::melt(cur_dat,id.vars="variable")
+colnames(dat_long) <- c("cell_types_IMC","cell_types_mIF","correlation")
+
+#get p-value matrix
+p_dat <- as_tibble(cor$p)
+p_dat$variable <- rownames(cur_dat)
+pdat_long <- reshape2::melt(p_dat,id.vars="variable")
+colnames(pdat_long) <- c("cell_types_IMC","cell_types_mIF","p_adj")
+
+dat_long$p_adj <- pdat_long$p_adj
+
+dat_long <- dat_long %>%
+  mutate(sig = ifelse(p_adj <= 0.001 & p_adj > 0.0001,0.001,p_adj))
+
+dat_long <- dat_long %>%
+  mutate(sig = case_when(p_adj <= 0.0001 ~ "< 0.0001",
+                         p_adj <= 0.001 & p_adj > 0.0001 ~ "< 0.001",
+                         p_adj <= 0.01 & p_adj > 0.001 ~ "< 0.01",
+                         p_adj <= 0.1 & p_adj > 0.01 ~ "< 0.1",
+                         p_adj >0.1 ~ "ns"))
+
+cor_filter <- 0.0
+p <- dat_long %>%
+   filter(abs(correlation) > cor_filter) %>%
+   ggplot(aes(x=factor(cell_types_IMC, levels=sort(unique(dat_long$cell_types_IMC))),y = factor(cell_types_mIF, levels=sort(levels(dat_long$cell_types_mIF))),col = correlation, size= -log10(p_adj)))+
+    #geom_tile(aes(fill = sig))+
+    #theme_bw()+
+    geom_point()+
+    theme_bw()+
+    scale_color_gradient2(low =  "blue",mid = "white",high = "red", name = expression("Pearson's" ~ rho))+
+    #theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+    #      panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+    #theme_bw()+
+    #scale_color_gradient(low = "white",   high = "red")+
+    scale_size(range = c(1,8))+
+    new_scale_colour() +
+    geom_point(data = dat_long %>% filter(sig <0.01, abs(correlation) > cor_filter),shape = 1,aes(size = -log10(p_adj), col = sig), stroke =2.5)+
+    scale_color_manual(values = c("TRUE" = "black","FALSE" = "white"), name = "FDR < 0.1")+
+    theme(axis.text.x = element_text(angle = 90, vjust=0.5, hjust=1,size = 20))+
+    theme(axis.text.y = element_text(size = 20))+
+    theme(legend.text = element_text(size = 20))+
+    theme(legend.title = element_text(size = 20))
+p
+
+ggsave(filename = paste0(output,"/matched_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
+
+dat %>%
+  ggplot(aes(x = frac_cellt_IMC_MacCD163,y = frac_cellt_mIF_MacCD163))+
+  geom_point()+
+  geom_abline(slope = 1,intercept = 0)+
+  coord_cartesian(xlim = c(0,1),ylim = c(0,1))+
+  theme_bw()
+cor(dat$frac_cellt_mIF_MacCD163,dat$frac_cellt_IMC_MacCD163)
+
+
+```
+
+# A - Number of cells steinbock
+
+```{r,fig.height=15}
+if (!dir.exists("output/Figure_S5/")) dir.create("output/Figure_S5/")
+
+no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
+  group_by(sample_id, patient_id) %>%
+  summarize(count = n())
+# filter small cells
+mif_steinbock <- mif_steinbock[,mif_steinbock$area > 28]
+
+no_mIF <- colData(sce_mIF) %>% as_tibble() %>%
+  group_by(sample_id, patient_id) %>%
+  summarize(count = n())
+
+no_mIF_steinbock <- colData(mif_steinbock) %>% as_tibble() %>%
+  group_by(sample_id, patient_id) %>%
+  summarize(count = n())
+
+combined_df <- left_join(no_IMC, no_mIF, by = c("sample_id", "patient_id"))
+combined_df <- left_join(combined_df, no_mIF_steinbock, by = c("sample_id", "patient_id"))
+combined_df$patient_id <- sub("-", "", str_extract(combined_df$sample_id, "[0-9]{8}-"))
+
+# difference steinbock vs IFQuant
+combined_df %>%
+  mutate(diff_size = count/(count.y/100)) %>%
+  ungroup() %>%
+  mutate(mean_size_dif = mean(diff_size))
+
+p1 <- ggplot(combined_df) + 
+  geom_point(aes(count.x, count.y, color = patient_id), size = 2) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count.y), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal(base_size = 20) + xlab("# Cells in IMC") + ylab("# Cells in mIF") +
+  coord_fixed() + 
+  ylim(c(0, 5000)) + xlim(c(0, 5000)) +
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
+
+p2 <- ggplot(combined_df) + 
+  geom_point(aes(count.x, count, color = patient_id), size = 2) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red") +
+  geom_smooth(aes(count.x, count), method='lm', formula= y~x, fullrange=TRUE) + 
+  theme_minimal(base_size = 20) + xlab("# Cells in IMC") + ylab("# Cells in mIF steinbock") +
+  coord_fixed() + 
+  ylim(c(0, 5000)) + xlim(c(0, 5000)) +
+  scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
+
+p1
+p2
+
+ggsave(filename = "IMC_mIF_celltype_count.pdf",path = output, plot = p1, width = 10, height = 7)
+ggsave(filename = "IMC_mIF-steinbock_celltype_count.pdf",path = output, plot = p2, width = 10, height = 7)
+```
+
+# check segmentation mIF
+```{r, fig.height=10, fig.width=10}
+mif_images <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/mIF/Rout/images.rds")
+cur_im <- cytomapper::getImages(mif_images,i = 2)
+cur_sce <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
+
+# Load necessary library
+library(tiff)
+
+# Define image dimensions
+width <- 1198
+height <- 1196
+
+# Create an empty matrix filled with zeros
+image_matrix <- matrix(0, nrow = width, ncol = height)
+
+# Example: Define x and y coordinates as a matrix
+# Replace this with your actual x, y coordinate matrix
+xy_coords <- as.matrix(data.frame(x = round(cur_sce$nucleus.x),
+                        y = round(cur_sce$nucleus.y)))
+
+# Assign running numbers to these specific pixels
+for (i in 1:nrow(xy_coords)) {
+  x <- xy_coords[i, 1]
+  y <- xy_coords[i, 2]
+  
+  # Ensure coordinates are within bounds
+    image_matrix[x, y] <- 1  # Running number
+}
+
+cur_mask <- EBImage::as.Image(image_matrix)
+cur_mask <- cytomapper::CytoImageList(cur_mask)
+mcols(cur_im)[,"sample_id"] <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+names(cur_mask) <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+mcols(cur_mask)$sample_id <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+
+cytomapper::plotPixels(mask = cur_mask,
+                       image = cur_im,
+                       img_id = "sample_id",
+                       colour_by = c("DAPI", "CD15"),
+                       bcg = list(DAPI = c(0,1.5,1),
+                                  CD15 = c(0,1,1)),save_plot = list(filename = "D:/Data/test_mIF.png"))
+
+```
+
+# check segmentation IMC
+```{r}
+IMC_images <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/IMC/Rout/images.rds")
+cur_im <- cytomapper::getImages(IMC_images,i = 2)
+cur_sce <- sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
+
+
+# Load necessary library
+library(tiff)
+
+# Define image dimensions
+width <- 600
+height <- 599
+
+# Create an empty matrix filled with zeros
+image_matrix <- matrix(0, nrow = width, ncol = height)
+
+# Example: Define x and y coordinates as a matrix
+# Replace this with your actual x, y coordinate matrix
+xy_coords <- as.matrix(data.frame(x = round(cur_sce$Pos_X),
+                        y = round(cur_sce$Pos_Y)))
+
+# Assign running numbers to these specific pixels
+for (i in 1:nrow(xy_coords)) {
+  x <- xy_coords[i, 1]
+  y <- xy_coords[i, 2]
+  
+  # Ensure coordinates are within bounds
+    image_matrix[x, y] <- 1  # Running number
+}
+
+
+cur_mask <- EBImage::as.Image(image_matrix)
+cur_mask <- cytomapper::CytoImageList(cur_mask)
+mcols(cur_im)[,"sample_id"] <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+names(cur_mask) <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+mcols(cur_mask)$sample_id <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+cytomapper::plotPixels(mask = cur_mask, image = cur_im,img_id = "sample_id",colour_by = c("CD15", "DNA1", "CD3"),bcg = list(CD15 = c(0,2,1),
+                                                                                                                            DAPI = c(0,2,1),CD3 = c(0,2,1)))
+
+cytomapper::plotPixels(mask = cur_mask,
+                       image = cur_im,
+                       img_id = "sample_id",
+                       colour_by = c("DNA2", "CD15"),
+                       bcg = list(DNA2 = c(0,2.5,1),
+                                  CD15 = c(0,1.5,1)),save_plot = list(filename = "D:/Data/test_IMC.png"))
+```
+
+# check segmentation mIF steinbock
+```{r}
+mif_st_images <- readRDS("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/old/steinbock/Rout/images.rds")
+cur_im <- cytomapper::getImages(mif_st_images,i = 2)
+cur_sce <- mif_steinbock[,mif_steinbock$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
+
+
+# Load necessary library
+library(tiff)
+
+# Define image dimensions
+width <- 1198
+height <- 1196
+
+# Create an empty matrix filled with zeros
+image_matrix <- matrix(0, nrow = width, ncol = height)
+
+# Example: Define x and y coordinates as a matrix
+# Replace this with your actual x, y coordinate matrix
+xy_coords <- as.matrix(data.frame(x = round(cur_sce$Pos_X),
+                        y = round(cur_sce$Pos_Y)))
+
+# Assign running numbers to these specific pixels
+for (i in 1:nrow(xy_coords)) {
+  x <- xy_coords[i, 1]
+  y <- xy_coords[i, 2]
+  
+  # Ensure coordinates are within bounds
+    image_matrix[x, y] <- 1  # Running number
+}
+
+
+cur_mask <- EBImage::as.Image(image_matrix)
+cur_mask <- cytomapper::CytoImageList(cur_mask)
+mcols(cur_im)[,"sample_id"] <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+names(cur_mask) <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+mcols(cur_mask)$sample_id <- "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"
+cytomapper::plotPixels(mask = cur_mask, image = cur_im,img_id = "sample_id",colour_by = c("CD15", "DAPI", "CD3"),bcg = list(CD15 = c(0,2,1),
+                                                                                                                            DAPI = c(0,2,1),CD3 = c(0,2,1)))
+
+cytomapper::plotPixels(mask = cur_mask,
+                       image = cur_im,
+                       img_id = "sample_id",
+                       colour_by = c("DAPI", "CD15"),
+                       bcg = list(DAPI = c(0,0.8,1),
+                                  CD15 = c(0,1,1)),save_plot = list(filename = "D:/Data/test_mIF_steinbock.png"))
+```
+
+# compare numbers of cells
+```{r}
+imc_dat <- as.data.frame(colData(sce_IMC))
+mif_dat <- as.data.frame(colData(sce_mIF))
+
+imc_dat <- imc_dat %>%
+  group_by(sample_id) %>%
+  count(matched_celltype) %>%
+  mutate(tech = "IMC")
+
+mif_dat <- mif_dat %>%
+  group_by(sample_id) %>%
+  count(matched_celltype) %>%
+  mutate(tech = "mif")
+
+dat <- left_join(imc_dat,mif_dat,c("sample_id","matched_celltype"))
+colnames(dat) <- c("sample_id","matched_celltype","imc_count","tech_imc","mif_count","tech_mif")
+
+dat %>%
+#  pivot_longer(cols = c(imc_count,mif_count)) %>%
+  ggplot(aes(x = imc_count,y = mif_count,color = matched_celltype))+
+  geom_point()+
+  facet_wrap(.~matched_celltype, scales = "free")
+
+(p_BnT <- ggplot(dat) +
+  stat_smooth(aes(imc_count, mif_count, color = matched_celltype), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
+  geom_smooth(aes(imc_count, mif_count), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
+  geom_point(aes(imc_count, mif_count, color = matched_celltype), size = 3) + 
+  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
+  theme_classic(base_size = 20) + xlab("") + ylab("") +
+  ylim(c(0, 0.4)) + xlim(c(0, 0.4)) +
+  stat_regline_equation(aes(imc_count, mif_count, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
+  stat_regline_equation(aes(imc_count, mif_count, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
+  theme(legend.position = "none",
+        axis.text = element_text(size = 20)) +
+  ggtitle("BnT cells") +
+  coord_fixed())
+```
+
