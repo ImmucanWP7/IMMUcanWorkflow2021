@@ -195,7 +195,7 @@ ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
   scale_color_manual(values = c("TRUE" = "dark green", "FALSE" = "white"), 
                      name = "Significance") + 
   ylab(c("log2 Fold Change")) + xlab("log2 CPM") +
-  ylim(c(-1.5, 1.5)) +
+  ylim(c(-1, 1)) +
   theme_classic(base_size = 25))+
   theme(legend.position = "none")
 
@@ -223,6 +223,14 @@ dat %>%
   mutate(total_cells = sum(value)) %>%
   ggplot(aes(x = tech,y = total_cells))+
   geom_boxplot( )
+
+#test <- sce_mIF[,grepl("68868",sce_mIF$sample_id) & sce_mIF$ROI == "005"]
+#colnames(test) <- paste0(test$cell.ID)
+#dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CK", color.var = "matched_celltype")
+test <- sce_imc[,grepl("75371",sce_imc$sample_id)]
+dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CarbonicAnhydrase", color.var = "matched_celltype", assay.x = "exprs", assay.y = "exprs")
+plotSpatial(test, img_id = "sample_id",node_color_by = "celltype")+
+  scale_color_manual(values = metadata(test)$color_vectors$celltype)
 ```
 
 ## Cell phenotype correlation
@@ -384,17 +392,18 @@ mean_IMC <- exp_IMC %>%
   summarise(mean_CD11c_IMC = mean(CD11c))
 mean_mif <- exp_mIF %>%
   group_by(sample_id) %>%
+  mutate(CD11c = ifelse(is.infinite(CD11c),0,CD11c)) %>%
   summarise(mean_CD11c_mIF = mean(CD11c))
 
 mean_dat <- left_join(mean_IMC,mean_mif,"sample_id")
 
-x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF)
+x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF,na.action= "na.exclude")
 p1<- mean_dat %>%
   ggplot(aes(x = mean_CD11c_IMC,mean_CD11c_mIF))+
   geom_point()+
   theme_bw()+
   ggtitle(paste0("IFQuant mIF pearson's r: ",round(x$estimate, digits = 3)))
-
+p1
 # steinbock
 mif_steinbock <- readRDS("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/old/steinbock/Rout/sce.rds")
 
@@ -414,6 +423,8 @@ p2 <- mean_dat %>%
   ggtitle(paste0("steinbock mIF pearson's r: ",round(x$estimate, digits = 3)))
 
 cowplot::plot_grid(p1, p2)
+test <- t(assay(sce_mIF, "exprs"))
+
 ```
 
 

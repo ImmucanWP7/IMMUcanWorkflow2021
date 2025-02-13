@@ -131,22 +131,22 @@ markers <- list()
 # we will not subcluters "uncertain" cells as the merging will be very difficult. we may inspect this at a later time point again
 
 #functional markers for T cells
-markers[["CD4"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7",rownames(sce))]
+markers[["CD4"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|CD45RA|CD45RO",rownames(sce))]
 
-markers[["CD8"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7",rownames(sce))]
+markers[["CD8"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|CD45RA|CD45RO",rownames(sce))]
 
 markers[["Treg"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|ICOS|Ki67|TCF7",rownames(sce))]
 
 # B and BnT cell markers
-markers[["BnT"]] <- rownames(sce)[grepl(pattern = "CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7|VISTA|CD40|HLADR|CD38",rownames(sce))]
+markers[["BnT"]] <- rownames(sce)[grepl(pattern = "CD8|CD4|CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7",rownames(sce))]
 
 markers[["B"]] <- rownames(sce)[grepl(pattern = "CD27|CD40|Ki67",rownames(sce))]
 
 # myeloid markers
-markers[["MacCD163"]] <- rownames(sce)[grepl(pattern = "CD68|CD11c|PDL1|VISTA|CD40|CD14|CD206|IDO1|CD16",rownames(sce))]
+markers[["MacCD163"]] <- rownames(sce)[grepl(pattern = "CD68|CD11c|PDL1|VISTA|CD40|CD14|CD206|Ido1|CD16",rownames(sce))]
 
 # we will also use CD20 for DCs to detect those DCs that sit in TLS
-markers[["DC"]] <- rownames(sce)[grepl(pattern = "PDL1|VISTA|CD40|IDO1|CD20|CD206|CD16",rownames(sce))]
+markers[["DC"]] <- rownames(sce)[grepl(pattern = "PDL1|VISTA|CD40|Ido1|CD20|CD206|CD16|Ki67",rownames(sce))]
 
 # we will also use E-cad for HLADR cells as there may still be tumor cells in these cells
 markers[["HLADR"]] <- rownames(sce)[grepl(pattern = "CD11b|CD163|CD68|CD11c|PDL1|ICOS|VISTA|TIM3|CD40|CD14|CD206|CD163|HLADR|Ecad",rownames(sce))]
@@ -182,18 +182,9 @@ dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "celltype")+
 library(scran)
 library(scater)
 library(bluster)
-celltypes <- sort(unique(sce$celltype))
-celltypes
-ct_k <- as.vector(unclass(table(sce$celltype)))
-table(sce$celltype)
 
-dittoSeq::dittoScatterPlot(sce[,sce$celltype == "CD4"],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
-dittoSeq::dittoScatterPlot(sce[,sce$celltype %in% c("CD4","Treg")],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
-dittoSeq::dittoScatterPlot(sce[,sce$celltype %in% c("CD8")],x.var = "CD3",y.var = "FOXP3",assay.x = "exprs",assay.y = "exprs", color.var = "celltype")
-
-
-param <- data.frame(celltype = c("CD4","CD8","DC","MacCD163"),
-                    k = c(30L, 40L, 40L, 25L),
+param <- data.frame(celltype = c("B","CD4", "BnT","CD8","DC","MacCD163"),
+                    k = c(80L,40L,50L, 40L, 40L, 50L),
                     type = "rank")
 
 # clustering
@@ -217,7 +208,7 @@ cur_sces <- lapply(param$celltype, function(x){
 })
 
 names(cur_sces) <- param$celltype
-for(i in 1:4){
+for(i in 1:6){
   print(dittoSeq::dittoDimPlot(cur_sces[[i]],var = "cluster",reduction.use = "UMAP_subcluster"))
 }
 
@@ -242,30 +233,74 @@ cur_sces <- lapply(cur_sces, function(x){
 sce_2 <- do.call(cbind, cur_sces)
 
 sce$cluster <- NA
-sce <- sce[,!sce$celltype %in% c("CD4","CD8","DC","MacCD163")]
+sce <- sce[,!sce$celltype %in% c("B","CD4","BnT","CD8","DC","MacCD163")]
 
 sce <- cbind(sce,sce_2)
 sce[,is.na(sce$cluster)]$cluster <- sce[,is.na(sce$cluster)]$celltype
 ```
 
+# name clusters
+```{r}
+ct <- unique(sce$cluster)
+ct <- c(ct[1:9],c("B_act","B_memory","B","B","B_cycling","B","CD4_other","CD4_cycling","CD4_all_low","CD4_eff","CD4_cm","CD4_act","CD8_cm","BnT","BnT","CD4_fh","B_act","CD4_cm","CD4_cm","CD8_stem-like","CD8_pre-ex","CD8_ex","CD8_all_low","CD8_other","DC_suppressive", "DC_other","DC_cycling","DC_CD206","GCDC", "DC_all_low","Mac_suppressive","Mac_CD14high","Mac_CD206","Mac_other","Mac_PDL1", "Mac_all_low"))
+names(ct) <- unique(sce$cluster)
+
+sce$subclusters <- ct[sce$cluster]
+unique(sce$subclusters)
+```
+
+```{r}
+library(pals)
+cell_types <- sort(unique(sce$subclusters))
+
+names(cell_types) <- cell_types
+cell_types[grepl("CD8",cell_types)] <- c("darkorchid2","darkorchid4","darkmagenta","darkviolet","magenta4","mediumorchid1")
+cell_types[grepl("CD4",cell_types)] <- c("deeppink1","deeppink2","deeppink","magenta", "deeppink3", "magenta2","violetred1")
+cell_types[grepl("Mac",cell_types)] <- c("green","green1", "green2", "green3", "chartreuse1", "yellowgreen")
+cell_types[grepl("^DC",cell_types)] <- c("green4","darkolivegreen4","chartreuse4","springgreen4","seagreen3" )
+cell_types[grepl("GCDC",cell_types)] <- c("lightseagreen")
+cell_types[grepl("Tumor",cell_types)] <- c("sienna4")
+cell_types[grepl("B",cell_types)] <- c("red","firebrick3","red4","brown2","brown")
+cell_types[grepl("BnT",cell_types)]<- c("indianred")
+cell_types[grepl("B_act",cell_types)] <- c("firebrick3")
+cell_types["plasma"] <- "goldenrod2"
+cell_types["Treg"] <- "maroon3"
+cell_types["HLADR"] <- "darkgreen"
+cell_types["Neutrophil"] <- "skyblue3"
+cell_types["NK"] <- "yellow"
+cell_types["pDC"] <- "deepskyblue"
+cell_types["Mural"] <- "tomato"
+cell_types["undefined"] <- "gray"
+
+col_list <- list(CellType = cell_types)
+metadata(sce)$color_vectors$celltype
+pie(rep(1,length(metadata(sce)$color_vectors$celltype)),col = metadata(sce)$color_vectors$celltype, labels = names(metadata(sce)$color_vectors$celltype))
+pie(rep(1,length(col_list$CellType)),col =col_list$CellType,labels = names(col_list$CellType))
+```
+
+
 ```{r, fig.height=13, fig.width=16}
 
-dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "cluster")
+dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "subclusters")
 
 mean_sce <- aggregateAcrossCells(sce,
-                                 ids = sce$cluster,
+                                 ids = sce$subclusters,
                                  statistics = "mean")
 assay(mean_sce, "exprs") <- asinh(counts(mean_sce))
-colnames(mean_sce) <- mean_sce$cluster
+colnames(mean_sce) <- mean_sce$subclusters
+mean_sce <- mean_sce[,order(mean_sce$celltype)]
 
 # scaled heatmap
-pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid_scaled.pdf",width = 15, height=12)
+pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid_scaled.pdf",width = 11, height=8)
 dittoSeq::dittoHeatmap(mean_sce,
-                             annot.by = c("cluster", "celltype"),
-                             genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
-                             heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
-                             breaks = seq(-3, 3, length.out = 101))+
-  coord_flip()
+                       annot.by = c( "subclusters", "celltype"),
+                       genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
+                       heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+                       breaks = seq(-3, 3, length.out = 101),
+                       show_colnames = TRUE,
+                       fontsize = 7,
+                       annotation_colors =  list(subclusters = col_list$CellType,
+                                                 celltype = metadata(sce)$color_vectors$celltype))
 dev.off()
 
 # calculate normalized counts for visualization
@@ -273,15 +308,79 @@ norm_counts <- t(apply(assay(mean_sce, "counts"), 1, function(x)(x-min(x))/(quan
 normalized_count <- t(apply(norm_counts,1,function(x) pmin(x,1)))
 assay(mean_sce,"normalized") <- normalized_count
 
-pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid.pdf",width = 15, height=12)
+#pdf(file = "output/Figure_6/subclusters_myeloid_lymphoid.pdf",width = 15, height=12)
 dittoSeq::dittoHeatmap(mean_sce,
-                       annot.by = c("cluster", "celltype"),scale = "none",assay = "normalized",
+                       annot.by = c("cluster", "celltype"),scale = "none",assay = "exprs",
                        genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
                        heatmap.colors = viridis(100),
-                       annotation_colors = list(celltype = metadata(sce)$color_vectors$celltype))
+                       annotation_colors =  list(subclusters = col_list$CellType,
+                                                 celltype = metadata(sce)$color_vectors$celltype))
+#dev.off()
+
+
+```
+
+```{r, fig.height=10, fig.width=12}
+library(ComplexHeatmap)
+library(circlize)
+dat <- as.data.frame(colData(sce))
+
+use_channel <- rownames(sce)[!grepl("DNA|Histone", rownames(sce))]
+mean_sce <- aggregateAcrossCells(sce,
+                                 ids = sce$subclusters,
+                                 statistics = "mean",
+                                 use.assay.type = "counts",
+                                 subset.row = use_channel)
+
+assay(mean_sce,"exprs") <- asinh(counts(mean_sce))
+assay(mean_sce,"zscore") <- t(scale(t(assay(mean_sce,"exprs")),center = TRUE,scale = TRUE))
+
+norm_counts <- t(apply(assay(mean_sce, "counts"), 1, function(x)(x-min(x))/(quantile(x,0.999)-min(x))))
+normalized_count <- t(apply(norm_counts,1,function(x) pmin(x,1)))
+assay(mean_sce,"normalized") <- normalized_count
+
+
+# generate marker classes for visualization
+markers <- rownames(mean_sce)
+marker_type <- c("cell identity","cell identity","cell identity","cell identity","cell identity","functional","cell identity","cell identity","cell identity","functional","cell identity","cell identity","functional","cell identity","functional","cell identity","functional","functional","cell identity","functional","functional","functional","cell identity","cell identity","functional","cell identity","functional","functional","functional","functional","functional","cell identity","cell identity","cell identity","cell identity","functional","functional")
+names(markers) <- marker_type
+rowData(mean_sce)$marker_type <- marker_type
+
+row_anno <- data.frame(ids = mean_sce$subclusters,
+                       ncells = mean_sce$ncells)
+colnames(row_anno) <- c("CellType","ncells")
+
+col_fun <- colorRamp2(
+  breaks = c(-3, 0, 3),  # Corresponds to dark blue, white, dark red
+  colors = c("darkblue", "white", "darkred")
+)
+
+heatmap_body <- t(assay(mean_sce,"zscore"))
+
+p <- Heatmap((heatmap_body),
+             col = col_fun,
+             name = "zscore",
+             cluster_rows = FALSE,
+             clustering_method_rows = "ward.D2",
+             clustering_method_columns = "ward.D2",
+             heatmap_legend_param = list(
+    at = seq(-3, 3, 1),  # Explicitly set the legend tick positions
+    labels = seq(-3, 3, 1)  # Ensure correct labels
+  ))+
+       # column_split = rowData(mean_sce)$marker_type,
+      #  column_title = c("cell identity markers","functional markers"))+
+  
+  rowAnnotation(CellType = anno_simple(row_anno$CellType,border = TRUE,col =col_list$CellType))+
+  rowAnnotation(names = anno_text(row_anno$CellType,gp = gpar(fontsize=8)))+
+  rowAnnotation(n_cells = anno_barplot((row_anno$ncells)))
+
+p
+
+pdf(file =  "output/Figure_6/subclusters_complexheatmap.pdf",
+    width = 12, 
+    height = 10)
+p
 dev.off()
-
-
 ```
 
 

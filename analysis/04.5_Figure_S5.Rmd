@@ -74,7 +74,6 @@ mIF_dat <- data.frame(IF_cell_size = sce_mIF$cell.area)
 mIF_steinbock_dat <- data.frame(IF_cell_size = mif_steinbock$area)
 
 # correct for difference in resolution: one pixel in mIF is 0.4962µm
-mIF_dat$IF_cell_size <- mIF_dat$IF_cell_size*0.4962^2
 mIF_steinbock_dat$IF_cell_size <- mIF_steinbock_dat$IF_cell_size*0.4962^2
 
 mean_IMC <- mean(IMC_dat$IMC_cell_size)
@@ -94,15 +93,26 @@ p <- cur_dat %>%
   theme_bw()+
   geom_density(data = mIF_dat ,aes(y = IF_cell_size),col= "red", size = 2)+
   geom_density(data = mIF_steinbock_dat ,aes(y = IF_cell_size),col= "green", size = 2)+
-  annotate("text", x = 0.02, y = 392 , label = expression( paste("IMC, mean = 78 µm"^2)), color = "blue", size = 5)+
-  annotate("text", x = 0.022, y = 400 , label = expression( paste("mIF, mean = 37 µm"^2)), color = "red", size = 5)+
-  annotate("text", x = 0.024, y = 400 , label = expression( paste("mIF steinbock, mean = 55 µm"^2)), color = "green", size = 5)+
+  annotate("text", x = 0.02, y = 392 , label = bquote("IMC: average" ~ .(round(mean_IMC)) ~  µm^2), color = "blue", size = 5)+
+  annotate("text", x = 0.022, y = 400 , label =  bquote("mIF: average" ~ .(round(mean_IF)) ~  µm^2), color = "red", size = 5)+
+  annotate("text", x = 0.024, y = 400 , label =bquote("mIF steinbock: average" ~ .(round(mean_IF_steinbock)) ~  µm^2), color = "green", size = 5)+
   ylab("cell size")+
   xlab("density estimate")
 
 p
 
 ggsave(filename = "FigS5_B.pdf",path= output, plot = p, width = 7, height = 5)
+area = pi*r^2
+area <- 78
+r <- sqrt(area/pi)
+r
+cur_sce <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001"]
+cur_sce_2 <- sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_001"]
+
+sum(cur_sce$cell.area)
+sum(cur_sce_2$area)
+plotSpatial(cur_sce,img_id = "sample_id",coords = c("nucleus.x","nucleus.y"),node_color_by = "matched_celltype")
+plotSpatial(cur_sce_2,img_id = "sample_id",node_color_by = "matched_celltype")
 ```
 
 
