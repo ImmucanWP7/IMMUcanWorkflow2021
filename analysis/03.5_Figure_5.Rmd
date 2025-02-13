@@ -224,13 +224,14 @@ dat %>%
   ggplot(aes(x = tech,y = total_cells))+
   geom_boxplot( )
 
+# some sanity checks
 #test <- sce_mIF[,grepl("68868",sce_mIF$sample_id) & sce_mIF$ROI == "005"]
 #colnames(test) <- paste0(test$cell.ID)
 #dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CK", color.var = "matched_celltype")
-test <- sce_imc[,grepl("75371",sce_imc$sample_id)]
-dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CarbonicAnhydrase", color.var = "matched_celltype", assay.x = "exprs", assay.y = "exprs")
-plotSpatial(test, img_id = "sample_id",node_color_by = "celltype")+
-  scale_color_manual(values = metadata(test)$color_vectors$celltype)
+#test <- sce_imc[,grepl("75371",sce_imc$sample_id)]
+#dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CarbonicAnhydrase", color.var = "matched_celltype", assay.x = "exprs", assay.y = "exprs")
+#plotSpatial(test, img_id = "sample_id",node_color_by = "celltype")+
+#  scale_color_manual(values = metadata(test)$color_vectors$celltype)
 ```
 
 ## Cell phenotype correlation
@@ -604,8 +605,6 @@ cur_env_inhom <- envelope(cur_ppp, Lcross.inhom, i = "IMC", j = "mIF")
 plot(cur_env_inhom)
 
 cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
-
-
 ```
 
 
@@ -700,21 +699,30 @@ Run `spicyR`
 ```{r, fig.height=6, fig.width=8}
 library(spicyR)
 
+"sample_id_global" %in% colnames(colData(all_sce))
+sum(is.na(colData(all_sce)$sample_id))
+sum(is.na(colData(all_sce)$matched_celltype))
+sum(is.na(colData(all_sce)$Pos_X))
+sum(is.na(colData(all_sce)$Pos_Y))
+
+test <- as.data.frame(colData(all_sce))
+
+
 spicyTest <- spicy(
-  all_sce,
+  cells=all_sce,
   condition = "modality",
   subject = "sample_id",
-  spatialCoords = c("Pos_X", "Pos_Y"),
+  spatialCoordsCols = c("Pos_X", "Pos_Y"),
   window = "square",
-  cellType = "matched_celltype",
-  imageID = "sample_id_global",
+  cellTypeCol = "matched_celltype",
+  imageIDCol = "sample_id_global",
   Rs = c(20, 50, 100, 150)
 )
 
 
 (p <- signifPlot(
   spicyTest, fdr = T,cutoff = 0.1
-)) 
+))
 signifPlot(spicyTest,type = "", comparisonGroup = "IMC")
 
 topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
@@ -751,7 +759,7 @@ spicyBoxPlot(results = spicyTest,
              from = "Tumor",
              to = "T")
 
-ggsave(filename = "output/Figure_5/Figure_5E_new.pdf", plot = p, width = 7, height = 5)
+ggsave(filename = "output/Figure_5/Figure_5E_new_2025Feb.pdf", plot = p, width = 7, height = 5)
 ```
 
 Find example images:
