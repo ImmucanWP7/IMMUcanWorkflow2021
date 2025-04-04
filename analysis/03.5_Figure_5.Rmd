@@ -1,5 +1,5 @@
 ---
-title: "Figure 6"
+title: "Figure 5"
 output:
   workflowr::wflow_html:
     toc: false
@@ -12,7 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-
+```{r}
+mount_path <- readRDS(file = "data/mount_path.rds")
+```
 
 ```{r}
 library(tidyverse)
@@ -208,7 +210,7 @@ ggsave(filename = "output/Figure_5/Figure_5C_TPR_and_FPR.pdf",
 # subclustering
 
 ```{r}
-sce <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/IMC/Rout/sce.rds")
+sce <- readRDS(file.path(mount_path,"IMC/Rout/sce.rds"))
 
 table(sce$celltype)
 ```
@@ -405,6 +407,8 @@ dittoSeq::dittoHeatmap(mean_sce,
 
 
 ```
+
+# complex heatmap - not in paper.
 
 ```{r, fig.height=10, fig.width=12}
 library(ComplexHeatmap)

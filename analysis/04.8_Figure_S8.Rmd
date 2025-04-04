@@ -1,5 +1,5 @@
 ---
-title: "Figure S9"
+title: "Figure S8"
 output:
   workflowr::wflow_html:
     toc: false
@@ -20,7 +20,7 @@ Code to generate the plots of Figure 4.
 the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S9"
+output <- "output/Figure_S8"
 ```
 
 ## Read data
@@ -85,7 +85,7 @@ all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ## Visualize celltypes between mIF and IMC
 
 ```{r}
-if (!dir.exists("output/Figure_S9/")) dir.create("output/Figure_S9/")
+if (!dir.exists("output/Figure_S8/")) dir.create("output/Figure_S8/")
 all_sce$CD20_logical <- !is.na(all_sce$TLS.ID)
 
 p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
@@ -94,7 +94,7 @@ p <- plotSpatial(all_sce[,all_sce$modality == "IMC"],
             node_size_fix = 0.04)  +
   theme(strip.text =  element_text(size=2))
 
-ggsave(filename = "Fig_S9A_IMC.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "Fig_S8A_IMC.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 
 p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
             node_color_by = "CD20_logical", 
@@ -102,7 +102,7 @@ p <- plotSpatial(all_sce[,all_sce$modality == "mIF"],
             node_size_fix = 0.04) +
   theme(strip.text =  element_text(size=2))
 
-ggsave(filename = "Fig_S9A_mIF.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "Fig_S8A_mIF.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 ```
 
 # B - example image
@@ -116,7 +116,7 @@ cur_sce <- cur_sce[,cur_sce$TLS == TRUE]
 p <- plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)+
   theme(panel.background = element_rect(fill = "black", colour = NA))
 p
-ggsave(filename = "Fig_S9B.pdf",path=output, plot = p, width = 8, height = 6)
+ggsave(filename = "Fig_S8B.pdf",path=output, plot = p, width = 8, height = 6)
 ```
 # spatial comparison
 
@@ -261,7 +261,7 @@ p <- final %>%
 
 p
 
-ggsave(filename = "Fig_S9C.pdf",path=output, plot = p, width = 6, height = 4)
+ggsave(filename = "Fig_S8C.pdf",path=output, plot = p, width = 6, height = 4)
 ```
 
 
