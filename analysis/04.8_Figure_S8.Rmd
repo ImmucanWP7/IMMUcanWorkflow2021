@@ -1,5 +1,5 @@
 ---
-title: "Figure S8"
+title: "Figure S9"
 output:
   workflowr::wflow_html:
     toc: false
@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-Code to generate the plots of Figure S6.
+Code to generate the plots of Figure S7.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
@@ -20,7 +20,7 @@ Code to generate the plots of Figure 4.
 the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S8"
+output <- "output/Figure_S9"
 ```
 
 ## Read data
@@ -85,26 +85,184 @@ all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
 ## Visualize celltypes between mIF and IMC
 
 ```{r}
-if (!dir.exists("output/Figure_S8/")) dir.create("output/Figure_S8/")
+if (!dir.exists("output/Figure_S9/")) dir.create("output/Figure_S9/")
+all_sce$CD20_logical <- !is.na(all_sce$TLS.ID)
 
 p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
-            node_color_by = "matched_celltype", 
+            node_color_by = "CD20_logical", 
             ncols = 4, img_id = "sample_id",
-            node_size_fix = 0.04,) + 
-  theme(strip.text =  element_text(size=2))+
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
-  
+            node_size_fix = 0.04)  +
+  theme(strip.text =  element_text(size=2))
 
-#ggsave(filename = "output/Figure_S8/FigS6_1.pdf", plot = p, width = 20, height = 49)
-ggsave(filename = "FigS8_1.png",path= output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "Fig_S9A_IMC.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 
 p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
-            node_color_by = "matched_celltype", 
+            node_color_by = "CD20_logical", 
             ncols = 4, img_id = "sample_id",
-            node_size_fix = 0.04) + 
-  theme(strip.text =  element_text(size=2))+
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
+            node_size_fix = 0.04) +
+  theme(strip.text =  element_text(size=2))
 
-#ggsave(filename = "output/Figure_S8/FigS6_2.pdf", plot = p, width = 20, height = 49)
-ggsave(filename = "FigS8_2.png",path= output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+ggsave(filename = "Fig_S9A_mIF.png",path=output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
 ```
+
+# B - example image
+```{r, fig.height=6, fig.width=9}
+
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_2022_WFLOW_10061074-SPECT-VAR-TIS-01-IMC-01_002"]
+cur_sce$TLS <- FALSE
+cur_sce[,!is.na(cur_sce$TLS.ID)]$TLS <- TRUE
+cur_sce <- cur_sce[,cur_sce$TLS == TRUE]
+
+p <- plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)+
+  theme(panel.background = element_rect(fill = "black", colour = NA))
+p
+ggsave(filename = "Fig_S9B.pdf",path=output, plot = p, width = 8, height = 6)
+```
+# spatial comparison
+
+```{r laod-libraries, message=FALSE}
+library(sf)
+library(spatstat)
+```
+
+```{r Lcross}
+# binarize TLS information
+all_sce$TLS <- FALSE
+all_sce[,!is.na(all_sce$TLS.ID)]$TLS <- TRUE
+# Example image
+cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_Batch20210921_10082495-SPECT-VAR-TIS-01-IMC-01_004"]
+cur_sce <- cur_sce[,cur_sce$TLS == TRUE]
+
+plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
+
+# Create multipoint pattern
+cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y, 
+               xrange = c(0, max(cur_sce$Pos_X)), yrange = c(0, max(cur_sce$Pos_Y)),
+               marks = factor(cur_sce$modality, levels = c("IMC", "mIF")))
+
+plot(cur_ppp)
+
+miplot(cur_ppp)
+#plot(frypoints(cur_ppp))
+
+cur_L <- Lcross(cur_ppp, "IMC", "mIF")
+
+plot(cur_L)
+
+cur_L_inhom <- Lcross.inhom(cur_ppp, "IMC", "mIF")
+
+plot(cur_L_inhom)
+
+cur_env <- envelope(cur_ppp, Lcross, i = "mIF", j = "IMC", fix.n = TRUE, fix.marks = TRUE)
+
+plot(cur_env)
+
+cur_env <- envelope(cur_ppp, Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
+
+plot(cur_env)
+
+cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+cur_test <- dclf.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
+
+cur_test <- mad.sigtrace(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+plot(cur_test)
+
+cur_test <- mad.progress(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
+
+plot(cur_test)
+
+cur_env_inhom <- envelope(cur_ppp, Lcross.inhom, i = "IMC", j = "mIF")
+
+plot(cur_env_inhom)
+
+cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
+
+```
+
+
+```{r automatic}
+set.seed(12345)
+out <- lapply(unique(all_sce$sample_id), function(x){
+  cur_sce <- all_sce[,all_sce$sample_id == x]
+
+  cur_sce <- cur_sce[,cur_sce$TLS == TRUE]
+  
+    if (sum(cur_sce$modality == "IMC") < 10 | sum(cur_sce$modality == "mIF") < 10) {
+      return(NULL)
+    }
+    
+    cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y, 
+               xrange = c(0, max(cur_sce$Pos_X)), yrange = c(0, max(cur_sce$Pos_Y)),
+               marks = factor(cur_sce$modality, levels = c("IMC", "mIF")))
+    
+    cur_L <- Lcross(cur_ppp, i = "IMC", j = "mIF")
+    cur_L_inhom <- Lcross.inhom(cur_ppp, i = "IMC", j = "mIF")
+    
+    cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF")
+    cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF")
+    
+    return(list(test = cur_test, test_inhom = cur_test_inhom, 
+                L = cur_L, L_inhom = cur_L_inhom))
+
+})
+
+names(out) <- unique(all_sce$sample_id)
+```
+
+```{r}
+cur_summary <- unlist(out, recursive = FALSE)
+
+cur_p <- lapply(cur_summary[grepl("test$", names(cur_summary))],
+                   function(x){
+                     return(x$p.value)
+                   })
+
+cur_p_inhom <- lapply(cur_summary[grepl("test_inhom$", names(cur_summary))],
+                   function(x){
+                     return(x$p.value)
+                   })
+
+cur_area <- lapply(cur_summary[grepl("L$", names(cur_summary))],
+                   function(x){
+                     return(sum(x$iso - x$theo))
+                   })
+
+cur_area_inhom <- lapply(cur_summary[grepl("L_inhom$", names(cur_summary))],
+                   function(x){
+                     return(sum(x$iso - x$theo))
+                   })
+
+# Check that names match
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_p_inhom), "\\.", simplify = TRUE)[,1])
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area), "\\.", simplify = TRUE)[,1])
+all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area_inhom), "\\.", simplify = TRUE)[,1])
+
+final <- data.frame(p = unlist(cur_p),
+                    p_inhom = unlist(cur_p_inhom),
+                    area = unlist(cur_area),
+                    area_inhom = unlist(cur_area_inhom),
+                    sample_id = sub("_", "", str_extract(names(cur_p), "_[0-9]{8}")),
+                    ROI = str_extract(names(cur_p), "\\w{3}(?=\\.test)"),
+                    celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
+
+
+p <- final %>%
+  mutate(sample_id = paste0(sample_id,"_",ROI)) %>%
+  ggplot()+
+  geom_col(aes(x = sample_id,y = area,fill=as.factor(p)))+
+  #facet_wrap(.~sample_id)+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 90, vjust= 0.5, hjust = 1))+
+  ylab("Area between L curve and theoretical L curve")+
+  labs(fill = ("significant"))
+
+p
+
+ggsave(filename = "Fig_S9C.pdf",path=output, plot = p, width = 6, height = 4)
+```
+
+
+
