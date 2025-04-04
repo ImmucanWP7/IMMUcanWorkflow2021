@@ -1,0 +1,136 @@
+---
+title: "Read IFQuant data"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: true
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+```
+
+# set path
+the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
+```{r}
+mount_path <- readRDS(file = "data/mount_path.rds")
+```
+
+In this script, we will read in the mIF data that was processed by IFQuant.
+
+## Define color vectors
+
+These will be shared across all datasets.
+
+```{r define-colors}
+library(RColorBrewer)
+
+color_vectors <- list()
+matched_celltype <- setNames(c("sienna4", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
+                             c("Tumor", "T", "Neutrophil", "MacCD163",
+                               "other", "DC", "B", "BnT"))
+celltype <- setNames(c("sienna4", "tan3", "magenta3", "skyblue3", "green3", "grey75", "green4", "#BF0A3D", "#F4800C"),
+                        c("Tumor", "Tumor_CD15", "T", "Neutrophil", "MacCD163",
+                          "other", "DC", "B", "BnT"))
+
+patient_id <- setNames(c("#BE1E2D", "#FF4B5B", "#F7941D", "#FFCA89", "#00A651", "#5FFF73", "#00AEEF", "#9BD7FF", "#2E3192", "#675BFF"),
+                          c("10061074", "10067433", "10068868", "10071582", "10073140", "10074349", "10074832", "10075371", "10075572", "10082495"))
+
+col_vec_indication <- c(CRC = "#5B1C55", SCCHN = "#39BEB4", NSCLC = "#F79C1D", 
+                        BCC = "#3F85A7", RCC = "#C81F43")
+
+color_vectors$patient_id <- patient_id
+color_vectors$Indication <- col_vec_indication
+color_vectors$matched_celltype <- matched_celltype
+color_vectors$celltype <- celltype
+```
+
+# Read in the single-cell data
+
+We use `imcRtools` to read in the data:
+
+```{r read-data}
+sce <- read_steinbock(paste0(mount_path,"steinbock_2025/"), 
+                      return_as = "sce",
+                      image_file = NULL)
+sce$image <- paste0(sce$sample_id, ".tiff")
+sce$patient_id <- sub("_", "", str_extract(sce$image, "_[0-9]{8}"))
+assay(sce, "exprs") <- asinh(counts(sce))
+head(colData(sce))
+
+# Save color vectors in metadata slot
+metadata(sce)$color_vectors <- color_vectors
+```
+
+
+```{r save-RDS, warning=FALSE}
+cur_dir <- paste0(mount_path,"steinbock_2025/Rout/")
+if (!dir.exists(cur_dir)) dir.create(cur_dir)
+saveRDS(sce, paste0(mount_path,"steinbock_2025/Rout/sce.rds"))
+```
+
+# Read in image data
+
+Here, we read in the images and masks and save them on disk.
+
+```{r read-images, message = FALSE, warning=FALSE}
+library(cytomapper)
+images <- loadImages(paste0(mount_path,"steinbock_2025/img/"), pattern = "*.tiff")
+masks <- loadImages(paste0(mount_path,"steinbock_2025/masks/"),
+                    as.is = TRUE, pattern = "*.tiff")
+
+channelNames(images) <- rownames(sce)
+
+mcols(images) <- mcols(masks) <- DataFrame(image = names(images),
+                                           sample_id = sub(".tiff", "", names(images)))
+
+saveRDS(images, paste0(mount_path,"steinbock_2025/Rout/images.rds"))
+saveRDS(masks, paste0(mount_path,"steinbock_2025/Rout/masks.rds"))
+```
+
+# Read in the nuclear single-cell data
+
+We use `imcRtools` to read in the data:
+
+```{r read-data}
+sce_nuc <- read_steinbock(paste0(mount_path,"steinbock_2025/"), 
+                      return_as = "sce",
+                      image_file = NULL,
+                      intensities_folder = "intensities_nucleus",
+                      regionprops_folder = "regionprops_nucleus",
+                      graphs_folder = "neighbors_nucleus")
+
+sce_nuc$image <- paste0(sce_nuc$sample_id, ".tiff")
+sce_nuc$patient_id <- sub("_", "", str_extract(sce_nuc$image, "_[0-9]{8}"))
+assay(sce_nuc, "exprs") <- asinh(counts(sce_nuc))
+head(colData(sce_nuc))
+
+# Save color vectors in metadata slot
+metadata(sce_nuc)$color_vectors <- color_vectors
+```
+
+
+```{r save-RDS, warning=FALSE}
+cur_dir <- paste0(mount_path,"steinbock_2025/Rout/")
+if (!dir.exists(cur_dir)) dir.create(cur_dir)
+saveRDS(sce_nuc, paste0(mount_path,"steinbock_2025/Rout/sce_nuc.rds"))
+```
+
+# Read in image data
+
+Here, we read in the images and masks and save them on disk.
+
+```{r read-images, message = FALSE, warning=FALSE}
+library(cytomapper)
+masks <- loadImages(paste0(mount_path,"steinbock_2025/masks_nucleus/"),
+                    as.is = TRUE, pattern = "*.tiff")
+
+channelNames(images) <- rownames(sce)
+
+mcols(images) <- mcols(masks) <- DataFrame(image = names(images),
+                                           sample_id = sub(".tiff", "", names(images)))
+saveRDS(masks, paste0(mount_path,"steinbock_2025/Rout/masks_nuc.rds"))
+```

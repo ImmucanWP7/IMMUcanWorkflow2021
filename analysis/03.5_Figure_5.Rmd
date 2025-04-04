@@ -1,5 +1,5 @@
 ---
-title: "Figure 4"
+title: "Figure 6"
 output:
   workflowr::wflow_html:
     toc: false
@@ -8,837 +8,459 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-Code to generate the plots of Figure 4.
 
-# set path
-the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
+
 ```{r}
-mount_path <- readRDS(file = "data/mount_path.rds")
-```
-
-## Read data
-
-```{r, message=FALSE}
-library(SingleCellExperiment)
 library(tidyverse)
-library(ggpubr)
-library(cowplot)
-library(imcRtools)
-
-
-sce_imc <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
+library(ggplot2)
+library(pals)
+library(SingleCellExperiment)
+library(scater)
 ```
 
-## Example images
+# labelled cell heatmap
+
+here we will load the data from [Zenodo](https://zenodo.org/records/12912567).
+please adapt path below to the downloaded data.
+```{r load-data}
+sce <- readRDS("D:/Data/classification_public_for_zenodo_upload/sce_labelled_V1.rds")
+sce_new <- readRDS("D:/Data/classification_public_for_zenodo_upload/sce_labelled_V3.rds")
+```
+
+```{r define-color-vector, fig.height=7, fig.width=7}
+cell_types <- c("B", "plasma", "CD4", "CD8", "Treg", "BnT",
+                "DC", "HLADR", "MacCD163", "Neutrophil", "NK", "pDC", "Mural", 
+                "Tumor", "unlabelled", "undefined")
+
+names(cell_types) <- cell_types
+cell_types["B"] <- "red3"
+cell_types["plasma"] <- "goldenrod1"
+cell_types["CD4"] <- "palevioletred1"
+cell_types["CD8"] <- "darkorchid"
+cell_types["Treg"] <- "maroon3"
+cell_types["BnT"] <- "#F4800C"
+cell_types["DC"] <- "green4"
+cell_types["HLADR"] <- "darkgreen"
+cell_types["MacCD163"] <- "green3"
+cell_types["Neutrophil"] <- "skyblue3"
+cell_types["NK"] <- "yellow2"
+cell_types["pDC"] <- "deepskyblue"
+cell_types["Mural"] <- "tomato"
+cell_types["Tumor"] <- "sienna4"
+cell_types["unlabelled"] <- "grey75"
+cell_types["undefined"] <- "black"
+
+metadata(sce)$colour_vectors$cell_types <- cell_types
+metadata(sce_new)$colour_vectors$cell_types <- cell_types
+
+```
+
+# Heatmap V1 labelling
+
+## markers used for labelling
+```{r heatmap-V1, fig.width=20, fig.height=15}
+lab_sce <- cbind(sce,sce_new)
+lab_sce <- lab_sce[,lab_sce$cell_labels != "unlabelled"]
+agr_sce <- aggregateAcrossCells(lab_sce, 
+                                ids = colData(lab_sce)[,c("sample_id", "cell_labels")], 
+                                statistics = "mean")
+assay(agr_sce, "exprs") <- asinh(counts(agr_sce))
+colnames(agr_sce) <- paste0(agr_sce$sample_id, "_", 
+                            agr_sce$cell_labels)
+
+# Define markers that were used for gating
+cur_markers <- c("Ecad", "CarbonicAnhydrase", "HLADR", 
+                 "CD11c", "CD163", "CD303", "CD15", "MPO", "CD38",
+                 "SMA", "PDGFRb", "CD20", "CD7", "CD3", "CD8a", "CD4", "FOXP3")
+
+
+pdf(file =  "output/Figure_5/Figure_5A_labelled_cells_heatmap.pdf",width = 7, height = 5)
+dittoSeq::dittoHeatmap(agr_sce[cur_markers,], assay = "exprs",
+            annot.by = c( "cell_labels", "Indication"), 
+            cluster_rows = FALSE, order.by = "cell_labels",
+            annotation_colors = list(cell_labels = metadata(sce_new)$colour_vectors$cell_types),
+            heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+            breaks = seq(-3, 3, length.out = 101))
+dev.off()
+```
+
+
+Here we will only generate a figure from the analysis that was performed at Ewa Szczureks lab (here)[https://github.com/dav3794/IMC-models/blob/main/models/compare_results.ipynb]
 
 ```{r}
-getwd()
-if (!dir.exists("output/Figure_5/")) dir.create("output/Figure_5/")
+dat <- data.frame(method = c("XGB","RF","MLP","LR","Stellar","Celesta","Astir","Starling"),
+                  MacroF1 = c(0.903,0.893,0.891,0.847,.844,.54,.345,.163))
 
-cur_IMC <- sce_imc[,sce_imc$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
-cur_mIF <- sce_mIF[,sce_mIF$sample_id == "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"]
-
-# Rescale to same x-y dimensions - one pixel in mIF is 0.4962µm
-cur_mIF$nucleus.x <- cur_mIF$nucleus.x * 0.4962
-cur_mIF$nucleus.y <- cur_mIF$nucleus.y * 0.4962
-cur_mIF$TLS.ID <- as.character(cur_mIF$TLS.ID)
-
-# Plot to match Figure 3
-(p_4 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
-  scale_color_manual(values = metadata(sce_imc)$color_vectors$matched_celltype) + 
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-p_4_with_legend <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "matched_celltype") + 
-  scale_color_manual(values = metadata(sce_imc)$color_vectors$matched_celltype) + 
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "bottom") +
-  ggtitle("")
-
-(p_1 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "matched_celltype", coords = c("nucleus.x", "nucleus.y")) + 
-  scale_color_manual(values = metadata(sce_imc)$color_vectors$matched_celltype) + 
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-(p_6 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "CD20_patches") + 
-  scale_color_manual(values = c("252" = "red", "257" = "red")) +
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-(p_3 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "TLS.ID", coords = c("nucleus.x", "nucleus.y")) + 
-  scale_color_manual(values = c("1" = "red")) +
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-(p_5 <- plotSpatial(cur_IMC, img_id = "sample_id", node_color_by = "tumor_patches") + 
-  scale_color_manual(values = c("TRUE" = "sienna", "FALSE" = "grey")) + 
-  xlim(c(600,0)) + ylim(c(0,600))+ 
-  geom_segment(aes(x = 50, y = 50, xend = 150, yend = 50), lwd = 3, color = "white") +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-(p_2 <- plotSpatial(cur_mIF, img_id = "sample_id", node_color_by = "tissue.type", coords = c("nucleus.x", "nucleus.y")) + 
-  scale_color_manual(values = c("tumor" = "sienna", "stroma" = "grey"))  +
-  xlim(c(600,0)) + ylim(c(0,600)) +
-  theme(axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        panel.background = element_rect(fill = "black", colour = NA),
-        legend.position = "none") +
-  ggtitle(""))
-
-p_final <- plot_grid(p_1, p_3, p_2,p_4,p_6, p_5, nrow = 2, byrow = TRUE) 
-
-ggsave(filename = "output/Figure_5/Figure_5A.pdf", plot = p_final, width = 15, height = 10)
-ggsave(filename = "output/Figure_5/Figure_5A_legend.pdf", plot = p_4_with_legend)
-
-```
-
-## Differential abundance testing
-
-```{r, message=FALSE}
-library(edgeR)
-library(ggrepel)
-
-cur_mIF <- colData(sce_mIF)
-cur_IMC <- colData(sce_imc)
-
-# Count cell types for IMC
-abundances_IMC <- unclass(table(cur_IMC$matched_celltype, cur_IMC$sample_id))
-
-# Metdata for IMC
-meta_IMC <- data.frame(sample_id = colnames(abundances_IMC),
-                       patient_id = sub("-", "", str_extract(colnames(abundances_IMC), "[0-9]{8}-")),
-                       modality = "IMC")
-
-# Count cell types for mIF
-abundances_IF <- unclass(table(cur_mIF$matched_celltype, cur_mIF$sample_id))
-
-# Metadata for mIF
-meta_IF <- data.frame(sample_id = colnames(abundances_IF),
-                      patient_id = sub("-", "", str_extract(colnames(abundances_IF), "[0-9]{8}-")),
-                      modality = "mIF")
-
-colnames(abundances_IMC) <- paste(colnames(abundances_IMC), "IMC")
-colnames(abundances_IF) <- paste(colnames(abundances_IF), "mIF")
-
-stopifnot(all.equal(rownames(abundances_IMC), rownames(abundances_IF)))
-
-combined_df <- cbind(abundances_IMC, abundances_IF)
-combined_meta <- rbind(meta_IMC, meta_IF)
-
-# DA testing
-y.ab <- DGEList(combined_df, samples=combined_meta, group = combined_meta$modality)
-
-# Define the design matrix for the model: Add modality to the model to account for matched design
-design <- model.matrix(~sample_id + modality, data = y.ab$samples)
-
-# Estimate NB and QL dispersion
-y.ab <- estimateDisp(y.ab, design, trend="none")
-summary(y.ab$common.dispersion)
-
-plotBCV(y.ab, cex=1)
-
-fit.ab <- glmQLFit(y.ab, design, robust=TRUE, abundance.trend=FALSE)
-
-summary(fit.ab$var.prior)
-summary(fit.ab$df.prior)
-
-plotQLDisp(fit.ab, cex=1)
-
-# Test for differential abundance of cell types 
-res <- glmQLFTest(fit.ab, coef=ncol(design))
-
-summary(decideTests(res))
-DA <- topTags(res)$table
-
-DA$celltype <- rownames(DA)
-DA$sign <- DA$FDR<0.05
-DA
-
-# Volcano plot
-ggplot(DA) + geom_point(aes(logFC, -log10(FDR), color = sign)) +
-  geom_label_repel(aes(logFC, -log10(FDR), label = celltype)) + 
-  theme_classic()
-
-# MA plot
-(p <- ggplot(DA) + geom_abline(intercept = 0, slope = 0, color = "dark red", lwd = 3) +
-  geom_point(aes(logCPM, logFC), size = 7) +
-  geom_point(aes(logCPM, logFC, color = sign), size = 5) +
-  geom_label_repel(aes(logCPM, logFC, label = celltype), size = 7) + 
-  scale_color_manual(values = c("TRUE" = "dark green", "FALSE" = "white"), 
-                     name = "Significance") + 
-  ylab(c("log2 Fold Change")) + xlab("log2 CPM") +
-  ylim(c(-1, 1)) +
-  theme_classic(base_size = 25))+
-  theme(legend.position = "none")
-
-ggsave(filename = "output/Figure_5/Figure_5B.pdf", plot = p, width = 9, height = 6)
-
-IMC_dat <- as.data.frame(unclass(abundances_IMC))
-IMC_dat <- IMC_dat %>%
-  mutate(celltype = rownames(IMC_dat)) %>%
-  pivot_longer(cols = -celltype) %>%
-  mutate(tech = "IMC")
-mIF_dat <- as.data.frame(unclass(abundances_IF))
-mIF_dat <- mIF_dat %>%
-  mutate(celltype = rownames(mIF_dat)) %>%
-  pivot_longer(cols = -celltype) %>%
-  mutate(tech = "mIF")
-
-dat <- rbind(IMC_dat,mIF_dat)
-dat %>%
-  ggplot(aes(x=celltype,y = log2(value),fill = as.factor(tech)))+
-  geom_boxplot()+
-  geom_jitter(position = position_jitterdodge())+
-  theme_bw()
-dat %>%
-  group_by(name) %>%
-  mutate(total_cells = sum(value)) %>%
-  ggplot(aes(x = tech,y = total_cells))+
-  geom_boxplot( )
-
-# some sanity checks
-#test <- sce_mIF[,grepl("68868",sce_mIF$sample_id) & sce_mIF$ROI == "005"]
-#colnames(test) <- paste0(test$cell.ID)
-#dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CK", color.var = "matched_celltype")
-#test <- sce_imc[,grepl("75371",sce_imc$sample_id)]
-#dittoSeq::dittoScatterPlot(test,x.var = "CD15",y.var = "CarbonicAnhydrase", color.var = "matched_celltype", assay.x = "exprs", assay.y = "exprs")
-#plotSpatial(test, img_id = "sample_id",node_color_by = "celltype")+
-#  scale_color_manual(values = metadata(test)$color_vectors$celltype)
-```
-
-## Cell phenotype correlation
-
-```{r}
-# Match cell types
-cur_mIF <- colData(sce_mIF)
-cur_IMC <- colData(sce_imc)
-
-cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
-cur_mIF$matched_celltype <- as.factor(cur_mIF$matched_celltype)
-cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
-cur_IMC$matched_celltype <- as.factor(cur_IMC$matched_celltype)
-
-frac_IMC <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-frac_mIF <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, matched_celltype, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-combined <- left_join(frac_IMC, frac_mIF, by=c("sample_id", "matched_celltype"))
-combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-"))
-
-(p_B <- ggplot(combined[combined$matched_celltype == "B",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.3)) + xlim(c(0, 0.3)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("B cells") +
-  coord_fixed())
-
-(p_BnT <- ggplot(combined[combined$matched_celltype == "BnT",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.4)) + xlim(c(0, 0.4)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("BnT cells") +
-  coord_fixed())
-
-(p_T <- ggplot(combined[combined$matched_celltype == "T",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.6)) + xlim(c(0, 0.6)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("T cells") +
-  coord_fixed())
-
-(p_Mac <- ggplot(combined[combined$matched_celltype == "MacCD163",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.3)) + xlim(c(0, 0.3)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("Macrophages") +
-  coord_fixed())
-
-(p_DC <- ggplot(combined[combined$matched_celltype == "DC",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.2)) + xlim(c(0, 0.2)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("DC") +
-  coord_fixed())
-
-(p_Neutro <- ggplot(combined[combined$matched_celltype == "Neutrophil",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.2)) + xlim(c(0, 0.2)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("Neutrophils") +
-  coord_fixed())
-
-(p_Tumor <- ggplot(combined[combined$matched_celltype == "Tumor",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.8)) + xlim(c(0, 0.8)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("Tumor") +
-  coord_fixed())
-
-(p_other <- ggplot(combined[combined$matched_celltype == "other",]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 0.7)) + xlim(c(0, 0.7)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("Other cells") +
-  coord_fixed())
-```
-# image based intensity correlation of CD11c
-
-```{r}
-exp_IMC <- as.data.frame(t(assay(sce_imc,"exprs")))
-exp_mIF <- as.data.frame(t(assay(sce_mIF,"exprs")))
-exp_IMC$sample_id <- sce_imc$sample_id
-exp_mIF$sample_id <- sce_mIF$sample_id
-exp_mIF$matched_celltype <- sce_mIF$matched_celltype
-
-mean_IMC <- exp_IMC %>%
-  group_by(sample_id) %>%
-  summarise(mean_CD11c_IMC = mean(CD11c))
-mean_mif <- exp_mIF %>%
-  group_by(sample_id) %>%
-  mutate(CD11c = ifelse(is.infinite(CD11c),0,CD11c)) %>%
-  summarise(mean_CD11c_mIF = mean(CD11c))
-
-mean_dat <- left_join(mean_IMC,mean_mif,"sample_id")
-
-x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF,na.action= "na.exclude")
-p1<- mean_dat %>%
-  ggplot(aes(x = mean_CD11c_IMC,mean_CD11c_mIF))+
-  geom_point()+
+cols <-tol(n=9)
+names(cols) <- dat$method
+p <- dat %>%
+  ggplot(aes(x = factor(method, levels = dat$method),y = MacroF1,fill = method))+
+  geom_bar(stat = "identity")+
+  scale_fill_manual(values = cols)+
   theme_bw()+
-  ggtitle(paste0("IFQuant mIF pearson's r: ",round(x$estimate, digits = 3)))
-p1
-# steinbock
-mif_steinbock <- readRDS("O:/projects/immucan/processed_data/Panel_1/2022_WORKFLOW/mIF/old/steinbock/Rout/sce.rds")
+  xlab("Method")+
+  theme(legend.position = "none",
+        panel.grid.major.x = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        axis.text.y = element_text(size = 10))
 
-exp_mIF_st <- as.data.frame(t(assay(mif_steinbock,"exprs")))
-exp_mIF_st$sample_id <- mif_steinbock$sample_id
-mean_mif <- exp_mIF_st %>%
-  group_by(sample_id) %>%
-  summarise(mean_CD11c_mIF = mean(CD11c))
+p
 
-mean_dat <- left_join(mean_IMC,mean_mif,"sample_id")
-
-x <- cor.test(mean_dat$mean_CD11c_IMC,mean_dat$mean_CD11c_mIF)
-p2 <- mean_dat %>%
-  ggplot(aes(x = mean_CD11c_IMC,mean_CD11c_mIF))+
-  geom_point()+
-  theme_bw()+
-  ggtitle(paste0("steinbock mIF pearson's r: ",round(x$estimate, digits = 3)))
-
-cowplot::plot_grid(p1, p2)
-test <- t(assay(sce_mIF, "exprs"))
-
+ggsave(plot = p,filename =  "output/Figure_5/Figure_5B_Benchmark.pdf",device = "pdf",width = 5,height = 3)
 ```
 
+# TPR and FPR
+We will load the confusion matrices from each model and caluclate TPR and FPR and plot them as boxplots
 
-## CD20 patch and tumor patch correlation
+The data can be obtained here: https://github.com/dav3794/IMC-models
 
 ```{r}
-cur_mIF <- colData(sce_mIF)
-cur_IMC <- colData(sce_imc)
+XGB <- read_tsv("D:/Git/IMC-models/models/Baselines/xgb_predictions.tsv")
+RF <- read_tsv("D:/Git/IMC-models/models/Baselines/rf_predictions.tsv")
+MLP <- read_tsv("D:/Git/IMC-models/models/Baselines/mlp_predictions.tsv")
+LR <- read_tsv("D:/Git/IMC-models/models/Baselines/logreg_predictions.tsv")
+Stellar <- read_tsv("D:/Git/IMC-models/models/Stellar/stellar_predictions_unified_columns.tsv")
+Celesta <- read_csv("D:/Git/IMC-models/models/Celesta/celesta_predictions_bis_unifified_columns.txt")
+Astir <- read_tsv("D:/Git/IMC-models/models/Astir/astir_predictions_unified_columns.tsv")
+Astir <- Astir %>%
+  mutate(predicted_label = ifelse(predicted_label == "Other","Unknown",predicted_label))
+Starling <- read_tsv("D:/Git/IMC-models/models/Starling/starling_predictions.tsv")
 
-cur_mIF$sample_id <- as.factor(cur_mIF$sample_id)
-cur_mIF$TLS.ID <- as.factor(!is.na(cur_mIF$TLS.ID))
-cur_mIF$tissue.type <- as.factor(cur_mIF$tissue.type == "tumor")
-cur_IMC$sample_id <- as.factor(cur_IMC$sample_id)
-cur_IMC$CD20_patches <- as.factor(!is.na(cur_IMC$CD20_patches))
-cur_IMC$tumor_patches <- as.factor(cur_IMC$tumor_patches)
-
-frac_IMC_TLS <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, CD20_patches, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-frac_mIF_TLS <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, TLS.ID, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-frac_IMC_tumor <- cur_IMC %>% as_tibble() %>%
-  group_by(sample_id, tumor_patches, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-frac_mIF_tumor <- cur_mIF %>% as_tibble() %>%
-  group_by(sample_id, tissue.type, .drop = FALSE) %>%
-  summarize(count = n()) %>%
-  mutate(frac = count/sum(count))
-
-combined_TLS <- left_join(frac_IMC_TLS, frac_mIF_TLS, by = join_by("sample_id", CD20_patches == TLS.ID))
-combined_TLS$patient_id <- sub("-", "", str_extract(combined_TLS$sample_id, "[0-9]{8}-"))
-
-combined_tumor <- left_join(frac_IMC_tumor, frac_mIF_tumor, by = join_by("sample_id", tumor_patches == tissue.type))
-combined_tumor$patient_id <- sub("-", "", str_extract(combined_tumor$sample_id, "[0-9]{8}-"))
-
-(p_TLS <- ggplot(combined_TLS[combined_TLS$CD20_patches == TRUE,]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 1)) + xlim(c(0, 1)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("CD20 patches") +
-  coord_fixed())
-
-(p_tumor <- ggplot(combined_tumor[combined_tumor$tumor_patches == TRUE,]) +
-  stat_smooth(aes(frac.x, frac.y, color = patient_id), alpha = 0.5, se = FALSE, method='lm', formula = y~x, fullrange=FALSE, geom = "line", lwd = 1.5) + 
-  geom_smooth(aes(frac.x, frac.y), se = TRUE, method='lm', formula = y~x, fullrange=TRUE, lwd = 1.5) + 
-  geom_point(aes(frac.x, frac.y, color = patient_id), size = 3) + 
-  geom_abline(slope = 1, intercept = 0, color = "dark red", lwd = 1.5) +
-  theme_classic(base_size = 20) + xlab("") + ylab("") + 
-  scale_color_manual(values = c(metadata(sce_imc)$color_vectors$ROIs, metadata(sce_imc)$color_vectors$patient_id)) +
-  ylim(c(0, 1)) + xlim(c(0, 1)) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..eq.label..), label.x.npc = 0, label.y.npc = 1, size = 10) +
-  stat_regline_equation(aes(frac.x, frac.y, label = ..rr.label..), label.x.npc = 0, label.y.npc = 0.9, size = 10) +
-  theme(legend.position = "none",
-        axis.text = element_text(size = 20)) +
-  ggtitle("Tumor patches") +
-  coord_fixed())
-
-p_final <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, p_TLS, p_tumor, nrow = 2, ncol = 5) 
-
-ggsave(filename = "output/Figure_5/Figure_5C.pdf", plot = p_final, width = 30, height = 15)
+dat <- list(XGB,RF,MLP,LR,Stellar,Celesta,Astir,Starling)
+names(dat) <- c("XGB","RF","MLP","LR","Stellar","Celesta","Astir","Starling")
 ```
 
-# Spatial comparison
+clean the data
 
-## Mergin of data
-
-```{r prepare-data}
-# Prepare mIF data
-cur_mIF <- sce_mIF
-colData(cur_mIF) <- colData(cur_mIF)[,c("sample_id", "patient_id", "nucleus.x", "nucleus.y", "matched_celltype")]
-cur_mIF$Pos_X <- cur_mIF$nucleus.x
-cur_mIF$Pos_Y <- cur_mIF$nucleus.y
-
-cur_mIF$Pos_X <- cur_mIF$Pos_X * 0.4962
-cur_mIF$Pos_Y <- cur_mIF$Pos_Y * 0.4962
-
-cur_mIF$nucleus.x <- NULL
-cur_mIF$nucleus.y <- NULL
-
-rowData(cur_mIF) <- NULL
-assays(cur_mIF) <- list()
-metadata(cur_mIF) <- list()
-
-rownames(cur_mIF) <- NULL
-
-colPairs(cur_mIF) <- NULL
-cur_mIF$modality <- "mIF"
-
-# Prepare IMC data
-cur_IMC <- sce_imc
-colData(cur_IMC) <- colData(cur_IMC)[,c("sample_id", "patient_id", "matched_celltype", "Pos_X", "Pos_Y")]
-
-rowData(cur_IMC) <- NULL
-assays(cur_IMC) <- list()
-metadata(cur_IMC) <- list()
-
-rownames(cur_IMC) <- NULL
-reducedDims(cur_IMC) <- NULL
-colPairs(cur_IMC) <- NULL
-cur_IMC$modality <- "IMC"
-
-# Merge data
-all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
-all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
-```
-
-## Lcross based comparison
-
-```{r laod-libraries, message=FALSE}
-library(sf)
-library(spatstat)
-```
-
-```{r Lcross}
-# Example image
-cur_sce <- all_sce[,all_sce$sample_id == "IMMUcan_Batch20210921_10082495-SPECT-VAR-TIS-01-IMC-01_004"]
-cur_sce <- cur_sce[,cur_sce$matched_celltype == "Tumor"]
-
-plotSpatial(cur_sce, node_color_by = "modality", img_id = "sample_id", flip_y = TRUE)
-
-# Create multipoint pattern
-cur_ppp <- ppp(x = cur_sce$Pos_X, y = cur_sce$Pos_Y, 
-               xrange = c(0, max(cur_sce$Pos_X)), yrange = c(0, max(cur_sce$Pos_Y)),
-               marks = factor(cur_sce$modality, levels = c("IMC", "mIF")))
-
-plot(cur_ppp)
-
-miplot(cur_ppp)
-#plot(frypoints(cur_ppp))
-
-cur_L <- Lcross(cur_ppp, "IMC", "mIF")
-
-plot(cur_L)
-
-cur_L_inhom <- Lcross.inhom(cur_ppp, "IMC", "mIF")
-
-plot(cur_L_inhom)
-
-cur_env <- envelope(cur_ppp, Lcross, i = "mIF", j = "IMC", fix.n = TRUE, fix.marks = TRUE)
-
-plot(cur_env)
-
-cur_env <- envelope(cur_ppp, Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
-
-plot(cur_env)
-
-cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
-cur_test <- dclf.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
-
-cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE, alternative = "greater")
-
-cur_test <- mad.sigtrace(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
-
-plot(cur_test)
-
-cur_test <- mad.progress(cur_ppp, fun = Lcross, i = "IMC", j = "mIF", fix.n = TRUE, fix.marks = TRUE)
-
-plot(cur_test)
-
-cur_env_inhom <- envelope(cur_ppp, Lcross.inhom, i = "IMC", j = "mIF")
-
-plot(cur_env_inhom)
-
-cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF", rinterval = c(0, 100))
-```
-
-
-```{r automatic}
-set.seed(12345)
-out <- lapply(unique(all_sce$sample_id), function(x){
-  cur_sce <- all_sce[,all_sce$sample_id == x]
-  cur_out <- lapply(unique(cur_sce$matched_celltype), function(y){
-    cur_sce_2 <- cur_sce[,cur_sce$matched_celltype == y]
-    
-    if (sum(cur_sce_2$modality == "IMC") < 10 | sum(cur_sce_2$modality == "mIF") < 10) {
-      return(NULL)
-    }
-    
-    cur_ppp <- ppp(x = cur_sce_2$Pos_X, y = cur_sce_2$Pos_Y, 
-               xrange = c(0, max(cur_sce_2$Pos_X)), yrange = c(0, max(cur_sce_2$Pos_Y)),
-               marks = factor(cur_sce_2$modality, levels = c("IMC", "mIF")))
-    
-    cur_L <- Lcross(cur_ppp, i = "IMC", j = "mIF")
-    cur_L_inhom <- Lcross.inhom(cur_ppp, i = "IMC", j = "mIF")
-    
-    cur_test <- mad.test(cur_ppp, fun = Lcross, i = "IMC", j = "mIF")
-    cur_test_inhom <- mad.test(cur_ppp, fun = Lcross.inhom, i = "IMC", j = "mIF")
-    
-    return(list(test = cur_test, test_inhom = cur_test_inhom, 
-                L = cur_L, L_inhom = cur_L_inhom))
-  })
-  
-  names(cur_out) <- unique(cur_sce$matched_celltype)
-  
-  return(cur_out)
+```{r}
+lapply(dat, colnames)
+dat <- lapply(dat, function(x){
+  x <- x[,c("predicted_label","true_label")]
+  return(x)
 })
 
-names(out) <- unique(all_sce$sample_id)
+# get confusion matrices
+library(caret)
+# here we define all possible names that the cell types have
+all_levels <- unique(unlist(lapply(dat,function(x){
+  x$predicted_label
+})))
+cms <- lapply(dat, function(x){
+  cm <- confusionMatrix(data = factor(x$predicted_label, levels = all_levels), reference = factor(x$true_label, levels = all_levels), mode = "everything")
+  y <- as.data.frame(cm$byClass)
+  return(y)
+})
+
+# add the column for the method
+dat <- imap(cms, ~ mutate(.x, method = .y))
+
+cur_dat <- do.call(rbind,dat)
+cur_dat <- cur_dat %>%
+  mutate(cell_type = str_split_i(rownames(cur_dat),": ",2))
+
+p1<- cur_dat %>%
+  ggplot(aes(x = cell_type,y = 1- Specificity)) +
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(aes(x = cell_type,y = 1- Specificity, col= method),position = position_jitter(width = .2) ,size= 2)+
+  scale_color_manual(values = cols)+
+  theme_bw()+
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14),
+        axis.title.y = element_text(size = 16),
+        axis.title.x = element_text(size = 16),
+        legend.text = element_text(size = 14))+
+  coord_flip()+
+  ylab("FPR")
+
+
+p2 <- cur_dat %>%
+  ggplot(aes(x = cell_type,y = Sensitivity)) +
+  geom_boxplot(outliers = FALSE)+
+  geom_jitter(aes(x = cell_type,y = Sensitivity, col= method), position = position_jitter(width = .2), size= 2)+
+  scale_color_manual(values = cols)+
+  theme_bw()+
+  theme(legend.position = "none",
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_blank(),
+        axis.title.x = element_text(size = 16),
+        axis.title.y = element_blank(),
+        legend.text = element_text(size = 14))+
+  coord_flip()+
+  ylab("TPR")
+
+p <- p1 + p2 + patchwork::plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+
+p
+
+ggsave(filename = "output/Figure_5/Figure_5C_TPR_and_FPR.pdf",
+       plot = p,
+       device = "pdf",
+       width = 6,
+       height = 7)
+```
+
+# subclustering
+
+```{r}
+sce <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/IMC/Rout/sce.rds")
+
+table(sce$celltype)
+```
+
+```{r determine markers for clustering}
+markers <- list()
+# we will not subcluters "uncertain" cells as the merging will be very difficult. we may inspect this at a later time point again
+
+#functional markers for T cells
+markers[["CD4"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|CD45RA|CD45RO",rownames(sce))]
+
+markers[["CD8"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|PD1|CD7|GrzB|ICOS|Ki67|TCF7|CD45RA|CD45RO",rownames(sce))]
+
+markers[["Treg"]] <- rownames(sce)[grepl(pattern = "CD27|LAG3|ICOS|Ki67|TCF7",rownames(sce))]
+
+# B and BnT cell markers
+markers[["BnT"]] <- rownames(sce)[grepl(pattern = "CD8|CD4|CD27|CD45RA|CD45RO|LAG3|PD1|CD7|GrzB|FOXP3|ICOS|Ki67|TCF7",rownames(sce))]
+
+markers[["B"]] <- rownames(sce)[grepl(pattern = "CD27|CD40|Ki67",rownames(sce))]
+
+# myeloid markers
+markers[["MacCD163"]] <- rownames(sce)[grepl(pattern = "CD68|CD11c|PDL1|VISTA|CD40|CD14|CD206|Ido1|CD16",rownames(sce))]
+
+# we will also use CD20 for DCs to detect those DCs that sit in TLS
+markers[["DC"]] <- rownames(sce)[grepl(pattern = "PDL1|VISTA|CD40|Ido1|CD20|CD206|CD16|Ki67",rownames(sce))]
+
+# we will also use E-cad for HLADR cells as there may still be tumor cells in these cells
+markers[["HLADR"]] <- rownames(sce)[grepl(pattern = "CD11b|CD163|CD68|CD11c|PDL1|ICOS|VISTA|TIM3|CD40|CD14|CD206|CD163|HLADR|Ecad",rownames(sce))]
+
+# NK markers
+markers[["NK"]] <- rownames(sce)[grepl(pattern = "CD7|GrzB|CD16|CD45RA|CD45RO",rownames(sce))]
+
+# Neutrophil markers
+markers[["Neutrophil"]] <- rownames(sce)[grepl(pattern = "MPO|PDL1|VISTA",rownames(sce))]
+
+# pDC markers
+markers[["pDC"]] <- rownames(sce)[grepl(pattern = "CD303|CD4|GrzB|CD45RA|CD45RO|CD27",rownames(sce))]
+
+# Plasma cell markers
+markers[["plasma"]] <- rownames(sce)[grepl(pattern = "CD38|TCF7|CD27|CD45RA|CD45RO|",rownames(sce))]
+
+# stroma markers
+markers[["Mural"]] <- rownames(sce)[grepl(pattern = "PDGFR|SMA",rownames(sce))]
+
+# tumor markers
+markers[["Tumor"]] <- rownames(sce)[grepl(pattern = "HLADR|CarbonicAnhydrase|cleavedPARP|PDL1|IDO1|CD15|Ki67|Ido|B2M",rownames(sce))]
+
+good_markers <- rownames(sce)[!grepl("DNA|Histone",rownames(sce))]
 ```
 
 ```{r}
-cur_summary <- unlist(unlist(out, recursive = FALSE), recursive = FALSE)
+dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "celltype")+
+  scale_color_manual(values = metadata(sce)$color_vectors$celltype)
 
-cur_p <- lapply(cur_summary[grepl("test$", names(cur_summary))],
-                   function(x){
-                     return(x$p.value)
-                   })
-
-cur_p_inhom <- lapply(cur_summary[grepl("test_inhom$", names(cur_summary))],
-                   function(x){
-                     return(x$p.value)
-                   })
-
-cur_area <- lapply(cur_summary[grepl("L$", names(cur_summary))],
-                   function(x){
-                     return(sum(x$iso - x$theo))
-                   })
-
-cur_area_inhom <- lapply(cur_summary[grepl("L_inhom$", names(cur_summary))],
-                   function(x){
-                     return(sum(x$iso - x$theo))
-                   })
-
-# Check that names match
-all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_p_inhom), "\\.", simplify = TRUE)[,1])
-all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area), "\\.", simplify = TRUE)[,1])
-all.equal(str_split(names(cur_p), "\\.", simplify = TRUE)[,1], str_split(names(cur_area_inhom), "\\.", simplify = TRUE)[,1])
-
-final <- data.frame(p = unlist(cur_p),
-                    p_inhom = unlist(cur_p_inhom),
-                    area = unlist(cur_area),
-                    area_inhom = unlist(cur_area_inhom),
-                    sample_id = sub("_", "", str_extract(names(cur_p), "_[0-9]{8}")),
-                    celltype = str_split(names(cur_p), "\\.", simplify = TRUE)[,2])
-
-set.seed(123)
-p <- ggplot(final) +
-  geom_boxplot(aes(celltype, area), outlier.shape = NA) +
-  geom_jitter(aes(celltype, area, color = p <= 0.01 & area > 0)) +
-  geom_abline(slope = 0, intercept = 0, color = "dark red", linewidth = 1) +
-  scale_color_manual(values = c(`TRUE` = "dark blue", `FALSE` = "red"), name = "Significant and larger than 0") +
-  theme_classic(base_size = 20) + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  xlab("") + ylab("Area under L curve")
-
-p
-
-ggsave(filename = "output/Figure_5/Figure_5D.pdf", plot = p, width = 12, height = 7)
-
-final[final$p > 0.01 | final$area < 0,]
 ```
 
-## Differential connectivity analysis
+```{r}
+library(scran)
+library(scater)
+library(bluster)
 
-Run `spicyR`
+param <- data.frame(celltype = c("B","CD4", "BnT","CD8","DC","MacCD163"),
+                    k = c(80L,40L,50L, 40L, 40L, 50L),
+                    type = "rank")
 
-```{r, fig.height=6, fig.width=8}
-library(spicyR)
+# clustering
+cur_sces <- lapply(param$celltype, function(x){
 
-"sample_id_global" %in% colnames(colData(all_sce))
-sum(is.na(colData(all_sce)$sample_id))
-sum(is.na(colData(all_sce)$matched_celltype))
-sum(is.na(colData(all_sce)$Pos_X))
-sum(is.na(colData(all_sce)$Pos_Y))
+  cur_sce <- sce[,sce$celltype %in% x]
 
-test <- as.data.frame(colData(all_sce))
+  set.seed(220620)
+  clusters <- clusterCells(cur_sce[markers[[x]],], 
+                           assay.type = "exprs", 
+                           BLUSPARAM = SNNGraphParam(k=param[param$celltype == x,"k"], 
+                                                     cluster.fun = "louvain",
+                                                     type = param[param$celltype == x,"type"]))
 
 
-spicyTest <- spicy(
-  cells=all_sce,
-  condition = "modality",
-  subject = "sample_id",
-  spatialCoordsCols = c("Pos_X", "Pos_Y"),
-  window = "square",
-  cellTypeCol = "matched_celltype",
-  imageIDCol = "sample_id_global",
-  Rs = c(20, 50, 100, 150)
+  cur_sce$cluster <- paste0(x,"_",clusters)
+
+  cur_sce <-  runUMAP(cur_sce, subset_row =markers[[x]], exprs_values = "exprs",name = "UMAP_subcluster") 
+  return(cur_sce)
+
+})
+
+names(cur_sces) <- param$celltype
+for(i in 1:6){
+  print(dittoSeq::dittoDimPlot(cur_sces[[i]],var = "cluster",reduction.use = "UMAP_subcluster"))
+}
+
+for(i in param$celltype){
+  mean_sce <- aggregateAcrossCells(cur_sces[[i]],
+                                   ids = cur_sces[[i]]$cluster,
+                                   statistics = "mean")
+  assay(mean_sce, "exprs") <- asinh(counts(mean_sce))
+  colnames(mean_sce) <- mean_sce$cluster
+  print(dittoSeq::dittoHeatmap(mean_sce,
+                               annot.by = "cluster",
+                               genes = markers[[i]],
+                               heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+                               breaks = seq(-3, 3, length.out = 101)))
+}
+
+cur_sces <- lapply(cur_sces, function(x){
+  reducedDim(x, "UMAP_subcluster") <- NULL
+  return(x)
+})
+
+sce_2 <- do.call(cbind, cur_sces)
+
+sce$cluster <- NA
+sce <- sce[,!sce$celltype %in% c("B","CD4","BnT","CD8","DC","MacCD163")]
+
+sce <- cbind(sce,sce_2)
+sce[,is.na(sce$cluster)]$cluster <- sce[,is.na(sce$cluster)]$celltype
+```
+
+# name clusters
+```{r}
+ct <- unique(sce$cluster)
+ct <- c(ct[1:9],c("B_act","B_memory","B","B","B_cycling","B","CD4_other","CD4_cycling","CD4_all_low","CD4_eff","CD4_cm","CD4_act","CD8_cm","BnT","BnT","CD4_fh","B_act","CD4_cm","CD4_cm","CD8_stem-like","CD8_pre-ex","CD8_ex","CD8_all_low","CD8_other","DC_suppressive", "DC_other","DC_cycling","DC_CD206","GCDC", "DC_all_low","Mac_suppressive","Mac_CD14high","Mac_CD206","Mac_other","Mac_PDL1", "Mac_all_low"))
+names(ct) <- unique(sce$cluster)
+
+sce$subclusters <- ct[sce$cluster]
+unique(sce$subclusters)
+```
+
+```{r}
+library(pals)
+cell_types <- sort(unique(sce$subclusters))
+
+names(cell_types) <- cell_types
+cell_types[grepl("CD8",cell_types)] <- c("darkorchid2","darkorchid4","darkmagenta","darkviolet","magenta4","mediumorchid1")
+cell_types[grepl("CD4",cell_types)] <- c("deeppink1","deeppink2","deeppink","magenta", "deeppink3", "magenta2","violetred1")
+cell_types[grepl("Mac",cell_types)] <- c("green","green1", "green2", "green3", "chartreuse1", "yellowgreen")
+cell_types[grepl("^DC",cell_types)] <- c("green4","darkolivegreen4","chartreuse4","springgreen4","seagreen3" )
+cell_types[grepl("GCDC",cell_types)] <- c("lightseagreen")
+cell_types[grepl("Tumor",cell_types)] <- c("sienna4")
+cell_types[grepl("B",cell_types)] <- c("red","firebrick3","red4","brown2","brown")
+cell_types[grepl("BnT",cell_types)]<- c("#F4800C")
+cell_types[grepl("B_act",cell_types)] <- c("firebrick3")
+cell_types["plasma"] <- "goldenrod1"
+cell_types["Treg"] <- "maroon3"
+cell_types["HLADR"] <- "darkgreen"
+cell_types["Neutrophil"] <- "skyblue3"
+cell_types["NK"] <- "yellow2"
+cell_types["pDC"] <- "deepskyblue"
+cell_types["Mural"] <- "tomato"
+cell_types["undefined"] <- "gray75"
+
+col_list <- list(CellType = cell_types)
+metadata(sce)$color_vectors$celltype
+pie(rep(1,length(metadata(sce)$color_vectors$celltype)),col = metadata(sce)$color_vectors$celltype, labels = names(metadata(sce)$color_vectors$celltype))
+pie(rep(1,length(col_list$CellType)),col =col_list$CellType,labels = names(col_list$CellType))
+```
+
+
+```{r, fig.height=13, fig.width=16}
+dittoSeq::dittoDimPlot(sce,reduction.use = "UMAP",var = "subclusters")
+
+mean_sce <- aggregateAcrossCells(sce,
+                                 ids = sce$subclusters,
+                                 statistics = "mean")
+assay(mean_sce, "exprs") <- asinh(counts(mean_sce))
+colnames(mean_sce) <- mean_sce$subclusters
+mean_sce <- mean_sce[,order(mean_sce$celltype)]
+
+# scaled heatmap
+pdf(file = "output/Figure_5/Figure_5D_subclusters_myeloid_lymphoid_scaled.pdf",width = 11, height=8)
+dittoSeq::dittoHeatmap(mean_sce,
+                       annot.by = c( "subclusters", "celltype"),
+                       genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
+                       heatmap.colors = colorRampPalette(c("dark blue", "white", "dark red"))(100),
+                       breaks = seq(-3, 3, length.out = 101),
+                       show_colnames = TRUE,
+                       fontsize = 7,
+                       annotation_colors =  list(subclusters = col_list$CellType,
+                                                 celltype = metadata(sce)$color_vectors$celltype))
+dev.off()
+
+# calculate normalized counts for visualization
+norm_counts <- t(apply(assay(mean_sce, "counts"), 1, function(x)(x-min(x))/(quantile(x,0.99)-min(x))))
+normalized_count <- t(apply(norm_counts,1,function(x) pmin(x,1)))
+assay(mean_sce,"normalized") <- normalized_count
+
+#pdf(file = "output/Figure_5/subclusters_myeloid_lymphoid.pdf",width = 15, height=12)
+dittoSeq::dittoHeatmap(mean_sce,
+                       annot.by = c("cluster", "celltype"),scale = "none",assay = "exprs",
+                       genes = rownames(sce)[!grepl("Histone|DNA", rownames(sce))],
+                       heatmap.colors = viridis(100),
+                       annotation_colors =  list(subclusters = col_list$CellType,
+                                                 celltype = metadata(sce)$color_vectors$celltype))
+#dev.off()
+
+
+```
+
+```{r, fig.height=10, fig.width=12}
+library(ComplexHeatmap)
+library(circlize)
+dat <- as.data.frame(colData(sce))
+
+use_channel <- rownames(sce)[!grepl("DNA|Histone", rownames(sce))]
+mean_sce <- aggregateAcrossCells(sce,
+                                 ids = sce$subclusters,
+                                 statistics = "mean",
+                                 use.assay.type = "counts",
+                                 subset.row = use_channel)
+
+assay(mean_sce,"exprs") <- asinh(counts(mean_sce))
+assay(mean_sce,"zscore") <- t(scale(t(assay(mean_sce,"exprs")),center = TRUE,scale = TRUE))
+
+norm_counts <- t(apply(assay(mean_sce, "counts"), 1, function(x)(x-min(x))/(quantile(x,0.999)-min(x))))
+normalized_count <- t(apply(norm_counts,1,function(x) pmin(x,1)))
+assay(mean_sce,"normalized") <- normalized_count
+
+
+# generate marker classes for visualization
+markers <- rownames(mean_sce)
+marker_type <- c("cell identity","cell identity","cell identity","cell identity","cell identity","functional","cell identity","cell identity","cell identity","functional","cell identity","cell identity","functional","cell identity","functional","cell identity","functional","functional","cell identity","functional","functional","functional","cell identity","cell identity","functional","cell identity","functional","functional","functional","functional","functional","cell identity","cell identity","cell identity","cell identity","functional","functional")
+names(markers) <- marker_type
+rowData(mean_sce)$marker_type <- marker_type
+
+row_anno <- data.frame(ids = mean_sce$subclusters,
+                       ncells = mean_sce$ncells)
+colnames(row_anno) <- c("CellType","ncells")
+
+col_fun <- colorRamp2(
+  breaks = c(-3, 0, 3),  # Corresponds to dark blue, white, dark red
+  colors = c("darkblue", "white", "darkred")
 )
 
+heatmap_body <- t(assay(mean_sce,"zscore"))
 
-(p <- signifPlot(
-  spicyTest, fdr = T,cutoff = 0.1
-))
-signifPlot(spicyTest,type = "", comparisonGroup = "IMC")
+p <- Heatmap((heatmap_body),
+             col = col_fun,
+             name = "zscore",
+             cluster_rows = FALSE,
+             clustering_method_rows = "ward.D2",
+             clustering_method_columns = "ward.D2",
+             heatmap_legend_param = list(
+    at = seq(-3, 3, 1),  # Explicitly set the legend tick positions
+    labels = seq(-3, 3, 1)  # Ensure correct labels
+  ))+
+       # column_split = rowData(mean_sce)$marker_type,
+      #  column_title = c("cell identity markers","functional markers"))+
+  
+  rowAnnotation(CellType = anno_simple(row_anno$CellType,border = TRUE,col =col_list$CellType))+
+  rowAnnotation(names = anno_text(row_anno$CellType,gp = gpar(fontsize=8)))+
+  rowAnnotation(n_cells = anno_barplot((row_anno$ncells)))
 
-topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
-
-spicyBoxPlot(results = spicyTest,
-             from = "T",
-             to = "T")
-
-spicyBoxPlot(results = spicyTest,
-             from = "MacCD163",
-             to = "MacCD163")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Neutrophil",
-             to = "other")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Neutrophil",
-             to = "other")
-
-spicyBoxPlot(results = spicyTest,
-             from = "MacCD163",
-             to = "Tumor")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Tumor",
-             to = "MacCD163")
-
-spicyBoxPlot(results = spicyTest,
-             from = "T",
-             to = "Tumor")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Tumor",
-             to = "T")
-
-ggsave(filename = "output/Figure_5/Figure_5E_new_2025Feb.pdf", plot = p, width = 7, height = 5)
-```
-
-Find example images:
-
-```{r, eval=FALSE}
-test1 <- spicyTest$df[spicyTest$df$modality == "IMC",]
-test2 <- spicyTest$df[spicyTest$df$modality == "mIF",]
-
-all.equal(sub("_IMC$", "", test1$imageID), sub("_mIF$", "", test2$imageID))
-
-final <- test1[,grepl("__", colnames(test1))] - test2[,grepl("__", colnames(test2))]
-
-test1[order(final[,"T__T"], decreasing = TRUE),c("imageID", "T__T")]
-
-test1[order(final[,"Neutrophil__other"], decreasing = FALSE),c("imageID", "T__T")]
-
-test1[order(final[,"MacCD163__MacCD163"], decreasing = TRUE),c("imageID", "T__T")]
-
-test1[order(final[,"MacCD163__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
-
-test1[order(final[,"T__Tumor"], decreasing = FALSE),c("imageID", "T__T")]
-```
-
-# spicyR without TLS images
-```{r, fig.height=6, fig.width=8}
-library(spicyR)
-
-remove <- unique(all_sce$sample_id)[grepl("_004|_008",unique(all_sce$sample_id))]
-
-spicyTest <- spicy(
-  all_sce[,!all_sce$sample_id %in% remove],
-  condition = "modality",
-  subject = "sample_id",
-  spatialCoords = c("Pos_X", "Pos_Y"),
-  window = "square",
-  cellType = "matched_celltype",
-  imageID = "sample_id_global",
-  Rs = c(20, 50, 100, 150)
-)
-
-
-(p <- signifPlot(
-  spicyTest, fdr = T,cutoff = 0.1
-)) 
-signifPlot(spicyTest,type = "", comparisonGroup = "IMC")
-
-topPairs(spicyTest, adj = "fdr", cutoff = 0.1)
-
-spicyBoxPlot(results = spicyTest,
-             from = "T",
-             to = "T")
-
-spicyBoxPlot(results = spicyTest,
-             from = "MacCD163",
-             to = "MacCD163")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Neutrophil",
-             to = "other")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Neutrophil",
-             to = "other")
-
-spicyBoxPlot(results = spicyTest,
-             from = "MacCD163",
-             to = "Tumor")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Tumor",
-             to = "MacCD163")
-
-spicyBoxPlot(results = spicyTest,
-             from = "T",
-             to = "Tumor")
-
-spicyBoxPlot(results = spicyTest,
-             from = "Tumor",
-             to = "T")
 p
-#ggsave(filename = "../output/Figure_5/Figure_5E_new.pdf", plot = p, width = 7, height = 5)
 ```
+
+

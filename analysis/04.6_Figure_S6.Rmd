@@ -1,110 +1,114 @@
 ---
 title: "Figure S6"
-output:
-  workflowr::wflow_html:
-    toc: false
-editor_options:
-  chunk_output_type: inline
+author: "Daniel Schulz"
+date: "2025-03-21"
+output: html_document
 ---
 
-Code to generate the plots of Figure S6.
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-Code to generate the plots of Figure 4.
+In this script we will only generate a figure from the analysis that was performed at Ewa Szczureks lab (here)[https://github.com/dav3794/IMC-models/blob/main/models/compare_results.ipynb]
 
-# set path
-the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
-mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S6"
-```
-
-## Read data
-
-```{r, message=FALSE}
-library(SingleCellExperiment)
 library(tidyverse)
-library(ggpubr)
-library(cowplot)
-library(imcRtools)
-
-sce_IMC <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
-sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
+library(ggplot2)
+library(pals)
+library(SingleCellExperiment)
 ```
 
-# Spatial comparison
+# TPR and FPR
+We will load the confusion matrices from each model and caluclate TPR and FPR and plot them as boxplots
 
-## Mergin of data
-
-```{r prepare-data}
-# Prepare mIF data
-cur_mIF <- sce_mIF
-colData(cur_mIF) <- colData(cur_mIF)[,c("sample_id", "patient_id", "nucleus.x", "nucleus.y", "matched_celltype", "tissue.type", "TLS.ID")]
-cur_mIF$Pos_X <- cur_mIF$nucleus.x
-cur_mIF$Pos_Y <- cur_mIF$nucleus.y
-
-cur_mIF$Pos_X <- cur_mIF$Pos_X * 0.4962
-cur_mIF$Pos_Y <- cur_mIF$Pos_Y * 0.4962
-
-cur_mIF$nucleus.x <- NULL
-cur_mIF$nucleus.y <- NULL
-
-rowData(cur_mIF) <- NULL
-assays(cur_mIF) <- list()
-metadata(cur_mIF) <- list()
-
-rownames(cur_mIF) <- NULL
-
-colPairs(cur_mIF) <- NULL
-cur_mIF$modality <- "mIF"
-
-# Prepare IMC data
-cur_IMC <- sce_IMC
-colData(cur_IMC) <- colData(cur_IMC)[,c("sample_id", "patient_id", "matched_celltype", "Pos_X", "Pos_Y")]
-cur_IMC$tissue.type <- c("stroma", "tumor")[as.numeric(sce_IMC$tumor_patches) + 1]
-cur_IMC$TLS.ID <- sce_IMC$CD20_patches
-
-rowData(cur_IMC) <- NULL
-assays(cur_IMC) <- list()
-metadata(cur_IMC) <- list()
-
-rownames(cur_IMC) <- NULL
-reducedDims(cur_IMC) <- NULL
-colPairs(cur_IMC) <- NULL
-cur_IMC$modality <- "IMC"
-
-# Merge data
-all_sce <- cbind(cur_IMC[1:6,], cur_mIF)
-all_sce$sample_id_global <- paste0(all_sce$sample_id, "_", all_sce$modality)
-```
-
-## Visualize celltypes between mIF and IMC
+The data can be obtained here: https://github.com/dav3794/IMC-models
 
 ```{r}
-if (!dir.exists("output/Figure_S6/")) dir.create("output/Figure_S6/")
+XGB <- read_tsv("D:/Git/IMC-models/models/Baselines/xgb_predictions.tsv")
+RF <- read_tsv("D:/Git/IMC-models/models/Baselines/rf_predictions.tsv")
+MLP <- read_tsv("D:/Git/IMC-models/models/Baselines/mlp_predictions.tsv")
+LR <- read_tsv("D:/Git/IMC-models/models/Baselines/logreg_predictions.tsv")
+Stellar <- read_tsv("D:/Git/IMC-models/models/Stellar/stellar_predictions_unified_columns.tsv")
+Celesta <- read_csv("D:/Git/IMC-models/models/Celesta/celesta_predictions_bis_unifified_columns.txt")
+Astir <- read_tsv("D:/Git/IMC-models/models/Astir/astir_predictions_unified_columns.tsv")
+Astir <- Astir %>%
+  mutate(predicted_label = ifelse(predicted_label == "Other","Unknown",predicted_label))
+Starling <- read_tsv("D:/Git/IMC-models/models/Starling/starling_predictions.tsv")
 
-p <- plotSpatial(all_sce[,all_sce$modality == "IMC"], 
-            node_color_by = "matched_celltype", 
-            ncols = 4, img_id = "sample_id",
-            node_size_fix = 0.04,) + 
-  theme(strip.text =  element_text(size=2))+
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
-  
+dat <- list(XGB,RF,MLP,LR,Stellar,Celesta,Astir,Starling)
+names(dat) <- c("XGB","RF","MLP","LR","Stellar","Celesta","Astir","Starling")
+```
 
-#ggsave(filename = "output/Figure_S6/FigS6_1.pdf", plot = p, width = 20, height = 49)
-ggsave(filename = "FigS6_1.png",path= output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+clean the data
 
-p <- plotSpatial(all_sce[,all_sce$modality == "mIF"], 
-            node_color_by = "matched_celltype", 
-            ncols = 4, img_id = "sample_id",
-            node_size_fix = 0.04) + 
-  theme(strip.text =  element_text(size=2))+
-  scale_color_manual(values = metadata(sce_IMC)$color_vectors$matched_celltype)
+```{r}
+lapply(dat, colnames)
+dat <- lapply(dat, function(x){
+  x <- x[,c("predicted_label","true_label")]
+  return(x)
+})
 
-#ggsave(filename = "output/Figure_S6/FigS6_2.pdf", plot = p, width = 20, height = 49)
-ggsave(filename = "FigS6_2.png",path= output, plot = p, device = "png",width = 210, height = 297, units = "mm", dpi = "print")
+# get confusion matrices
+library(caret)
+# here we define all possible names that the cell types have
+all_levels <- unique(unlist(lapply(dat,function(x){
+  x$predicted_label
+})))
+cms <- lapply(dat, function(x){
+  cm <- confusionMatrix(data = factor(x$predicted_label, levels = all_levels), reference = factor(x$true_label, levels = all_levels), mode = "everything")
+  y <- as.data.frame(cm$byClass)
+  return(y)
+})
+
+library(caret)
+
+#confusion matrix Astir
+cur_dat <- confusionMatrix(data = factor(dat$Astir$predicted_label, levels = sort(all_levels)),reference = factor(dat$Astir$true_label, levels = sort(all_levels)))
+cur_dat <- t(cur_dat$table)
+cur_dat <- round(cur_dat/rowSums(cur_dat),digits = 2)
+cur_dat <- as.data.frame(unclass(cur_dat))
+cur_dat <- cur_dat %>%
+  filter(!is.na(Unknown))
+
+
+pdf(file = "output/Figure_S6/confusion_matrix_Astir.pdf",width = 7, height = 7)
+pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Astir")
+dev.off()
+
+#confusion matrix Celesta
+cur_dat <- confusionMatrix(data = factor(dat$Celesta$predicted_label, levels = sort(all_levels)),reference = factor(dat$Celesta$true_label, levels = sort(all_levels)))
+cur_dat <- t(cur_dat$table)
+cur_dat <- round(cur_dat/rowSums(cur_dat),digits = 2)
+cur_dat <- as.data.frame(unclass(cur_dat))
+cur_dat <- cur_dat %>%
+  filter(!is.na(Unknown))
+
+pdf(file = "output/Figure_S6/confusion_matrix_Celesta.pdf",width = 7, height = 7)
+pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Celesta")
+dev.off()
+
+#confusion matrix Starling
+cur_dat <- confusionMatrix(data = factor(dat$Starling$predicted_label, levels = sort(all_levels)),reference = factor(dat$Starling$true_label, levels = sort(all_levels)))
+cur_dat <- t(cur_dat$table)
+cur_dat <- round(cur_dat/rowSums(cur_dat),digits = 2)
+cur_dat <- as.data.frame(unclass(cur_dat))
+cur_dat <- cur_dat %>%
+  filter(!is.na(Unknown))
+
+pdf(file = "output/Figure_S6/confusion_matrix_Starling.pdf",width = 7, height = 7)
+pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Starling")
+dev.off()
+
+#confusion matrix Stellar
+cur_dat <- confusionMatrix(data = factor(dat$Stellar$predicted_label, levels = sort(all_levels)),reference = factor(dat$Stellar$true_label, levels = sort(all_levels)))
+cur_dat <- t(cur_dat$table)
+cur_dat <- round(cur_dat/rowSums(cur_dat),digits = 2)
+cur_dat <- as.data.frame(unclass(cur_dat))
+cur_dat <- cur_dat %>%
+  filter(!is.na(Unknown))
+
+pdf(file = "output/Figure_S6/confusion_matrix_Stellar.pdf",width = 7, height = 7)
+pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Stellar")
+dev.off()
 ```
