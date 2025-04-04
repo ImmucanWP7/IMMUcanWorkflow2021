@@ -97,7 +97,7 @@ p <- cur_dat %>%
 
 p
 
-ggsave(filename = "FigS7_c.pdf",path= output, plot = p, width = 7, height = 5)
+ggsave(filename = "FigS7_B.pdf",path= output, plot = p, width = 7, height = 5)
 ```
 
 
@@ -142,7 +142,7 @@ out <- rbind(prop_IMC, prop_mIF)
   xlab("Modality") +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, "Patient ID"))
 p
-ggsave(filename = "FigS7_D.pdf",path=output, plot = p, height = 5, width = 17)
+ggsave(filename = "FigS7_C.pdf",path=output, plot = p, height = 5, width = 17)
 ```
 
 ```{r}
@@ -188,7 +188,7 @@ final_plot <- (p1 + p3 + p2 + p4) +
   patchwork::plot_layout(guides = "collect",ncol = 4) &  # Collect the legends
   theme(legend.position = "bottom")
 final_plot
-ggsave(filename = "FigS7_E.pdf",path=output, plot = final_plot, height = 5, width = 15)
+ggsave(filename = "FigS7_D.pdf",path=output, plot = final_plot, height = 5, width = 15)
 ```
 
 
