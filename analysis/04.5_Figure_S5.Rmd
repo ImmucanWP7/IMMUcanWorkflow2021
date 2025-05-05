@@ -303,18 +303,20 @@ p <- data.frame(cm$byClass) %>%
                  fill = class),
              shape = 21) + 
   scale_fill_manual(values = cell_types) + 
-  theme_bw() + 
-  scale_size(range = c(1,16))+
+  scale_size(range = c(1, 16)) +
+  guides(fill = guide_legend(override.aes = list(size = 5))) +
+  theme_bw() +
   ylab("Sensitivity (TPR)") +
-  xlab("1 - Specificity (FPR)")+
+  xlab("1 - Specificity (FPR)") +
   theme(axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.title.x = element_text(size = 14),
         legend.text = element_text(size = 14))
+
 p
 
-ggsave (filename = "Fig_S5C.pdf", plot = p, device = "pdf", path = output, width = 8, height = 6.5)
+ggsave (filename = "Fig_S5C.pdf", plot = p, device = "pdf", path = output, width = 7.5, height = 6.5)
 ```
 
 ```{r prediciton-probability-images-DCs-new-data, fig.width = 15}
