@@ -62,7 +62,7 @@ cur_files_2 <- list.files(paste0(mount_path,"mIF/data/whole_slide/"),
                           pattern = "cells_properties2_", full.names = TRUE)
 
 # Map between Lausanne and Zurich IDs
-cur_table <- read_csv(paste0(mount_path,"comparisons/sample_mapping.csv"))
+cur_table <- read_csv(paste0(mount_path,"mIF/sample_mapping.csv"))
 
 # Read in data
 cur_sces <- lapply(seq_along(cur_files), function(x){
@@ -315,18 +315,5 @@ mcols(images) <- DataFrame(image = names(images),
                           sample_id = sub(".tiff", "", names(images)))
 
 saveRDS(images, paste0(mount_path,"mIF/Rout/images.rds"))
-```
-
-# Save out data
-
-For cell type comparison I will now write out the x/y coordinates and cell labels
-for the mIF data.
-
-```{r}
-for (i in unique(sce$sample_id)) {
-    cur_sce_mIF <- sce[,sce$sample_id == i]
-   
-    write_tsv(as.data.frame(colData(cur_sce_mIF)), paste0(mount_path,"comparisons/mIF/cells/", i, ".tsv"))   
-}
 ```
 
