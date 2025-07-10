@@ -1,5 +1,5 @@
 ---
-title: "Figure S3"
+title: "Figure S2"
 output:
   workflowr::wflow_html:
     toc: false
@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S3/"
+output <- "output/Figure_S2/"
 ```
 
 ## libraries
@@ -55,7 +55,7 @@ p <- dittoDimPlot(cyto_sce, var = "Activation_status",
                   reduction.use = "UMAP", size = 0.25,
                   do.label = FALSE)
 p
-ggsave (filename = "Fig_S3A.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
+ggsave (filename = "Fig_S2A.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
 
 ```
 
@@ -66,7 +66,7 @@ p <- dittoDimPlot(cyto_sce, var = "Panel",
                   reduction.use = "UMAP", size = 0.25,
                   do.label = FALSE)
 p
-ggsave (filename = "Fig_S3B.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
+ggsave (filename = "Fig_S2B.png", plot = p, device = "png", path = output, width=200, height=150, units='mm', dpi=600)
 ```
 
 
@@ -85,7 +85,7 @@ for(i in c("HLADR","GrzB","PDL1","Ecad","LAG3","PD1","Ki67","CD8a","CD4", "CD206
     theme(legend.title = element_text(size = 20), legend.key.size = unit(8, "mm"))
 }
 
-png(file = "output/Figure_S3/Figure_S3_UMAPmarkers.png",width = 2000 ,height = 1200)
+png(file = "output/Figure_S2/Figure_S2C.png",width = 2000 ,height = 1200)
 plot_grid(plotlist = p.list, ncol = 4)
 dev.off()
 ```
@@ -154,7 +154,7 @@ p2 <- ggplot(coldata %>%
   ggtitle("non-activated")
 
 
-pdf(file = "output/Figure_S3/Fig_S3D.pdf",width = 8, height = 4)
+pdf(file = "output/Figure_S2/Fig_S2D.pdf",width = 8, height = 4)
 plot_grid(p1,p2,ncol = 2)
 dev.off()
 
@@ -291,7 +291,7 @@ p <- expr_df_act %>%
   theme_bw()
 
 p
-ggsave (filename = "Fig_S3E.pdf", plot = p, device = "pdf", path = output, width = 16, height = 10, units = "cm")
+ggsave (filename = "Fig_S2E.pdf", plot = p, device = "pdf", path = output, width = 16, height = 10, units = "cm")
 ```
 
 # G CV - non_activated
@@ -325,76 +325,6 @@ p <- ggplot(marker_cv_non_act, aes(x = variable))+
   xlab("Marker")+
   ylab("mean CV")
 p
-ggsave (filename = "Fig_S3G_non_activated.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8, units = "cm")
-```
-
-
-
-
-
-# G
-```{r}
-dat <- fread(paste0(mount_path  ,"processed_data/Panel_1/2022_WORKFLOW/IF_fluorophore_time_series/QuPath_project/measurements.csv"))
-```
-
-
-```{r}
-#subset the data table
-
-dat_new <- dat[, .(Image, `Cell: DAPI mean`, `Cell: EGFP mean`, `Cell: Cy3 mean`, `Cell: AF647 mean`)]
-
-dat_sum <- dat_new %>%
-  group_by(Image) %>%
-  summarise(mean_DAPI = mean(`Cell: DAPI mean`),
-            mean_panCK = mean(`Cell: EGFP mean`), 
-            mean_CD45 = mean(`Cell: Cy3 mean`),
-            mean_CD163 = mean (`Cell: AF647 mean`))
-
-
-#Using data.table
-#test <- dat_new[, .(mean_DAPI = mean(`Cell: DAPI mean`)), by = Image]
-
-
-#Extract the time and sampleID values
-dat_sum <- as.data.table(dat_sum)
-dat_sum <- dat_sum[, time := stringr::str_extract(string = dat_sum$Image, pattern = "[0-9]+hr")]
-dat_sum <- dat_sum[, sampleID := sub(pattern = "20210923_", "", dat_sum$Image)]
-dat_sum <- dat_sum[, sampleID := sub(pattern = "20210921_", "", dat_sum$sampleID)]
-dat_sum <- dat_sum[, sampleID := sub(pattern = "_0hr", "", dat_sum$sampleID)]
-dat_sum <- dat_sum[, sampleID := sub(pattern = "_48hr", "", dat_sum$sampleID)]
-
-
-
-#melt the data table
-dat_melt <- melt(dat_sum, 
-     id.vars = c("sampleID", "time"),
-     measure.vars = c("mean_DAPI", "mean_panCK", "mean_CD45", "mean_CD163"),
-     variable.name = "Marker_mean",
-     value.name = "value")
-
-
-#Widen the data table
-dat_test <- dcast(dat_melt, sampleID + Marker_mean ~ time, value.var = "value")
-
-#compute the fold change
-dat_test <- dat_test [, fc := (dat_test$`48hr` - dat_test$`0hr`)/dat_test$`0hr`]
-
-```
-
-```{r, fig.height=12, fig.width=10}
-
-#Draw a barplot
-p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) + 
-  geom_bar(stat="identity", position=position_dodge())+
-  scale_fill_manual(values=c('#999999','#E69F00')) +
-  facet_wrap(~sampleID, scales = "free") +
-  stat_compare_means(label = "p.signif")+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 90,hjust=1,vjust=0.5))
-p
-
-fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
-ggsave (filename = "Fig_S3E.png", plot = p, device = "png", path = output, width=350, height=300, units='mm', dpi=600)
-
+#ggsave (filename = "Fig_S2G_non_activated.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8, units = "cm")
 ```
 

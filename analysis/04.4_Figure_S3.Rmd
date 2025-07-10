@@ -1,5 +1,5 @@
 ---
-title: "Figure S4"
+title: "Figure S3"
 output:
   workflowr::wflow_html:
     toc: false
@@ -18,7 +18,7 @@ knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 this path should be the directory where all files downloaded from Zenodo are stored in the same structure as on Zenodo
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S4/"
+output <- "output/Figure_S3/"
 ```
 
 ## Read data
@@ -85,6 +85,6 @@ p <- ggplot(dat_melt, aes(x=Marker_mean, y = value, fill = time)) +
 p
 
 fn <- paste0(paste("Barplots", "0hrvs48hr", sep = "_"), '.png')
-ggsave (filename = "Fig_S4.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8)
+ggsave (filename = "Fig_S3.pdf", plot = p, device = "pdf", path = output, width = 12, height = 8)
 
 ```

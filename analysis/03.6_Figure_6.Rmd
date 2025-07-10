@@ -465,8 +465,8 @@ plot_grid(p_CD15,p_Neutro)
 
 
 # image based intensity correlation of CD11c
-
-```{r}
+Not in paper
+```{r, eval=FALSE, include=FALSE}
 exp_IMC <- as.data.frame(t(assay(sce_imc,"exprs")))
 exp_mIF <- as.data.frame(t(assay(sce_mIF,"exprs")))
 exp_IMC$sample_id <- sce_imc$sample_id

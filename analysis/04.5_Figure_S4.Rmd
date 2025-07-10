@@ -1,5 +1,5 @@
 ---
-title: "Figure S5"
+title: "Figure S4"
 output:
   workflowr::wflow_html:
     toc: false
@@ -23,7 +23,7 @@ Code to generate the plots of Figure 4.
 the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S5"
+output <- "output/Figure_S4"
 ```
 
 
@@ -146,7 +146,7 @@ cur_varImp <- varImp(rffit)
 plot(cur_varImp)
 ```
 
-## Old test data
+## V1 test data
 
 Finally, we will validate the model using the test data.
 
@@ -197,7 +197,7 @@ cur_pred %>%
         axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-## New test data
+## V3 test data
 
 Now we specifically test the classifier on the newly labelled cells.
 
@@ -316,7 +316,7 @@ p <- data.frame(cm$byClass) %>%
 
 p
 
-ggsave (filename = "Fig_S5C.pdf", plot = p, device = "pdf", path = output, width = 7.5, height = 6.5)
+ggsave (filename = "Fig_S4C.pdf", plot = p, device = "pdf", path = output, width = 7.5, height = 6.5)
 ```
 
 ```{r prediciton-probability-images-DCs-new-data, fig.width = 15}

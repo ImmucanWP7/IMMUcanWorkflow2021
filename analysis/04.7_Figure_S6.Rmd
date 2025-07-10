@@ -1,5 +1,5 @@
 ---
-title: "Figure S7"
+title: "Figure S6"
 output:
   workflowr::wflow_html:
     toc: false
@@ -20,7 +20,7 @@ Code to generate the plots of Figure 4.
 the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
 ```{r}
 mount_path <- readRDS(file = "data/mount_path.rds")
-output <- "output/Figure_S7"
+output <- "output/Figure_S6"
 ```
 
 ## Read data
@@ -31,7 +31,7 @@ library(tidyverse)
 library(ggpubr)
 library(cowplot)
 library(imcRtools)
-
+library(patchwork)
 
 sce_IMC <- readRDS(file.path(mount_path, "IMC/Rout/sce.rds"))
 sce_mIF <- readRDS(file.path(mount_path, "mIF/Rout/sce_ROIs.rds"))
@@ -41,7 +41,7 @@ colnames(sce_mIF) <- paste0(sce_mIF$sample_id,"_",sce_mIF$cell.ID)
 # A - Number of cells
 
 ```{r}
-if (!dir.exists("output/Figure_S7/")) dir.create("output/Figure_S7/")
+if (!dir.exists("output/Figure_S6/")) dir.create("output/Figure_S6/")
 
 no_IMC <- colData(sce_IMC) %>% as_tibble() %>%
   group_by(sample_id, patient_id) %>%
@@ -63,7 +63,7 @@ p <- ggplot(combined_df) +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, name = "Patient ID")
 
 p
-ggsave(filename = "FigS7_A.pdf",path = output, plot = p, width = 7, height = 5)
+ggsave(filename = "FigS6_A.pdf",path = output, plot = p, width = 7, height = 5)
 ```
 
 # B - cellular area
@@ -97,7 +97,7 @@ p <- cur_dat %>%
 
 p
 
-ggsave(filename = "FigS7_B.pdf",path= output, plot = p, width = 7, height = 5)
+ggsave(filename = "FigS6_B.pdf",path= output, plot = p, width = 7, height = 5)
 ```
 
 
@@ -142,7 +142,7 @@ out <- rbind(prop_IMC, prop_mIF)
   xlab("Modality") +
   scale_color_manual(values = metadata(sce_IMC)$color_vectors$patient_id, "Patient ID"))
 p
-ggsave(filename = "FigS7_C.pdf",path=output, plot = p, height = 5, width = 17)
+ggsave(filename = "FigS6_C.pdf",path=output, plot = p, height = 5, width = 17)
 ```
 
 ```{r}
@@ -188,7 +188,7 @@ final_plot <- (p1 + p3 + p2 + p4) +
   patchwork::plot_layout(guides = "collect",ncol = 4) &  # Collect the legends
   theme(legend.position = "bottom")
 final_plot
-ggsave(filename = "FigS7_D.pdf",path=output, plot = final_plot, height = 5, width = 15)
+ggsave(filename = "FigS6_D.pdf",path=output, plot = final_plot, height = 5, width = 15)
 ```
 
 
@@ -199,7 +199,7 @@ The code below is code that is not part of the publication but some checks that 
 
 Example images
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 library(cytomapper)
 
 (p1 <- plotSpatial(sce_IMC[,sce_IMC$sample_id == "IMMUcan_2022_WFLOW_10073140-SPECT-VAR-TIS-01-IMC-01_004"], 
@@ -224,7 +224,7 @@ library(cytomapper)
 
 # whole slide mIF IMC correlation
 we will correlate the fractions of cell types from mIF and IMC. we will therefore exclude ROI4 (TLS) which will otherwise falsify the results because they add many B cells to the IMC for a specific patient
-```{r, fig.height=10, fig.width=10, eval=FALSE}
+```{r, fig.height=10, fig.width=10, eval=FALSE, include=FALSE}
 mIF_sce <- readRDS(paste0(mount_path,"mIF/Rout/sce_whole_slide.rds"))
 
 unique(mIF_sce$patient_id)
@@ -300,11 +300,11 @@ p <- dat_long %>%
     theme(legend.title = element_text(size = 20))
 p
 
-ggsave(filename = paste0(output,"/wholeslide_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
+#ggsave(filename = paste0(output,"/wholeslide_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
 ```
 
 # matched region mIF IMC correlation
-```{r, fig.height=10, fig.width=10, eval=FALSE}
+```{r, fig.height=10, fig.width=10, eval=FALSE, include=FALSE}
 unique(mIF_sce$patient_id)
 unique(sce_IMC$patient_id)
 
@@ -377,13 +377,13 @@ p <- dat_long %>%
     theme(legend.title = element_text(size = 20))
 p
 
-ggsave(filename = paste0(output,"/matched_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
+#ggsave(filename = paste0(output,"/matched_mIF_IMC_correlation.pdf"),plot = p,width = 12, height = 8)
 ```
 
 
 
 # steinbock comparison
-```{r, fig.width=10, fig.height=8, eval=FALSE}
+```{r, fig.width=10, fig.height=8, eval=FALSE, include=FALSE}
 sce_st <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/steinbock_2025/Rout/sce.rds")
 sce_nuc <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/steinbock_2025/Rout/sce_nuc.rds")
 
@@ -451,7 +451,7 @@ sce_mIF$matched_celltype
 ```
 
 # test if we alter the phenotype key how that changes DC correlation
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 cur_key <- as.data.frame(read_csv(paste0(mount_path,"mIF/phenotype_key_IF1.csv")))
 cur_key <- cur_key %>%
   mutate(celltype = ifelse(phenotype == "CD15-CK-CD3+CD11c+CD20+CD163-","DC",celltype))
@@ -463,7 +463,7 @@ sce_mIF2$matched_celltype[grepl("Tumor", sce_mIF2$matched_celltype)] <- "Tumor"
 ```
 
 ## plot altered phenotype key
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 # Match cell types
 cur_mIF <- colData(sce_mIF2)
 cur_IMC <- colData(sce_IMC)
@@ -609,7 +609,7 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
 ```
 
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 cur_mIF <- colData(sce_mIF)
 cur_IMC <- colData(sce_IMC)
 
@@ -647,13 +647,13 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
 
 p <- plot_grid(p_DC,p_DC_new)
 p
-ggsave(filename = paste0(output,"/DC_new_phenotype_key.png"),plot = p,device = "png",width = 3000, height = 1500,units = "px")
+#ggsave(filename = paste0(output,"/DC_new_phenotype_key.png"),plot = p,device = "png",width = 3000, height = 1500,units = "px")
 ```
 
 
 
 # Neutrophils
-```{r, fig.width=15, fig.height=6, eval=FALSE}
+```{r, fig.width=15, fig.height=6, eval=FALSE, include=FALSE}
 pie(1:10, col = metadata(sce_IMC)$color_vectors$patient_id,labels = names(metadata(sce_IMC)$color_vectors$patient_id ))
 
 pat <- "IMMUcan_2022_WFLOW_10068868-SPECT-VAR-TIS-01-IMC-01_008"
@@ -694,12 +694,12 @@ pmif <- pmif+ggtitle(paste0(i, " - ","mIF"))+scale_color_manual(values = metadat
   theme(plot.title = element_text(size = 7, face = "bold"))
 p<- plot_grid(pIMC, pmif)
 p
-ggsave(filename = paste0(output,"/neutrophils_IMC_mif.png"),plot = p,device = "png",width = 3000, height = 1500,units = "px")
+#ggsave(filename = paste0(output,"/neutrophils_IMC_mif.png"),plot = p,device = "png",width = 3000, height = 1500,units = "px")
 
 ```
 
 # gaussian mixture to identify phenotypes
-```{r, fig.height=4,fig.width=8, eval=FALSE}
+```{r, fig.height=4,fig.width=8, eval=FALSE, include=FALSE}
 sce_nuc <- readRDS("D:/Data/2022_Workflow_for_zenodo_upload/steinbock_2025/Rout/sce.rds")
 colnames(sce_nuc) <- paste0(sce_nuc$sample_id,"_",sce_nuc$ObjectNumber)
 
@@ -734,7 +734,7 @@ for(i in unique(sce_nuc$sample_id)){
 ```
 
 # apply phenotype key
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 cur_key <- as.data.frame(read_csv(paste0(mount_path,"mIF/phenotype_key_IF1.csv")))
 rownames(cur_key) <- cur_key$phenotype
 
@@ -745,7 +745,7 @@ sce_nuc$matched_celltype[grepl("Tumor", sce_nuc$matched_celltype)] <- "Tumor"
 
 ## Cell phenotype correlation
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, include=FALSE}
 # Match cell types
 cur_mIF <- colData(sce_nuc)
 cur_IMC <- colData(sce_IMC)
@@ -889,9 +889,9 @@ combined$patient_id <- sub("-", "", str_extract(combined$sample_id, "[0-9]{8}-")
   coord_fixed())
 ```
 
-```{r, fig.height=10, fig.width=20, eval=FALSE}
+```{r, fig.height=10, fig.width=20, eval=FALSE, include=FALSE}
 p <- plot_grid(p_T, p_B, p_BnT, p_Tumor, p_Mac, p_DC, p_other, p_Neutro, nrow = 2) 
 p
-ggsave(filename = paste0(output,"/mesmer_whole_cell_mIF_celltype_correlation.pdf"),device = "pdf",width = 20,height = 10)
+#ggsave(filename = paste0(output,"/mesmer_whole_cell_mIF_celltype_correlation.pdf"),device = "pdf",width = 20,height = 10)
 ```
 

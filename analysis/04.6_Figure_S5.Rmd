@@ -1,5 +1,5 @@
 ---
-title: "Figure S6"
+title: "Figure S5"
 author: "Daniel Schulz"
 date: "2025-03-21"
 output: html_document
@@ -72,7 +72,7 @@ cur_dat <- cur_dat %>%
   filter(!is.na(Unknown))
 
 
-pdf(file = "output/Figure_S6/confusion_matrix_Astir.pdf",width = 7, height = 7)
+pdf(file = "output/Figure_S5/confusion_matrix_Astir.pdf",width = 7, height = 7)
 pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Astir")
 dev.off()
 
@@ -84,7 +84,7 @@ cur_dat <- as.data.frame(unclass(cur_dat))
 cur_dat <- cur_dat %>%
   filter(!is.na(Unknown))
 
-pdf(file = "output/Figure_S6/confusion_matrix_Celesta.pdf",width = 7, height = 7)
+pdf(file = "output/Figure_S5/confusion_matrix_Celesta.pdf",width = 7, height = 7)
 pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Celesta")
 dev.off()
 
@@ -96,7 +96,7 @@ cur_dat <- as.data.frame(unclass(cur_dat))
 cur_dat <- cur_dat %>%
   filter(!is.na(Unknown))
 
-pdf(file = "output/Figure_S6/confusion_matrix_Starling.pdf",width = 7, height = 7)
+pdf(file = "output/Figure_S5/confusion_matrix_Starling.pdf",width = 7, height = 7)
 pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Starling")
 dev.off()
 
@@ -108,7 +108,7 @@ cur_dat <- as.data.frame(unclass(cur_dat))
 cur_dat <- cur_dat %>%
   filter(!is.na(Unknown))
 
-pdf(file = "output/Figure_S6/confusion_matrix_Stellar.pdf",width = 7, height = 7)
+pdf(file = "output/Figure_S5/confusion_matrix_Stellar.pdf",width = 7, height = 7)
 pheatmap::pheatmap(cur_dat,color = colorRampPalette(c("white", "darkblue"))(100),display_numbers = TRUE, cluster_rows = FALSE, cluster_cols = FALSE,number_color = text_colors <- ifelse(cur_dat > 0.5, "white", "black"),main = "Stellar")
 dev.off()
 ```
