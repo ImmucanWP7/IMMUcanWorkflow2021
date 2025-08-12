@@ -1,6 +1,6 @@
 # IMMUcanWorkflow2021
 
-This repo contains code to reproduce figures from the publication ...
+This repo contains code to reproduce figures from the publication Eling, Dorier et al., 2025 in Cell Reports Methods
 
 ## Background
 
