@@ -2,6 +2,9 @@
 
 This repo contains code to reproduce figures from the publication Eling, Dorier et al., 2025 in Cell Reports Methods
 
+the publication version is also available here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16812658.svg)](https://doi.org/10.5281/zenodo.16812658)
+
+
 ## Background
 
 [IMMUcan](https://immucan.eu/) is a large IMI funded consortium with the goal to
