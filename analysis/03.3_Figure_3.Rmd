@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
-Code to generate the plots of S2
 
 # set path
 the git repo contains a vector which specifies the path to the data folder. please adapt this path in your clone to run the repo automated.
@@ -252,6 +251,7 @@ p <- ggplot(marker_cv_act, aes(x = variable))+
 p
 ggsave (filename = "output/Figure_3/Fig_3D_activated.pdf", plot = p, device = "pdf", width = 12, height = 4.6, units = "cm")
 ```
+
 
 # G CV - non_activated
 
